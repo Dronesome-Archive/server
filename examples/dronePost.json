@@ -1,0 +1,7 @@
+{
+	"time": 123456, // Unix timestamp in seconds
+	"coords": [ 100.123, 100.123 ],
+	"status": "FLYING",
+	"battery": 0.4, // From 0.0 to 1.0
+	"mission": "c2c75677-d6d1-49ca-b93a-e12afaef64aa" // UUID (universally uniquie identifier)
+}
