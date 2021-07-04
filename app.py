@@ -1,76 +1,61 @@
-from flask import Flask
-from flask import request
-from flask import Response
-from geopy import distance
+import random
+import string
+import datetime
+
+from werkzeug.utils import redirect
+from authlib.integrations.flask_client import OAuth
+from flask_login import current_user, LoginManager, login_required
+from os import urandom
+import flask_login
+import markupsafe
+import flask
+import pymongo
+import bson
 
 import mission
 import drone 
 
-app = Flask(__name__)
+# App setup
+app = flask.Flask(__name__)
+app.config.from_pyfile('config.py')
+app.config.from_pyfile('secret.py')
+app.secret_key = urandom(32)
+login = LoginManager()
+login.init_app(app)
+oauth = OAuth(app)
+db = pymongo.MongoClient()['app']
 
-testlist=[1,2,3]
-test=distance.distance()
-
+# Drone logic setup
 drone = []
 ports = []
 missions = []
 
-@app.route('/')
-def hello_world():
-	return 'whats good bitch'
 
-@app.route('/test')
-def ayy():
-	return 'mask of percucets'
-
-@app.route('/approve')
-def approve():
-	port = None
-	if missions[0].stage().goal == port and missions[0].stage().status == mission.Status.FINISHED:
-		missions[0].currentStage += 1
+################################################################################
+# WEB APP API
+################################################################################
 
 
-# drone sends heartbeat every ten seconds, server gives 200 if ok, 299 if mission change, 499 if hard rtl
-@app.route('/drone', methods=['POST'])
-def drone():
 
-	try:
-		# authenticate using the ssl certificate serial
-		if drone.serial != request.headers.get('serial') return 401
 
-		# update internal drone data
-		raw = request.get_json()
-		drone.lastUpdate = raw['time']
-		drone.coords = (float(raw['coords'][0]), float(raw['coords'][1]))
-		drone.status = Drone.Status[raw['status']]
-		drone.battery = float(raw['battery'])
-		drone.stageID = int(raw['stage'])
-	except:
-		return 400
+################################################################################
+# WEB APP PAGES
+################################################################################
 
-	# update drone mission
-	if drone.status == Drone.Status.SITTING and missions[0].getStage().status != mission.Status.STARTING and missions[0].getStage().status != mission.Status.FINISHED:
-		
-		# flying / landing > finished
-		missions[0].getStage().status == mission.Status.FINISHED
-	elif drone.status == Drone.Status.FLYING:
-		
-		# starting > flying
-		if missions[0].getStage().status == mission.Status.STARTING:
-			missions[0].getStage().status == mission.Status.FLYING
-		elif missions[0].getStage().status == mission.Status.FINISHED:
-			pass # we fucked up
-	elif drone.status == Drone.Status.LANDING:
-		
-		# flying > landing
-		if missions[0].getStage().status == mission.Status.FLYING:
-			missions[0].getStage().status == mission.Status.LANDING
-		elif missions[0].getStage().status == mission.Status.FINISHED:
-			pass # we fucked up
-	
-	# update external mission data
-	if missions[0].getStage().id != drone.stageID:
-		return Response(missions[0].getStage().getJSON(), 299)
-	
-	return 200
 
+# Drone management page
+@app.route('/courier')
+def courier():
+	pass
+
+
+# Login page
+@app.route('/login')
+def login():
+	pass
+
+
+# Register new user
+@app.route('/register')
+def register_user():
+	pass
