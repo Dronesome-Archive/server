@@ -6,6 +6,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/_venv" />
+      <excludeFolder url="file://$MODULE_DIR$/_setup" />
+      <excludeFolder url="file://$MODULE_DIR$/_examples" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
