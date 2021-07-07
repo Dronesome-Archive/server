@@ -5,27 +5,22 @@ import datetime
 import flask
 import flask_login
 import bson
-from app import db, login, oauth
 import markupsafe
 from werkzeug.utils import redirect
 
+from app import db, login, oauth
 from user import User
 
-bp = flask.Blueprint('api', __name__, url_prefix='/api')
+website = flask.Blueprint('website', __name__, url_prefix='/')
 
 
-# Create user object from db for flask_login
-@login.user_loader
-def load_user(login_id):
-    user = db.users.find_one({'login_id': login_id})
-    if not user:
-        return None
-    else:
-        return User(user)
+################################################################################
+# AUTHENTICATION API
+################################################################################
 
 
 # Redirect user to the OAuth provider
-@bp.route('/<string:oauth_server>/login')
+@website.route('/<string:oauth_server>/login')
 def oauth_login(oauth_server):
     if client := oauth.create_client(markupsafe.escape(oauth_server)):
         callback_url = flask.url_for('handle_login', oauth_server=oauth_server, _external=True)
@@ -34,7 +29,7 @@ def oauth_login(oauth_server):
 
 
 # With the received OAuth credentials, redirect either to the home page or the account creation page
-@bp.route('/<string:oauth_server>/callback')
+@website.route('/<string:oauth_server>/callback')
 def handle_login(oauth_server):
     if client := oauth.create_client(markupsafe.escape(oauth_server)):
 
@@ -45,27 +40,31 @@ def handle_login(oauth_server):
 
             # Account already exists
             login.login_user(User(user))
-            return redirect(flask.url_for('courier'))
+            return redirect(flask.url_for('page_courier'))
         else:
 
             # New account
             flask.session['oauth_server'] = markupsafe.escape(oauth_server)
             flask.session['oauth_token'] = userinfo.sub
-            return redirect(flask.url_for('new_user'))
+            return redirect(flask.url_for('page_register'))
 
 
 # Invalidate the session and bring back to login page
-@bp.route('/logout')
+@website.route('/logout')
 def logout():
     if flask_login.current_user.is_authenticated:
         db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': bson.objectid.ObjectId()}})
         flask_login.logout_user()
-    return redirect(flask.url_for('login'))
+    return redirect(flask.url_for('page_sign_in'))
 
+
+################################################################################
+# USER CREATION API
+################################################################################
 
 # Admins can generate one temporary key for their facility so a new user can register
+@website.route('/new_user_key')
 @flask_login.login_required
-@bp.route('/new_user_key')
 def new_user_key():
     if 'create_keys' in flask_login.current_user.get()['rights']:
 
@@ -84,7 +83,8 @@ def new_user_key():
 
 
 # Arguments: facility, key, name; Create a new account, if correct creation key is posted
-@bp.route('/register', methods=['POST'])
+@website.route('/register', methods=['POST'])
+@flask_login.login_required
 def create_new_user():
     name = markupsafe.escape(flask.request.args.get('name', None))
     oauth_token = flask.session.get('oauth_token', None)
@@ -108,7 +108,49 @@ def create_new_user():
                 'can_create_keys': new_user.can_create_keys,
                 'can_control_drone': new_user.can_control_drone
             })
+            return 200
         else:
             return 'Der Schlüssel ist abgelaufen.', 400
     else:
         return 'Der Schlüssel ist ungültig', 400
+
+
+################################################################################
+# MAIN PAGES
+################################################################################
+
+# Sign in > Log in / Sign up
+@website.route('/sign_in')
+@login.unauthorized_handler
+def page_sign_in():
+    return flask.render_template('sign_in.html')
+
+
+# After sign up, register new user
+@website.route('/register')
+@flask_login.login_required
+def page_register():
+    return flask.render_template(
+        'register.html',
+        facilities=[{'id': f._id, 'name': f.name} for f in db.facilities.find()]
+    )
+
+
+# Drone management
+@website.route('/')
+def page_courier():
+    return 'Hey'
+
+
+# Staff management
+@website.route('/staff')
+@flask_login.login_required
+def page_staff():
+    pass
+
+
+# Log out / change name
+@website.route('/account')
+@flask_login.login_required
+def page_account():
+    pass
