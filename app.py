@@ -4,9 +4,6 @@ from os import urandom
 from flask import Flask
 from pymongo import MongoClient
 
-from user import User
-from website.routes import website
-
 
 # Services
 app = Flask(__name__)
@@ -24,14 +21,6 @@ ports = []
 missions = []
 
 # Blueprints
+from website.routes import website
 app.register_blueprint(website)
 
-
-# Create user object from db for flask_login
-@login.user_loader
-def load_user(login_id):
-    user = db.users.find_one({'login_id': login_id})
-    if not user:
-        return None
-    else:
-        return User(user)

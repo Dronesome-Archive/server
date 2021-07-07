@@ -13,6 +13,15 @@ from user import User
 
 website = flask.Blueprint('website', __name__, url_prefix='/')
 
+# Create user object from db for flask_login
+@login.user_loader
+def load_user(login_id):
+    user = db.users.find_one({'login_id': login_id})
+    if not user:
+        return None
+    else:
+        return User(user)
+
 
 ################################################################################
 # AUTHENTICATION API
@@ -138,8 +147,9 @@ def page_register():
 
 # Drone management
 @website.route('/')
+@flask_login.login_required
 def page_courier():
-    return 'Hey'
+    pass
 
 
 # Staff management
