@@ -4,6 +4,8 @@ from os import urandom
 from flask import Flask
 from pymongo import MongoClient
 
+import website/pages
+
 
 # App setup
 app = Flask(__name__)

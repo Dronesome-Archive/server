@@ -29,9 +29,8 @@ def page_register():
 
 # Drone management
 @app.route('/')
-@flask_login.login_required
 def page_courier():
-    pass
+    return 'Hey'
 
 
 # Staff management
