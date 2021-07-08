@@ -1,9 +1,40 @@
+/* VARIABLES */
+
 :root {
     --col_bg: white;
     --col_fg: black;
     --col_fg_focus: green;
     --col_fg_placeholder: grey;
 }
+
+
+/* LAYOUT */
+
+body {
+  background: black;
+  margin: 0;
+}
+
+.inner_body {
+  margin: auto;
+  height: 100vh;
+  max-width: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.inner_body > div {
+  margin: 10px;
+  background: var(--col_bg);
+}
+
+.inner_body > .main {
+  height: 100%;
+  overflow-y: auto;
+}
+
+
+/* COSMETICS */
 
 * {
     font-family: 'Roboto', 'sans-serif';
@@ -28,6 +59,9 @@ input, select, button {
 input:focus, select:focus, button:focus {
     outline: var(--col_fg_focus) 1px solid;
 }
+
+
+/* POPUP */
 
 .popup {
     visibility: hidden;

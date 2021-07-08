@@ -1,5 +1,5 @@
-{% extends '_login_required.html' %}
-{% block content %}
+{% extends '_layout.html' %}
+{% block main %}
     <h1>Hallo, {{ username }} <i class="fas fa-pen-alt"></i></h1>
     <button onclick="window.location.href='/logout'">Abmelden</button>
-{% endblock content %}
+{% endblock %}

@@ -33,7 +33,7 @@ def load_user(login_id):
 @website.route('/<string:oauth_server>/login')
 def oauth_login(oauth_server):
     if client := oauth.create_client(oauth_server):
-        callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True)
+        callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)
     return 'Ungültige Anmeldemethode!', 400
 
@@ -138,7 +138,6 @@ def page_sign_in():
 
 # After sign up, register new user
 @website.route('/register')
-@flask_login.login_required
 def page_register():
     return flask.render_template(
         'register.html',
@@ -150,7 +149,7 @@ def page_register():
 @website.route('/')
 @flask_login.login_required
 def page_courier():
-    flask.render_template('account.html', username=flask_login.current_user.get()['name'])
+    flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
 
 
 # Staff management

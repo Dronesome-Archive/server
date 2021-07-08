@@ -5,6 +5,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='popup.js') }}"></script>
 	{% if title %}
 		<title>DroneSem - {{ title }}</title>
 	{% else %}
@@ -12,7 +14,17 @@
 	{% endif %}
 </head>
 <body>
-	{% block body %}
-	{% endblock %}
+    <div class="inner_body">
+        <div class="main">
+            {% block main %}{% endblock %}
+        </div>
+        {% if navbar %}
+        <div class="navbar">
+            <a href="{{ url_for('website.page_account') }}"><i class="fas fa-user"></i></a>
+            <a href="{{ url_for('website.page_courier') }}"><i class="fas fa-parachute-box"></i></a>
+            <a href="{{ url_for('website.page_staff') }}"><i class="fas fa-list"></i></a>
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
