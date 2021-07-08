@@ -57,27 +57,32 @@ body {
 
 /* ITEMS */
 
+input, button, select {
+    border:none;
+    outline: none;
+    background: none;
+}
+
+input:focus, button:focus, select:focus {
+    outline: none;
+}
+
 .item {
-    background-color: white;
+    display: block;
     margin: auto 10px;
+    background: white;
     padding: 3px;
     border-radius: 3px;
-    outline: var(--col_fg) 1px solid;
+    border: var(--col_fg) 1px solid;
+    outline: none;
 }
 
 .item:focus {
-    outline: var(--col_fg_focus) 1px solid;
+    border: var(--col_fg_focus) 1px solid;
 }
 
 .item > input, .item > button {
     flex-grow:2;
-    border:none;
-    outline: none;
-    background: transparent;
-}
-
-.item > input:focus, .item > button:focus {
-    outline: none;
 }
 
 .multi_item {
