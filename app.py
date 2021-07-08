@@ -13,6 +13,8 @@ app.secret_key = urandom(32)
 login = LoginManager()
 login.init_app(app)
 oauth = OAuth(app)
+oauth.register('google')
+oauth.register('apple')
 db = MongoClient()['app']
 
 # Drone logic

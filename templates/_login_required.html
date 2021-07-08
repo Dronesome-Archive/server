@@ -2,8 +2,8 @@
 {% block body %}
 	{% block content %}{% endblock %}
 	<div class="navbar">
-		<a href="{{ url_for('page_account') }}"><i class="fas fa-user"></i></a>
-		<a href="{{ url_for('page_courier') }}"><i class="fas fa-parachute-box"></i></a>
-		<a href="{{ url_for('page_staff') }}"><i class="fas fa-list"></i></a>
+		<a href="{{ url_for('website.page_account') }}"><i class="fas fa-user"></i></a>
+		<a href="{{ url_for('website.page_courier') }}"><i class="fas fa-parachute-box"></i></a>
+		<a href="{{ url_for('website.page_staff') }}"><i class="fas fa-list"></i></a>
 	</div>
 {% endblock %}

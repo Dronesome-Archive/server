@@ -32,10 +32,10 @@ def load_user(login_id):
 # Redirect user to the OAuth provider
 @website.route('/<string:oauth_server>/login')
 def oauth_login(oauth_server):
-    if client := oauth.create_client(markupsafe.escape(oauth_server)):
-        callback_url = flask.url_for('handle_login', oauth_server=oauth_server, _external=True)
+    if client := oauth.create_client(oauth_server):
+        callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True)
         return client.authorize_redirect(callback_url)
-    return 400
+    return 'Ungültige Anmeldemethode!', 400
 
 
 # With the received OAuth credentials, redirect either to the home page or the account creation page
@@ -50,13 +50,13 @@ def handle_login(oauth_server):
 
             # Account already exists
             login.login_user(User(user))
-            return redirect(flask.url_for('page_courier'))
+            return redirect(flask.url_for('.page_courier'))
         else:
 
             # New account
             flask.session['oauth_server'] = markupsafe.escape(oauth_server)
             flask.session['oauth_token'] = userinfo.sub
-            return redirect(flask.url_for('page_register'))
+            return redirect(flask.url_for('.page_register'))
 
 
 # Invalidate the session and bring back to login page
@@ -65,7 +65,7 @@ def logout():
     if flask_login.current_user.is_authenticated:
         db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': bson.objectid.ObjectId()}})
         flask_login.logout_user()
-    return redirect(flask.url_for('page_sign_in'))
+    return redirect(flask.url_for('.page_sign_in'))
 
 
 ################################################################################
@@ -89,7 +89,7 @@ def new_user_key():
         )
         flask.flash('Schlüssel: ' + new_user['key'])
 
-    return redirect(flask.url_for('staff'))
+    return redirect(flask.url_for('.staff'))
 
 
 # Arguments: facility, key, name; Create a new account, if correct creation key is posted
@@ -103,7 +103,7 @@ def create_new_user():
     facility_id = flask.request.args.get('facility', None)
     new_user = db.facilities.find_one({'_id': flask.request.args['facility']}).get('new_user', None)
     if not oauth_token or not oauth_server or not key or not facility_id or not new_user:
-        return 400
+        return 'Ungültiges Formular! Bitte aktivieren Sie cookies.', 400
 
     if key == new_user.key:
         if new_user.expiry > datetime.datetime.now():
@@ -118,11 +118,11 @@ def create_new_user():
                 'can_create_keys': new_user.can_create_keys,
                 'can_control_drone': new_user.can_control_drone
             })
-            return 200
+            return 'Neuer Nutzer ' + name + ' erstellt.', 200
         else:
-            return 'Der Schlüssel ist abgelaufen.', 400
+            return 'Der Schlüssel ist abgelaufen!', 400
     else:
-        return 'Der Schlüssel ist ungültig', 400
+        return 'Der Schlüssel ist ungültig!', 400
 
 
 ################################################################################
