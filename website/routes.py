@@ -13,6 +13,7 @@ from user import User
 
 website = flask.Blueprint('website', __name__, url_prefix='/')
 
+
 # Create user object from db for flask_login
 @login.user_loader
 def load_user(login_id):
@@ -149,7 +150,7 @@ def page_register():
 @website.route('/')
 @flask_login.login_required
 def page_courier():
-    pass
+    flask.render_template('account.html', username=flask_login.current_user.get()['name'])
 
 
 # Staff management
