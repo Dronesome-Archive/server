@@ -18,12 +18,12 @@
         <table class="main">
             <tr>
                 <td valign="top">
-                    {% block main %}{% endblock %}
+                    {% block top %}{% endblock %}
                 </td>
             </tr>
             <tr>
                 <td valign="bottom">
-                    {% block bottom %} {% endblock %}
+                    {% block bottom %}{% endblock %}
                 </td>
             </tr>
         </table>
@@ -35,5 +35,6 @@
         </div>
         {% endif %}
     </div>
+    {% block popup %}{% endblock %}
 </body>
 </html>

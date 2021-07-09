@@ -5,6 +5,7 @@
     --col_fg: black;
     --col_fg_focus: green;
     --col_fg_placeholder: grey;
+    --margin: 10px;
 }
 
 
@@ -13,12 +14,13 @@
 * {
     font-family: 'Roboto', 'sans-serif';
     font-weight: 300;
-    font-size: 14px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
 h1 {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 20px;
 }
 
 
@@ -32,14 +34,14 @@ body {
 .inner_body {
     margin: auto;
     height: 100vh;
-    max-width: 80vh;
+    max-width: 75vh;
     display: flex;
     flex-direction: column;
 }
 
-.inner_body > div {
-    margin: 10px;
-    padding: 10px;
+.inner_body > div, .inner_body > table {
+    margin: var(--margin);
+    padding: var(--margin);
     background: var(--col_bg);
 }
 
@@ -47,8 +49,11 @@ body {
     height: 100%;
     overflow-y: auto;
     border-collapse: collapse;
-    padding: 0;
-    margin: 0;
+    margin: var(--margin);
+}
+
+.main > tbody {
+    padding: var(--margin);
 }
 
 
@@ -65,12 +70,13 @@ input:focus, button:focus, select:focus {
 }
 
 .item {
-    margin: 10px auto;
-    display: block;
     width: 80%;
+    height: 3em;
+    margin: var(--margin) auto;
+    display: block;
     background: white;
-    padding: 3px;
-    border-radius: 3px;
+    padding: 1em;
+    border-radius: 1em;
     border: var(--col_fg) 1px solid;
 }
 
@@ -87,11 +93,19 @@ input:focus, button:focus, select:focus {
     flex-direction: row;
 }
 
+.placeholder, ::placeholder {
+    color: var(--col_fg_placeholder);
+}
+
 
 /* POPUP */
 
 .popup {
-    visibility: hidden;
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background-color: var(--col_bg);
     outline: var(--col_fg_focus) 1px solid;
 }
