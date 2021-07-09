@@ -1,7 +1,7 @@
 {% extends '_layout.html' %}
-{% block main %}
+{% block top %}
     <h1>Hallo, {{ username }} <i class="fas fa-pen-alt"></i></h1>
-    <div>
-        <button onclick="window.location.href='/logout'">Abmelden</button>
-    </div>
+{% endblock %}
+{% block bottom %}
+    <button onclick="window.location.href='/logout'">Abmelden</button>
 {% endblock %}

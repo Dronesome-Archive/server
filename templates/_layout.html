@@ -15,9 +15,18 @@
 </head>
 <body>
     <div class="inner_body">
-        <div class="main">
-            {% block main %}{% endblock %}
-        </div>
+        <table class="main">
+            <tr>
+                <td valign="top">
+                    {% block main %}{% endblock %}
+                </td>
+            </tr>
+            <tr>
+                <td valign="bottom">
+                    {% block bottom %} {% endblock %}
+                </td>
+            </tr>
+        </table>
         {% if navbar %}
         <div class="navbar">
             <a href="{{ url_for('website.page_account') }}"><i class="fas fa-user"></i></a>

@@ -1,10 +1,9 @@
 {% extends "_layout.html" %}
-{% block main %}
-    <div class="top">
-        <h1>Neuer Nutzer</h1>
-    </div>
-
-    <form class="bottom" method="post">
+{% block top %}
+    <h1>Neuer Nutzer</h1>
+{% endblock %}
+{% block bottom %}
+    <form method="post">
         <input class="item" required name="name" type="text" placeholder="Name"/>
         <select class="item" required name="facility">
             <option value="" disabled selected hidden>Betrieb</option>

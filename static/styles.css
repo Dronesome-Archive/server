@@ -46,16 +46,9 @@ body {
 .main {
     height: 100%;
     overflow-y: auto;
-    display: flex;
-}
-
-.top {
-    height: 100%;
-}
-
-.bottom {
-    padding-left: 10%;
-    padding-right: 10%;
+    border-collapse: collapse;
+    padding: 0;
+    margin: 0;
 }
 
 
@@ -72,8 +65,9 @@ input:focus, button:focus, select:focus {
 }
 
 .item {
+    margin: 10px auto;
     display: block;
-    width: 100%;
+    width: 80%;
     background: white;
     padding: 3px;
     border-radius: 3px;
