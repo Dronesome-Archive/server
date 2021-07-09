@@ -43,15 +43,19 @@ body {
     background: var(--col_bg);
 }
 
-.inner_body > .main {
+.main {
     height: 100%;
     overflow-y: auto;
+    display: flex;
+}
+
+.top {
+    height: 100%;
 }
 
 .bottom {
-    bottom: 0;
-    margin: auto 0;
-    width: 80%;
+    padding-left: 10%;
+    padding-right: 10%;
 }
 
 
@@ -69,12 +73,11 @@ input:focus, button:focus, select:focus {
 
 .item {
     display: block;
-    margin: auto 10px;
+    width: 100%;
     background: white;
     padding: 3px;
     border-radius: 3px;
     border: var(--col_fg) 1px solid;
-    outline: none;
 }
 
 .item:focus {
