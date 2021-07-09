@@ -14,25 +14,14 @@
 	{% endif %}
 </head>
 <body>
-    <div class="inner_body">
-        <table class="main">
-            <tr>
-                <td valign="top">
-                    {% block top %}{% endblock %}
-                </td>
-            </tr>
-            <tr>
-                <td valign="bottom">
-                    {% block bottom %}{% endblock %}
-                </td>
-            </tr>
-        </table>
+    <div id="inner_body" class="centered flex_container">
+        {% block main %}{% endblock %}
         {% if navbar %}
-        <div class="navbar">
-            <a href="{{ url_for('website.page_account') }}"><i class="fas fa-user"></i></a>
-            <a href="{{ url_for('website.page_courier') }}"><i class="fas fa-parachute-box"></i></a>
-            <a href="{{ url_for('website.page_staff') }}"><i class="fas fa-list"></i></a>
-        </div>
+            <div class="navbar">
+                <a href="{{ url_for('website.page_account') }}"><i class="fas fa-user"></i></a>
+                <a href="{{ url_for('website.page_courier') }}"><i class="fas fa-parachute-box"></i></a>
+                <a href="{{ url_for('website.page_staff') }}"><i class="fas fa-list"></i></a>
+            </div>
         {% endif %}
     </div>
     {% block popup %}{% endblock %}

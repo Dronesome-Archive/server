@@ -31,36 +31,40 @@ body {
     margin: 0;
 }
 
-.inner_body {
-    margin: auto;
-    height: 100vh;
-    max-width: 75vh;
+.flex_container {
     display: flex;
     flex-direction: column;
 }
 
-.inner_body > div, .inner_body > table {
-    margin: var(--margin);
+.stretch_item {
+    flex: 1;
+}
+
+.window {
     padding: var(--margin);
     background: var(--col_bg);
+    border-radius: var(--margin);
 }
 
-.main {
-    height: 100%;
-    overflow-y: auto;
-    border-collapse: collapse;
-    margin: var(--margin);
+.centered {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.main > tbody {
-    padding: var(--margin);
+#inner_body {
+    height: 90vh;
+    max-width: min(90vw, 70vh);
+    gap: var(--margin); /* gap between the contained windows */
 }
 
 
 /* ITEMS */
 
 input, button, select {
-    border:none;
+    border: none;
     outline: none;
     background: none;
 }
@@ -84,10 +88,6 @@ input:focus, button:focus, select:focus {
     border: var(--col_fg_focus) 1px solid;
 }
 
-.item > input, .item > button {
-    flex-grow:2;
-}
-
 .multi_item {
     display: flex;
     flex-direction: row;
@@ -102,12 +102,6 @@ input:focus, button:focus, select:focus {
 
 .popup {
     display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: var(--col_bg);
-    outline: var(--col_fg_focus) 1px solid;
 }
 
 .popup_background {

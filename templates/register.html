@@ -1,25 +1,25 @@
 {% extends "_layout.html" %}
-{% block top %}
-    <h1>Neuer Nutzer</h1>
-{% endblock %}
-{% block bottom %}
-    <form method="post">
-        <input class="item" required name="name" type="text" placeholder="Name"/>
-        <select class="item" required name="facility">
-            <option value="" class="placeholder" disabled selected hidden>Betrieb</option>
-            {% for facility in facilities %}
-                <option name="{{ facility.id }}">{{ facility.name }}</option>
-            {% endfor %}
-        </select>
-        <div class="item multi_item">
-            <input required name="key" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code"/>
-            <button type="button" onclick="show_popup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
-        </div>
-        <button class="item" type="submit">Registrieren</button>
-    </form>
+{% block main %}
+    <div class="stretch_item flex_container window">
+        <h1 class="stretch_item">Neuer Nutzer</h1>
+        <form method="post">
+            <input class="item" required name="name" type="text" placeholder="Name"/>
+            <select class="item" required name="facility">
+                <option value="" class="placeholder" disabled selected hidden>Betrieb</option>
+                {% for facility in facilities %}
+                    <option name="{{ facility.id }}">{{ facility.name }}</option>
+                {% endfor %}
+            </select>
+            <div class="item multi_item">
+                <input class="stretch_item" required name="key" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code"/>
+                <button type="button" onclick="show_popup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
+            </div>
+            <button class="item" type="submit">Registrieren</button>
+        </form>
+    </div>
 {% endblock %}
 {% block popup %}
-    <div class="popup" id="sign_in_key_info">
+    <div class="popup centered window" id="sign_in_key_info">
         <p>Der Code muss von einem angemeldeten Mitarbeiter auf der <i class="fas fa-list"></i>-Seite generiert werden.
         Du benötigst den Code nur, um dich als Nutzer zu registrieren.
         Danach kannst du dich ohne den Code anmelden.</p>
