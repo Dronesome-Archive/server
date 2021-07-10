@@ -5,7 +5,7 @@
         <form method="post">
             <input class="item" required name="name" type="text" placeholder="Name"/>
             <select class="item" required name="facility">
-                <option value="" class="placeholder" disabled selected hidden>Betrieb</option>
+                <option value="placeholder" disabled selected hidden>Betrieb</option>
                 {% for facility in facilities %}
                     <option name="{{ facility.id }}">{{ facility.name }}</option>
                 {% endfor %}

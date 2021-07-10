@@ -1,20 +1,22 @@
 /* VARIABLES */
 
 :root {
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 300;
+    font-size: 16px;
+
     --col_bg: white;
     --col_fg: black;
     --col_fg_focus: green;
     --col_fg_placeholder: grey;
     --margin: 10px;
+    --border_radius: 1rem;
 }
 
 
 /* GENERAL */
 
 * {
-    font-family: 'Roboto', 'sans-serif';
-    font-weight: 300;
-    font-size: 16px;
     box-sizing: border-box;
 }
 
@@ -38,12 +40,13 @@ body {
 
 .stretch_item {
     flex: 1;
+    min-width: 0;
 }
 
 .window {
     padding: var(--margin);
     background: var(--col_bg);
-    border-radius: var(--margin);
+    border-radius: var(--border_radius);
 }
 
 .centered {
@@ -56,7 +59,7 @@ body {
 
 #inner_body {
     height: 90vh;
-    max-width: min(90vw, 70vh);
+    width: min(90vw, 70vh);
     gap: var(--margin); /* gap between the contained windows */
 }
 
@@ -79,8 +82,8 @@ input:focus, button:focus, select:focus {
     margin: var(--margin) auto;
     display: block;
     background: white;
-    padding: 1em;
-    border-radius: 1em;
+    padding: 0 1em;
+    border-radius: var(--border_radius);
     border: var(--col_fg) 1px solid;
 }
 
@@ -93,7 +96,7 @@ input:focus, button:focus, select:focus {
     flex-direction: row;
 }
 
-.placeholder, ::placeholder {
+select[val="placeholder"], ::placeholder {
     color: var(--col_fg_placeholder);
 }
 
