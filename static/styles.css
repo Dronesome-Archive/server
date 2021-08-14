@@ -3,14 +3,14 @@
 :root {
     font-family: 'Roboto', 'sans-serif';
     font-weight: 300;
-    font-size: 16px;
+    font-size: large;
 
     --col_bg: white;
     --col_fg: black;
     --col_fg_focus: green;
     --col_fg_placeholder: grey;
     --margin: 10px;
-    --border_radius: 1rem;
+    --border: 1rem;
 }
 
 
@@ -22,7 +22,7 @@
 
 h1 {
     font-weight: 500;
-    font-size: 20px;
+    font-size: x-large;
 }
 
 
@@ -44,9 +44,9 @@ body {
 }
 
 .window {
-    padding: var(--margin);
+    padding: var(--border);
     background: var(--col_bg);
-    border-radius: var(--border_radius);
+    border-radius: var(--border);
 }
 
 .centered {
@@ -58,8 +58,8 @@ body {
 }
 
 #inner_body {
-    height: 90vh;
-    width: min(90vw, 70vh);
+    height: calc(100vh - var(--border));
+    width: min(calc(100vw - var(--border)), 70vh);
     gap: var(--margin); /* gap between the contained windows */
 }
 
@@ -77,13 +77,13 @@ input:focus, button:focus, select:focus {
 }
 
 .item {
-    width: 80%;
+    width: 100%;
     height: 3em;
     margin: var(--margin) auto;
     display: block;
     background: white;
     padding: 0 1em;
-    border-radius: var(--border_radius);
+    border-radius: var(--border);
     border: var(--col_fg) 1px solid;
 }
 

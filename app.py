@@ -17,7 +17,7 @@ login.init_app(app)
 oauth = OAuth(app)
 oauth.register('google')
 oauth.register('apple')
-db = MongoClient()['app']
+db = MongoClient()['db']
 
 # Drone logic
 drone = []
