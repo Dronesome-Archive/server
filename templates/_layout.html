@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
 	<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="{{ url_for('static', filename='popup.js') }}"></script>
+    <script src="{{ url_for('static', filename='focus.js') }}"></script>
 	{% if title %}
 		<title>DroneSem - {{ title }}</title>
 	{% else %}
@@ -14,7 +15,7 @@
 	{% endif %}
 </head>
 <body>
-    <div id="inner_body" class="centered flex_container">
+    <div id="inner_body" class="centered flex_stack">
         {% block main %}{% endblock %}
         {% if navbar %}
             <div class="navbar">

@@ -141,7 +141,7 @@ def page_sign_in():
 def page_register():
     return flask.render_template(
         'register.html',
-        facilities=[{'id': f._id, 'name': f.name} for f in db.facilities.find()]
+        facilities=[{'id': f['_id'], 'name': f['name']} for f in db.facilities.find()]
     )
 
 
