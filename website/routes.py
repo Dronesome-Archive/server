@@ -125,6 +125,32 @@ def create_new_user():
         return 'Der Schlüssel ist ungültig!', 400
 
 
+# Arguments: name, can_create_keys, can_control_drone, user_id; change attributes of a user
+@website.route('/change_user', methods=['POST'])
+@flask_login.login_required
+def change_user(redirect_url=flask.url_for('.page_staff')):
+
+    # Set values to None if not specified
+    name = None if flask.request.args.get('name', None) is None else markupsafe.escape(flask.request.args['name'])
+    can_create_keys = None if flask.request.args.get('can_create_keys', None) is None else flask.request.args['can_create_keys'] == "True"
+    can_control_drone = None if flask.request.args.get('can_control_drone', None) is None else flask.request.args['can_control_drone'] == "True"
+
+    if flask.request.args.get('user_id', flask_login.current_user.id) == flask_login.current_user.id:
+        # Change self
+        if name is not None:
+            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'name': name}})
+    elif flask_login.current_user.get()['can_create_keys']:
+        # Change other user
+        if name is not None:
+            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'name': name}})
+        if can_create_keys is not None:
+            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_create_keys': can_create_keys}})
+        if can_control_drone is not None:
+            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_control_drone': can_control_drone}})
+
+    return redirect(redirect_url)
+
+
 ################################################################################
 # MAIN PAGES
 ################################################################################

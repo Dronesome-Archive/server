@@ -1,7 +1,17 @@
-{% extends '_layout.html' %}
-{% block top %}
-    <h1>Hallo, {{ username }} <i class="fas fa-pen-alt"></i></h1>
+{% extends "_layout.html" %}
+{% block main %}
+    <div class="stretch_item flex_stack window">
+        <h1 class="stretch_item">Hallo, {{ username }} <i onclick="show_popup('')" class="fas fa-pen-alt"></i></h1>
+        <button onclick="window.location.href={{ url_for('website.logout') }}">Abmelden</button>
+    </div>
 {% endblock %}
-{% block bottom %}
-    <button onclick="window.location.href='/logout'">Abmelden</button>
+
+{% block popup %}
+    <div class="popup centered window" id="edit_username">
+        <form method="post" action="{{ url_for('change_user', redirect_url=url_for('website.page_account')) }}">
+            <input class="item" type="text" name="name" value="{{ username }}"/>
+            <button class="item" type="submit">OK</button>
+        </form>
+        <button class="item" onclick="hide_popup('sign_in_key_info')">Abbrechen</button>
+    </div>
 {% endblock %}
