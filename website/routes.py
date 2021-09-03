@@ -128,7 +128,7 @@ def create_new_user():
 # Arguments: name, can_create_keys, can_control_drone, user_id; change attributes of a user
 @website.route('/change_user', methods=['POST'])
 @flask_login.login_required
-def change_user(redirect_url=flask.url_for('.page_staff')):
+def change_user(redirect_url):
 
     # Set values to None if not specified
     name = None if flask.request.args.get('name', None) is None else markupsafe.escape(flask.request.args['name'])
