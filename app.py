@@ -22,7 +22,7 @@ db = MongoClient()['db']
 # Drone logic
 drone = []
 ports = []
-missions = []
+errands = []
 
 # Blueprints
 from website.routes import website

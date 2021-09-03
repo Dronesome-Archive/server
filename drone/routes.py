@@ -1,56 +1,64 @@
 import flask
 
-app = flask.Blueprint('drone')
+from drone import Drone, Status as Dstatus
+from mission import Mission, Status as Mstatus
+from app import errands
 
-drone = {}
+drone_api = flask.Blueprint('drone_api', __name__, url_prefix='/drone_api/')
+
+drone = Drone()
 ports = []
 errands = []
 
+
 # drone sends heartbeat every ten seconds, server gives 200 if ok, 299 if mission change, 499 if hard rtl
-@app.route('/', methods=['POST'])
+@drone_api.route('/', methods=['POST'])
 def drone_post():
 
 	try:
 		# authenticate using the ssl certificate serial
-		if drone.serial != request.headers.get('serial') return 401
+		if drone.serial != flask.request.headers.get('serial'):
+			return 'Ungültiger SSL serial', 401
 
 		# update internal drone data
-		raw = request.get_json()
+		raw = flask.request.get_json()
 		drone.lastUpdate = raw['time']
 		drone.coords = (float(raw['coords'][0]), float(raw['coords'][1]))
-		drone.status = Drone.Status[raw['status']]
+		drone.status = Dstatus[raw['status']]
 		drone.battery = float(raw['battery'])
 		drone.stageID = int(raw['stage'])
 	except:
-		return 400
+		return 'Ungültige Request', 400
 
 	# update drone mission
-	if drone.status == Drone.Status.SITTING and missions[0].getStage().status != mission.Status.STARTING and missions[0].getStage().status != mission.Status.FINISHED:
-		
+	mission = errands[0].getStage()
+	if drone.status == Dstatus.SITTING and mission.status != Mstatus.STARTING and mission.status != Mstatus.FINISHED:
+
 		# flying / landing > finished
-		missions[0].getStage().status == mission.Status.FINISHED
-	elif drone.status == Drone.Status.FLYING:
-		
+		mission.status = Mstatus.FINISHED
+	elif drone.status == Dstatus.FLYING:
+
 		# starting > flying
-		if missions[0].getStage().status == mission.Status.STARTING:
-			missions[0].getStage().status == mission.Status.FLYING
-		elif missions[0].getStage().status == mission.Status.FINISHED:
+		if mission.status == Mstatus.STARTING:
+			mission.status = Mstatus.FLYING
+		elif mission.status == Mstatus.FINISHED:
 			pass # we fucked up
-	elif drone.status == Drone.Status.LANDING:
-		
+	elif drone.status == Dstatus.LANDING:
+
 		# flying > landing
-		if missions[0].getStage().status == mission.Status.FLYING:
-			missions[0].getStage().status == mission.Status.LANDING
-		elif missions[0].getStage().status == mission.Status.FINISHED:
+		if mission.status == Mstatus.FLYING:
+			mission.status = Mstatus.LANDING
+		elif mission.status == Mstatus.FINISHED:
 			pass # we fucked up
-	
+
 	# update external mission data
 	if missions[0].getStage().id != drone.stageID:
 		return Response(missions[0].getStage().getJSON(), 299)
-	
+
 	return 200
 
+
 # drone sends heartbeat every ten seconds, server gives 200 if ok, 299 if mission change, 499 if hard rtl
-@app.route('/', methods=['GET'])
+@drone_api.route('/', methods=['GET'])
 def drone_get():
 	pass
