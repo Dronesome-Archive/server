@@ -4,13 +4,13 @@ function show_popup(id) {
     if (!popup || popup.style.getPropertyValue('display')==='block') return;
 
     // Hide others
-    for (const other in document.getElementsByClassName('popup')) hide_popup(other.id);
+    for (const other of document.getElementsByClassName('popup')) hide_popup(other.id);
 
     // Create background
     let bg = document.createElement('div');
     bg.onclick = () => hide_popup(id);
     bg.classList.add('popup_background');
-    document.getElementsByClassName('body')[0].appendChild(bg);
+    document.body.insertBefore(bg, popup);
 
     // Show popup
     popup.style.setProperty('display', 'block');
@@ -22,7 +22,7 @@ function hide_popup(id) {
     if (!popup || popup.style.getPropertyValue('display')==='none') return;
 
     // Remove background
-    for (const bg in document.getElementsByClassName('popup_background')) document.removeChild(bg);
+    for (const bg of document.getElementsByClassName('popup_background')) document.removeChild(bg);
 
     // Hide popup
     popup.style.setProperty('display', 'none');

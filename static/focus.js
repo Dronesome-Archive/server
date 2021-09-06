@@ -11,7 +11,7 @@ function addFocusEvents(highlighted, focused) {
 }
 
 document.addEventListener('DOMContentLoaded',() => {
-    for (const item in document.getElementsByClassName('item')) {
+    for (const item of document.getElementsByClassName('item')) {
         addFocusEvents(item, item);
     }
 });
