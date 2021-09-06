@@ -66,6 +66,8 @@ body {
 
 
 /* ITEMS */
+/* TODO: make select pretty */
+/* TODO: only show valid input in input box */
 
 input, button, select {
     border: none;
@@ -102,6 +104,7 @@ select[value="placeholder"], ::placeholder {
 
 
 /* POPUP */
+/* TODO: actually show popup */
 
 .popup {
     display: none;
