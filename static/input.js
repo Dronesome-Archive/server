@@ -5,7 +5,7 @@ function setInputFilter(textbox) {
             let out = ''
             for (const char of textbox.value) {
                 let upper = char.toUpperCase()
-                if (('0' <= upper && '9' <= upper) || ('A' <= upper && 'Z' <= upper)) out += upper
+                if (('0' <= upper && upper <= '9') || ('A' <= upper && upper <= 'Z')) out += upper
             }
             textbox.value = out
         })

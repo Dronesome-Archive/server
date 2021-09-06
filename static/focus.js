@@ -1,12 +1,12 @@
-function addFocusEvents(focusItem, element) {
-    element.addEventListener('focus', () => {
-        focusItem.classList.add('focused');
+function addFocusEvents(highlighted, focused) {
+    focused.addEventListener('focus', () => {
+        highlighted.classList.add('focused');
     });
-    element.addEventListener('blur', () => {
-        focusItem.classList.remove('focused');
+    focused.addEventListener('blur', () => {
+        highlighted.classList.remove('focused');
     });
-    for (const child in element.childNodes) {
-        addFocusEvents(focusItem, child);
+    for (const child in focused.childNodes) {
+        addFocusEvents(highlighted, child);
     }
 }
 
