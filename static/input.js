@@ -2,17 +2,19 @@
 function setInputFilter(textbox) {
     for (const event of ['input', 'keydown', 'keyup', 'mousedown', 'mouseup', 'select', 'contextmenu', 'drop']) {
         textbox.addEventListener(event, () => {
-            let out = ''
+            let out = '';
             for (const char of textbox.value) {
-                let upper = char.toUpperCase()
-                if (('0' <= upper && upper <= '9') || ('A' <= upper && upper <= 'Z')) out += upper
+                let isNumber = '0' <= char && char <= '9';
+                let isUpper = 'A' <= char && char <= 'Z';
+                let isLower = 'a' <= char && char <= 'z';
+                if (isNumber || isUpper || isLower) out += char.toUpperCase();
             }
-            textbox.value = out
-        })
+            textbox.value = out.substr(0, 8);
+        });
     }
 }
 
 document.addEventListener('DOMContentLoaded',() => {
-    let keyBox = document.getElementById('new_user_key')
-    if (keyBox) setInputFilter(keyBox)
-})
+    let keyBox = document.getElementById('new_user_key');
+    if (keyBox) setInputFilter(keyBox);
+});
