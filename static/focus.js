@@ -1,7 +1,3 @@
-for (const item in document.getElementsByClassName('item')) {
-    addFocusEvents(item, item);
-}
-
 function addFocusEvents(focusItem, element) {
     element.addEventListener('focus', () => {
         focusItem.classList.add('focused');
@@ -13,3 +9,9 @@ function addFocusEvents(focusItem, element) {
         addFocusEvents(focusItem, child);
     }
 }
+
+document.addEventListener('DOMContentLoaded',() => {
+    for (const item in document.getElementsByClassName('item')) {
+        addFocusEvents(item, item);
+    }
+})
