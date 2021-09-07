@@ -69,7 +69,7 @@ def logout():
 
 
 ################################################################################
-# USER CREATION API
+# USER MANAGEMENT API
 ################################################################################
 
 # Admins can generate one temporary key for their facility so a new user can register
@@ -115,7 +115,7 @@ def create_new_user():
                     'server': oauth_server
                 },
                 'name': name,
-                'can_create_keys': new_user.can_create_keys,
+                'can_manage_users': new_user.can_manage_users,
                 'can_control_drone': new_user.can_control_drone
             })
             return 'Neuer Nutzer ' + name + ' erstellt.', 200
@@ -125,30 +125,43 @@ def create_new_user():
         return 'Der Schlüssel ist ungültig!', 400
 
 
-# Arguments: name, can_create_keys, can_control_drone, user_id; change attributes of a user
+# Arguments: name, can_manage_users, can_control_drone, user_id; change attributes of a user
 @website.route('/change_user', methods=['POST'])
 @flask_login.login_required
-def change_user(redirect_url):
+def change_user(user_id=flask_login.current_user.id):
 
     # Set values to None if not specified
     name = None if flask.request.args.get('name', None) is None else markupsafe.escape(flask.request.args['name'])
-    can_create_keys = None if flask.request.args.get('can_create_keys', None) is None else flask.request.args['can_create_keys'] == "True"
+    can_manage_users = None if flask.request.args.get('can_manage_users', None) is None else flask.request.args['can_manage_users'] == "True"
     can_control_drone = None if flask.request.args.get('can_control_drone', None) is None else flask.request.args['can_control_drone'] == "True"
 
-    if flask.request.args.get('user_id', flask_login.current_user.id) == flask_login.current_user.id:
+    if user_id == flask_login.current_user.id:
         # Change self
         if name is not None:
             db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'name': name}})
-    elif flask_login.current_user.get()['can_create_keys']:
+    elif flask_login.current_user.get()['can_manage_users']:
         # Change other user
         if name is not None:
             db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'name': name}})
-        if can_create_keys is not None:
-            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_create_keys': can_create_keys}})
+        if can_manage_users is not None:
+            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_manage_users': can_manage_users}})
         if can_control_drone is not None:
             db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_control_drone': can_control_drone}})
 
-    return redirect(redirect_url)
+    return redirect(flask.request.referrer)
+
+
+# Permanently remove a user's account
+@website.route('/delete_user', methods=['POST'])
+@flask_login.login_required
+def delete_user(user_id=flask_login.current_user.id):
+    if flask_login.current_user.id == user_id:
+        flask_login.logout_user()
+        db.users.delete_one({'_id': user_id})
+        return redirect(flask.url_for('website.page_sign_in'))
+    elif flask_login.current_user.get()['can_manage_users']:
+        db.users.delete_one({'_id': user_id})
+    return redirect(flask.request.referrer)
 
 
 ################################################################################

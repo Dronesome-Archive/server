@@ -22,7 +22,7 @@ function hide_popup(id) {
     if (!popup || popup.style.getPropertyValue('display')==='none') return;
 
     // Remove background
-    for (const bg of document.getElementsByClassName('popup_background')) document.removeChild(bg);
+    for (const bg of document.getElementsByClassName('popup_background')) document.body.removeChild(bg);
 
     // Hide popup
     popup.style.setProperty('display', 'none');
