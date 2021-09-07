@@ -1,6 +1,7 @@
 import random
 import string
 import datetime
+from logging import getLogger
 
 import flask
 import flask_login
@@ -35,6 +36,7 @@ def oauth_login(oauth_server):
     if client := oauth.create_client(oauth_server):
         callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)
+    getLogger().warning('Invalid oauth server: ' + oauth_server)
     return 'Ungültige Anmeldemethode!', 400
 
 
@@ -76,7 +78,8 @@ def logout():
 @website.route('/new_user_key')
 @flask_login.login_required
 def new_user_key():
-    if 'create_keys' in flask_login.current_user.get()['rights']:
+    getLogger().info('Creating new user key')
+    if 'can_manage_users' in flask_login.current_user.get()['rights']:
 
         # Generate key with 8 numerals or uppercase ASCII letters (https://stackoverflow.com/q/2257441/10666216)
         new_user = {
@@ -89,6 +92,7 @@ def new_user_key():
         )
         flask.flash('Schlüssel: ' + new_user['key'])
 
+    getLogger().warning('Creating new user key failed: ' + flask_login.current_user.id + ' does not have the rights')
     return redirect(flask.url_for('.staff'))
 
 
@@ -103,6 +107,7 @@ def create_new_user():
     facility_id = flask.request.args.get('facility', None)
     new_user = db.facilities.find_one({'_id': flask.request.args['facility']}).get('new_user', None)
     if not oauth_token or not oauth_server or not key or not facility_id or not new_user:
+        getLogger().warning('New user creation failed', name, oauth_token, oauth_server, key, facility_id, new_user)
         return 'Ungültiges Formular! Bitte aktivieren Sie cookies.', 400
 
     if key == new_user.key:
@@ -120,8 +125,10 @@ def create_new_user():
             })
             return 'Neuer Nutzer ' + name + ' erstellt.', 200
         else:
+            getLogger().warning('Key expired ', new_user)
             return 'Der Schlüssel ist abgelaufen!', 400
     else:
+        getLogger().warning('Invalid key ', key, new_user)
         return 'Der Schlüssel ist ungültig!', 400
 
 
@@ -136,6 +143,8 @@ def change_user(user_id):
     can_manage_users = None if flask.request.args.get('can_manage_users', None) is None else flask.request.args['can_manage_users'] == "True"
     can_control_drone = None if flask.request.args.get('can_control_drone', None) is None else flask.request.args['can_control_drone'] == "True"
 
+    getLogger().info('Changing user ' + user_id + ' to ' + name + ' ' + can_manage_users + ' ' + can_control_drone)
+
     if user_id == flask_login.current_user.id:
         # Change self
         if name is not None:
@@ -148,6 +157,9 @@ def change_user(user_id):
             db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_manage_users': can_manage_users}})
         if can_control_drone is not None:
             db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_control_drone': can_control_drone}})
+    else:
+        getLogger().warning(flask_login.current_user.id + " can't change user " + user_id)
+        return 'Verboten', 400
 
     return redirect(flask.request.referrer)
 
@@ -163,6 +175,10 @@ def delete_user(user_id):
         return redirect(flask.url_for('website.page_sign_in'))
     elif flask_login.current_user.get()['can_manage_users']:
         db.users.delete_one({'_id': user_id})
+    else:
+        getLogger().warning(flask_login.current_user.id + " can't delete user " + user_id)
+        return 'Verboten', 400
+    getLogger().info('Deleted user ' + user_id)
     return redirect(flask.request.referrer)
 
 
