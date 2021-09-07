@@ -128,7 +128,8 @@ def create_new_user():
 # Arguments: name, can_manage_users, can_control_drone, user_id; change attributes of a user
 @website.route('/change_user', methods=['POST'])
 @flask_login.login_required
-def change_user(user_id=flask_login.current_user.id):
+def change_user(user_id):
+    user_id = user_id if user_id else flask_login.current_user.id
 
     # Set values to None if not specified
     name = None if flask.request.args.get('name', None) is None else markupsafe.escape(flask.request.args['name'])
@@ -154,7 +155,8 @@ def change_user(user_id=flask_login.current_user.id):
 # Permanently remove a user's account
 @website.route('/delete_user', methods=['POST'])
 @flask_login.login_required
-def delete_user(user_id=flask_login.current_user.id):
+def delete_user(user_id):
+    user_id = user_id if user_id else flask_login.current_user.id
     if flask_login.current_user.id == user_id:
         flask_login.logout_user()
         db.users.delete_one({'_id': user_id})
