@@ -17,6 +17,12 @@
 </head>
 <body>
     <div id="inner_body" class="centered flex_stack">
+        {% for category, message in get_flashed_messages(with_categories=True) %}
+            <div class="item multi {{ category }}">
+                <p class="stretch">{{ message }}</p>
+                <i class="fas fa-times" onclick="document.body.removeChild(this.parentElement)"></i>
+            </div>
+        {% endfor %}
         {% block main %}{% endblock %}
         {% if navbar %}
             <div class="navbar">

@@ -1,7 +1,7 @@
 {% extends "_layout.html" %}
 {% block main %}
-    <div class="stretch_item flex_stack window">
-        <h1 class="stretch_item">Neuer Nutzer</h1>
+    <div class="stretch flex_stack window">
+        <h1 class="stretch">Neuer Nutzer</h1>
         <form method="post" class="flex_stack">
             <input class="item" required name="name" type="text" placeholder="Name"/>
             <select class="item" required name="facility">
@@ -10,9 +10,9 @@
                     <option name="{{ facility.id }}">{{ facility.name }}</option>
                 {% endfor %}
             </select>
-            <div class="item multi_item">
-                <input id="new_user_key" class="stretch_item" required name="key" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code"/>
-                <button type="button" onclick="show_popup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
+            <div class="item multi">
+                <input id="new_user_key" class="stretch" required name="key" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code"/>
+                <i class="fas fa-info-circle" onclick="show_popup('sign_in_key_info')"></i>
             </div>
             <button class="item" type="submit">Registrieren</button>
         </form>
@@ -23,7 +23,7 @@
         <p>Der Code muss von einem angemeldeten Mitarbeiter auf der <i class="fas fa-list"></i> - Seite generiert werden.
         Du benötigst den Code nur einmalig, um dich als Nutzer zu registrieren.</p>
         <div class="flex_row">
-            <button class="item stretch_item" onclick="hide_popup('sign_in_key_info')">Okay</button>
+            <button class="item stretch" onclick="hide_popup('sign_in_key_info')">Okay</button>
         </div>
     </div>
 {% endblock %}

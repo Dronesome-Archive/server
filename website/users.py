@@ -9,75 +9,18 @@ import bson
 import markupsafe
 from werkzeug.utils import redirect
 
-from app import db, login, oauth
+from app import db
 from user import User
 
-website = flask.Blueprint('website', __name__, url_prefix='/')
 
+# User management API; Request: POST; Response: redirect, flash
+users = flask.Blueprint('users', __name__, url_prefix='/users')
 
-# Create user object from db for flask_login
-@login.user_loader
-def load_user(login_id):
-    user = db.users.find_one({'login_id': login_id})
-    if not user:
-        return None
-    else:
-        return User(user)
-
-
-################################################################################
-# AUTHENTICATION API
-################################################################################
-
-
-# Redirect user to the OAuth provider
-@website.route('/<string:oauth_server>/login')
-def oauth_login(oauth_server):
-    if client := oauth.create_client(oauth_server):
-        callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True, _scheme='https')
-        return client.authorize_redirect(callback_url)
-    getLogger().warning('Invalid oauth server: ' + oauth_server)
-    return 'Ungültige Anmeldemethode!', 400
-
-
-# With the received OAuth credentials, redirect either to the home page or the account creation page
-@website.route('/<string:oauth_server>/callback')
-def handle_login(oauth_server):
-    if client := oauth.create_client(markupsafe.escape(oauth_server)):
-
-        # Use authorization code to fetch OIDC info (https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
-        id_token = client.authorize_access_token()
-        userinfo = client.parse_id_token(id_token)
-        if user := db.users.find_one({'oauth_server': oauth_server, 'oauth_token': userinfo.sub}):
-
-            # Account already exists
-            login.login_user(User(user))
-            return redirect(flask.url_for('.page_courier'))
-        else:
-
-            # New account
-            flask.session['oauth_server'] = markupsafe.escape(oauth_server)
-            flask.session['oauth_token'] = userinfo.sub
-            return redirect(flask.url_for('.page_register'))
-
-
-# Invalidate the session and bring back to login page
-@website.route('/logout')
-def logout():
-    if flask_login.current_user.is_authenticated:
-        db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': bson.objectid.ObjectId()}})
-        flask_login.logout_user()
-    return redirect(flask.url_for('.page_sign_in'))
-
-
-################################################################################
-# USER MANAGEMENT API
-################################################################################
 
 # Admins can generate one temporary key for their facility so a new user can register
-@website.route('/new_user_key')
+@users.route('/new_key', methods=['POST'])
 @flask_login.login_required
-def new_user_key():
+def new_key():
     getLogger().info('Creating new user key')
     if 'can_manage_users' in flask_login.current_user.get()['rights']:
 
@@ -93,11 +36,12 @@ def new_user_key():
         flask.flash('Schlüssel: ' + new_user['key'])
 
     getLogger().warning('Creating new user key failed: ' + flask_login.current_user.id + ' does not have the rights')
-    return redirect(flask.url_for('.staff'))
+    flask.flash('Keine Berechtigung.', 'error')
+    return redirect(flask.url_for('pages.staff'))
 
 
 # Arguments: facility, key, name; Create a new account, if correct creation key is posted
-@website.route('/register', methods=['POST'])
+@users.route('/new', methods=['POST'])
 @flask_login.login_required
 def create_new_user():
     name = markupsafe.escape(flask.request.args.get('name', None))
@@ -108,11 +52,12 @@ def create_new_user():
     new_user = db.facilities.find_one({'_id': flask.request.args['facility']}).get('new_user', None)
     if not oauth_token or not oauth_server or not key or not facility_id or not new_user:
         getLogger().warning('New user creation failed', name, oauth_token, oauth_server, key, facility_id, new_user)
-        return 'Ungültiges Formular! Bitte aktivieren Sie cookies.', 400
+        flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
+        return redirect(flask.url_for('pages.register'))
 
     if key == new_user.key:
         if new_user.expiry > datetime.datetime.now():
-            db.users.insert_one({
+            db_insert = db.users.insert_one({
                 'facility_id': facility_id,
                 'login_id': bson.objectid.ObjectId(),
                 'oauth': {
@@ -123,19 +68,23 @@ def create_new_user():
                 'can_manage_users': new_user.can_manage_users,
                 'can_control_drone': new_user.can_control_drone
             })
-            return 'Neuer Nutzer ' + name + ' erstellt.', 200
+            db_user = db.users.find_one({'_id': db_insert.inserted_id})
+            flask_login.login_user(User(db_user))
+            return redirect(flask.url_for('pages.account'))
         else:
             getLogger().warning('Key expired ', new_user)
-            return 'Der Schlüssel ist abgelaufen!', 400
+            flask.flash('Der Schlüssel ist abgelaufen.', 'error')
+            return redirect(flask.url_for('pages.register'))
     else:
         getLogger().warning('Invalid key ', key, new_user)
-        return 'Der Schlüssel ist ungültig!', 400
+        flask.flash('Der Schlüssel ist ungültig.', 'error')
+        return redirect(flask.url_for('pages.register'))
 
 
 # Arguments: name, can_manage_users, can_control_drone, user_id; change attributes of a user
-@website.route('/change_user', methods=['POST'])
+@users.route('/edit', methods=['POST'])
 @flask_login.login_required
-def change_user(user_id):
+def edit(user_id):
     user_id = user_id if user_id else flask_login.current_user.id
 
     # Set values to None if not specified
@@ -159,65 +108,27 @@ def change_user(user_id):
             db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_control_drone': can_control_drone}})
     else:
         getLogger().warning(flask_login.current_user.id + " can't change user " + user_id)
-        return 'Verboten', 400
+        flask.flash('Keine Berechtigung.', 'error')
 
+    flask.flash('Bearbeitung erfolgreich.')
     return redirect(flask.request.referrer)
 
 
 # Permanently remove a user's account
-@website.route('/delete_user', methods=['POST'])
+@users.route('/delete', methods=['POST'])
 @flask_login.login_required
-def delete_user(user_id):
+def delete(user_id):
     user_id = user_id if user_id else flask_login.current_user.id
     if flask_login.current_user.id == user_id:
         flask_login.logout_user()
         db.users.delete_one({'_id': user_id})
-        return redirect(flask.url_for('website.page_sign_in'))
+        flask.flash('Account gelöscht.')
+        return redirect(flask.url_for('pages.sign_in'))
     elif flask_login.current_user.get()['can_manage_users']:
         db.users.delete_one({'_id': user_id})
+        flask.flash('Account gelöscht.')
     else:
         getLogger().warning(flask_login.current_user.id + " can't delete user " + user_id)
-        return 'Verboten', 400
+        flask.flash('Keine Berechtigung.', 'error')
     getLogger().info('Deleted user ' + user_id)
     return redirect(flask.request.referrer)
-
-
-################################################################################
-# MAIN PAGES
-################################################################################
-
-# Sign in > Log in / Sign up
-@website.route('/sign_in')
-@login.unauthorized_handler
-def page_sign_in():
-    return flask.render_template('sign_in.html')
-
-
-# After sign up, register new user
-@website.route('/register')
-def page_register():
-    return flask.render_template(
-        'register.html',
-        facilities=[{'id': f['_id'], 'name': f['name']} for f in db.facilities.find()]
-    )
-
-
-# Drone management
-@website.route('/')
-@flask_login.login_required
-def page_courier():
-    flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
-
-
-# Staff management
-@website.route('/staff')
-@flask_login.login_required
-def page_staff():
-    pass
-
-
-# Log out / change name
-@website.route('/account')
-@flask_login.login_required
-def page_account():
-    pass

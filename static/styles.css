@@ -45,7 +45,7 @@ body {
     gap: var(--margin);
 }
 
-.stretch_item {
+.stretch {
     flex: 1;
     min-width: 0;
 }
@@ -98,7 +98,7 @@ input:focus, button:focus, select:focus {
     border: var(--col_fg_focus) 1px solid;
 }
 
-.multi_item {
+.multi {
     display: flex;
     flex-direction: row;
 }
@@ -121,4 +121,16 @@ select[value="placeholder"], ::placeholder {
     background: var(--col_fg);
     opacity: 30%;
     z-index: 1;
+}
+
+
+/* FLASH */
+.error {
+    background-color: red;
+    color: white;
+}
+
+.message {
+    background-color: lawngreen;
+    color: white;
 }

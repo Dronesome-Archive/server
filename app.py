@@ -9,7 +9,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 # Logging
 logging.basicConfig(
-    filename='log.py',
+    filename='log',
     level=logging.DEBUG,
     format='%(levelname)s %(asctime)s - %(message)s'
 )
@@ -34,6 +34,9 @@ ports = []
 errands = []
 
 # Blueprints
-from website.routes import website
-app.register_blueprint(website)
-
+from website.auth import auth
+from website.pages import pages
+from website.users import users
+app.register_blueprint(auth)
+app.register_blueprint(pages)
+app.register_blueprint(users)
