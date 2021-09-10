@@ -6,13 +6,13 @@
             <button onclick="show_popup('edit')"><i class="fas fa-pen-alt"></i></button>
             <button onclick="show_popup('delete')"><i class="fas fa-trash-alt"></i></button>
         </h1>
-        <button onclick="window.location.href={{ url_for('website.logout') }}">Abmelden</button>
+        <button onclick="window.location.href={{ url_for('auth.logout') }}">Abmelden</button>
     </div>
 {% endblock %}
 
 {% block popup %}
     <div class="popup centered window" id="edit">
-        <form method="post" action="{{ url_for('website.change_user') }}">
+        <form method="post" action="{{ url_for('users.edit') }}">
             <input class="item" type="text" name="name" value="{{ username }}"/>
             <button class="item" type="submit">OK</button>
         </form>
@@ -21,7 +21,7 @@
 
     <div class="popup centered window" id="delete">
         <p>Account wirklich löschen?</p>
-        <form method="post" action="{{ url_for('website.delete_user', user_id=member.id) }}">
+        <form method="post" action="{{ url_for('users.delete', user_id=member.id) }}">
             <div class="flex_row">
                 <button class="item" type="reset" onclick="hide_popup('delete')">Nein, abbrechen</button>
                 <button class="item" type="submit">Ja, löschen</button>

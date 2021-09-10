@@ -28,7 +28,7 @@ def load_user(login_id):
 @auth.route('/<string:oauth_server>/login')
 def login(oauth_server):
     if client := oauth.create_client(oauth_server):
-        callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True, _scheme='https')
+        callback_url = flask.url_for('.callback', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)
     getLogger().warning('Invalid oauth server: ' + oauth_server)
     flask.flash('Ungültige Anmeldemethode!', 'error')
@@ -37,7 +37,7 @@ def login(oauth_server):
 
 # With the received OAuth credentials, redirect either to the home page or the account creation page
 @auth.route('/<string:oauth_server>/callback')
-def handle_login(oauth_server):
+def callback(oauth_server):
     if client := oauth.create_client(markupsafe.escape(oauth_server)):
 
         # Use authorization code to fetch OIDC info (https://openid.net/specs/openid-connect-core-1_0.html#IDToken)

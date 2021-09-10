@@ -18,7 +18,7 @@
 <body>
     <div id="inner_body" class="centered flex_stack">
         {% for category, message in get_flashed_messages(with_categories=True) %}
-            <div class="item multi {{ category }}">
+            <div class="item multi flash {{ category }}">
                 <p class="stretch">{{ message }}</p>
                 <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
             </div>
@@ -26,9 +26,9 @@
         {% block main %}{% endblock %}
         {% if navbar %}
             <div class="navbar">
-                <a href="{{ url_for('website.page_account') }}"><i class="fas fa-user"></i></a>
-                <a href="{{ url_for('website.page_courier') }}"><i class="fas fa-parachute-box"></i></a>
-                <a href="{{ url_for('website.page_staff') }}"><i class="fas fa-list"></i></a>
+                <a href="{{ url_for('pages.account') }}"><i class="fas fa-user"></i></a>
+                <a href="{{ url_for('pages.courier') }}"><i class="fas fa-parachute-box"></i></a>
+                <a href="{{ url_for('pages.staff') }}"><i class="fas fa-list"></i></a>
             </div>
         {% endif %}
     </div>

@@ -2,7 +2,7 @@
 {% block main %}
     <div class="stretch flex_stack window">
         <h1 class="stretch">Neuer Nutzer</h1>
-        <form method="post" class="flex_stack">
+        <form method="post" action="{{ url_for('users.new') }}" class="flex_stack">
             <input class="item" required name="name" type="text" placeholder="Name"/>
             <select class="item" required name="facility">
                 <option value="placeholder" disabled selected hidden>Betrieb</option>
