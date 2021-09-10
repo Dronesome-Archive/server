@@ -6,8 +6,8 @@
             {% for member in staff %}
                 <div class="item multi">
                     <p class="stretch">{{ member.name }}</p>
-                    <i class="fas fa-pen-alt" onclick="show_popup('{{ member.name }}_edit')"></i>
-                    <i class="fas fa-trash-alt" onclick="show_popup('{{ member.name }}_delete')"></i>
+                    <button onclick="show_popup('{{ member.name }}_edit')"><i class="fas fa-pen-alt"></i></button>
+                    <button onclick="show_popup('{{ member.name }}_delete')"><i class="fas fa-trash-alt"></i></button>
                 </div>
             {% endfor %}
         </div>

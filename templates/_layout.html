@@ -20,7 +20,7 @@
         {% for category, message in get_flashed_messages(with_categories=True) %}
             <div class="item multi {{ category }}">
                 <p class="stretch">{{ message }}</p>
-                <i class="fas fa-times" onclick="document.body.removeChild(this.parentElement)"></i>
+                <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
             </div>
         {% endfor %}
         {% block main %}{% endblock %}

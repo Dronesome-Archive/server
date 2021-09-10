@@ -3,8 +3,8 @@
     <div class="stretch flex_stack window">
         <h1 class="stretch">
             Hallo, {{ username }}
-            <i onclick="show_popup('edit')" class="fas fa-pen-alt"></i>
-            <i onclick="show_popup('delete')" class="fas fa-trash-alt"></i>
+            <button onclick="show_popup('edit')"><i class="fas fa-pen-alt"></i></button>
+            <button onclick="show_popup('delete')"><i class="fas fa-trash-alt"></i></button>
         </h1>
         <button onclick="window.location.href={{ url_for('website.logout') }}">Abmelden</button>
     </div>
