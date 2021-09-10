@@ -26,7 +26,7 @@ def load_user(login_id):
 
 # Redirect user to the OAuth provider
 @auth.route('/<string:oauth_server>/login')
-def oauth_login(oauth_server):
+def login(oauth_server):
     if client := oauth.create_client(oauth_server):
         callback_url = flask.url_for('.handle_login', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)

@@ -130,7 +130,7 @@ select[value="placeholder"], ::placeholder {
     color: white;
 }
 
-.message {
+.message, .message * {
     background-color: lawngreen;
     color: white;
 }
