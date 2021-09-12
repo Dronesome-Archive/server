@@ -42,7 +42,6 @@ def new_key():
 
 # Arguments: facility, key, name; Create a new account, if correct creation key is posted
 @users.route('/new', methods=['POST'])
-@flask_login.login_required
 def new():
     name = markupsafe.escape(flask.request.args.get('name', None))
     oauth_token = flask.session.get('oauth_token', None)
