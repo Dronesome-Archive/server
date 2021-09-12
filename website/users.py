@@ -43,12 +43,12 @@ def new_key():
 # Arguments: facility, key, name; Create a new account, if correct creation key is posted
 @users.route('/new', methods=['POST'])
 def new():
-    name = markupsafe.escape(flask.request.args.get('name', None))
+    name = markupsafe.escape(flask.request.form.get('name', None))
     oauth_token = flask.session.get('oauth_token', None)
     oauth_server = flask.session.get('oauth_server', None)
-    key = flask.request.args.get('key', None)
-    facility_id = flask.request.args.get('facility', None)
-    new_user = db.facilities.find_one({'_id': flask.request.args['facility']}).get('new_user', None)
+    key = flask.form.args.get('key', None)
+    facility_id = flask.form.args.get('facility_id', None)
+    new_user = db.facilities.find_one({'_id': facility_id}).get('new_user', None)
     if not oauth_token or not oauth_server or not key or not facility_id or not new_user:
         getLogger().warning('New user creation failed', name, oauth_token, oauth_server, key, facility_id, new_user)
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
