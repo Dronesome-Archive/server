@@ -48,7 +48,7 @@ def new():
     oauth_server = flask.session.get('oauth_server', None)
     key = flask.request.form.get('key', None)
     facility_id = flask.request.form.get('facility_id', None)
-    new_user = db.facilities.find_one({'_id': facility_id}).get('new_user', None)
+    new_user = db.facilities.find_one({'_id': facility_id}).get('new_user', None) if facility_id else None
     if not oauth_token or not oauth_server or not key or not facility_id or not new_user:
         getLogger().warning('New user creation failed', name, oauth_token, oauth_server, key, facility_id, new_user)
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
@@ -87,9 +87,9 @@ def edit(user_id):
     user_id = user_id if user_id else flask_login.current_user.id
 
     # Set values to None if not specified
-    name = None if flask.request.args.get('name', None) is None else markupsafe.escape(flask.request.args['name'])
-    can_manage_users = None if flask.request.args.get('can_manage_users', None) is None else flask.request.args['can_manage_users'] == "True"
-    can_control_drone = None if flask.request.args.get('can_control_drone', None) is None else flask.request.args['can_control_drone'] == "True"
+    name = None if flask.request.form.get('name', None) is None else markupsafe.escape(flask.request.form['name'])
+    can_manage_users = None if flask.request.form.get('can_manage_users', None) is None else flask.request.form['can_manage_users'] == "True"
+    can_control_drone = None if flask.request.form.get('can_control_drone', None) is None else flask.request.form['can_control_drone'] == "True"
 
     getLogger().info('Changing user ' + user_id + ' to ' + name + ' ' + can_manage_users + ' ' + can_control_drone)
 
