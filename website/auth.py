@@ -1,5 +1,3 @@
-from logging import getLogger
-
 import flask
 import flask_login
 import bson
@@ -8,6 +6,7 @@ from werkzeug.utils import redirect
 
 from app import db, login, oauth
 from user import User
+import log
 
 
 # Authentication API; Requests: GET; Response: redirect, flash
@@ -30,7 +29,7 @@ def login(oauth_server):
     if client := oauth.create_client(oauth_server):
         callback_url = flask.url_for('.callback', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)
-    getLogger().warning('Invalid oauth server: ' + oauth_server)
+    log.warn('Invalid oauth server: ' + oauth_server)
     flask.flash('Ungültige Anmeldemethode!', 'error')
     return redirect(flask.url_for('pages.sign_in'))
 
