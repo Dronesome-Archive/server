@@ -18,7 +18,7 @@
     {% for member in members %}
         <div class="popup centered window" id="{{ member['name'] }}_edit">
             <h2>{{ member['name'] }}</h2>
-            <form method="post" action="{{ url_for('user.edit', user_id=member['id']) }}">
+            <form method="post" action="{{ url_for('user.edit', user_id=member['_id']) }}">
                 <input type="text" name="name" value="{{ member['name'] }}">
                 <div class="item multi">
                     <input class="item" type="checkbox" name="can_control_drone" {% if member['can_control_drone'] %}checked{% endif %}>
@@ -37,7 +37,7 @@
 
         <div class="popup centered window" id="{{ member['name'] }}_delete">
             <p>Account von {{ member['name'] }} wirklich löschen?</p>
-            <form method="post" action="{{ url_for('user.delete', user_id=member['id']) }}">
+            <form method="post" action="{{ url_for('user.delete', user_id=member['_id']) }}">
                 <div class="flex_row">
                     <button class="item" type="button" onclick="hide_popup('{{ member['name'] }}_edit')">Nein, abbrechen</button>
                     <button class="item" type="submit">Ja, löschen</button>
