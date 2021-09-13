@@ -97,7 +97,7 @@ def new():
 # Arguments: name, can_manage_users, can_control_drone, user_id; change attributes of a user
 @users.route('/edit', methods=['POST'])
 @flask_login.login_required
-def edit(user_id):
+def edit(user_id=None):
     try:
         user_id = ObjectId(user_id)
     except:
@@ -135,7 +135,7 @@ def edit(user_id):
 # Permanently remove a user's account
 @users.route('/delete', methods=['POST'])
 @flask_login.login_required
-def delete(user_id):
+def delete(user_id=None):
     try:
         user_id = ObjectId(user_id)
     except:
