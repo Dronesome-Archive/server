@@ -72,7 +72,7 @@ def new():
     if key == new_user['key']:
         if new_user['expiry'] > datetime.datetime.now():
             db_insert = db.users.insert_one({
-                'facility_id': facility_id,
+                'facility_id': ObjectId(facility_id),
                 'login_id': ObjectId(),
                 'oauth': {
                     'token': oauth_token,
@@ -82,7 +82,7 @@ def new():
                 'can_manage_users': new_user['can_manage_users'],
                 'can_control_drone': new_user['can_control_drone']
             })
-            db.facilities.update_one({'_id': ObjectId(facility_id)}, {'expiry': datetime.datetime.now()})
+            db.facilities.update_one({'_id': ObjectId(facility_id)}, {'$currentDate': {'new_user.expiry': True}})
             db_user = db.users.find_one({'_id': db_insert.inserted_id})
             flask_login.login_user(User(db_user))
             return redirect(flask.url_for('pages.account'))
