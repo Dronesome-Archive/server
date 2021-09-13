@@ -55,7 +55,7 @@ def new():
     if not oauth_token or not oauth_server or not key or not facility_id:
         log.warn('User creation failed; invalid input', name, oauth_token, oauth_server, key, facility_id)
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
-        return redirect(flask.url_for('pages.register'))
+        return redirect(flask.url_for('pages.sign_in'))
 
     # Query key from db
     new_user = {}
@@ -69,7 +69,7 @@ def new():
         return redirect(flask.url_for('pages.register'))
 
     # Check key
-    if key == new_user['key']:
+    if str(key) == str(new_user['key']):
         if new_user['expiry'] > datetime.datetime.now():
             db_insert = db.users.insert_one({
                 'facility_id': ObjectId(facility_id),
