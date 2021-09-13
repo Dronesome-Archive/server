@@ -41,5 +41,5 @@ def courier():
 @pages.route('/staff')
 @flask_login.login_required
 def staff():
-    members = db.users.find_all({'facility_id': flask_login.current_user.get()['facility_id']})
+    members = db.users.find({'facility_id': flask_login.current_user.get()['facility_id']})
     return flask.render_template('staff.html', navbar=True, members=members)
