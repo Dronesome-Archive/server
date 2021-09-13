@@ -6,26 +6,26 @@
             <button onclick="show_popup('edit')"><i class="fas fa-pen-alt"></i></button>
             <button onclick="show_popup('delete')"><i class="fas fa-trash-alt"></i></button>
         </h1>
-        <button onclick="window.location.href={{ url_for('auth.logout') }}">Abmelden</button>
+        <button class="item" onclick="window.location.href={{ url_for('auth.logout') }}">Abmelden</button>
     </div>
 {% endblock %}
 
 {% block popup %}
     <div class="popup centered window" id="edit">
-        <form method="post" action="{{ url_for('users.edit') }}">
+        <form class="flex_stack" method="post" action="{{ url_for('users.edit') }}">
             <input class="item" type="text" name="name" value="{{ username }}"/>
-            <button class="item" type="submit">OK</button>
+            <div class="flex_row">
+                <button class="item" onclick="hide_popup('edit')">Abbrechen</button>
+                <button class="item" type="submit">OK</button>
+            </div>
         </form>
-        <button class="item" onclick="hide_popup('sign_in_key_info')">Abbrechen</button>
     </div>
 
     <div class="popup centered window" id="delete">
         <p>Account wirklich löschen?</p>
-        <form method="post" action="{{ url_for('users.delete') }}">
-            <div class="flex_row">
-                <button class="item" type="reset" onclick="hide_popup('delete')">Nein, abbrechen</button>
-                <button class="item" type="submit">Ja, löschen</button>
-            </div>
+        <form class="flex_row" method="post" action="{{ url_for('users.delete') }}">
+            <button class="item" type="reset" onclick="hide_popup('delete')">Nein, abbrechen</button>
+            <button class="item" type="submit">Ja, löschen</button>
         </form>
     </div>
 {% endblock %}

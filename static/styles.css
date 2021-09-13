@@ -1,3 +1,9 @@
+/* TODO:
+find better color scheme
+resize fontawesome buttons
+make select pretty
+ */
+
 /* VARIABLES */
 
 :root {
@@ -72,7 +78,6 @@ body {
 
 
 /* ITEMS */
-/* TODO: make select pretty */
 
 input, button, select {
     border: none;

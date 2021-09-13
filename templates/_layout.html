@@ -25,7 +25,7 @@
         {% endfor %}
         {% block main %}{% endblock %}
         {% if navbar %}
-            <div class="navbar">
+            <div class="window flex_row">
                 <a href="{{ url_for('pages.account') }}"><i class="fas fa-user"></i></a>
                 <a href="{{ url_for('pages.courier') }}"><i class="fas fa-parachute-box"></i></a>
                 <a href="{{ url_for('pages.staff') }}"><i class="fas fa-list"></i></a>
