@@ -8,7 +8,7 @@
 	- token
 	- server
 - name
-- can_create_keys (can add new users to the facility)
+- can_manage_users (can add new users to the facility)
 - can_control_drone (can control the drone)
 
 ## facilities
@@ -17,5 +17,5 @@
 - new_user
 	- key
 	- expiry
-	- can_create_keys
+	- can_manage_users
 	- can_control_drone 

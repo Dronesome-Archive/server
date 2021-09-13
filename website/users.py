@@ -1,6 +1,7 @@
 import random
 import string
 import datetime
+import time
 
 import flask
 import flask_login
@@ -81,6 +82,7 @@ def new():
                 'can_manage_users': new_user['can_manage_users'],
                 'can_control_drone': new_user['can_control_drone']
             })
+            db.facilities.update_one({'_id': ObjectId(facility_id)}, {'expiry': datetime.datetime.now()})
             db_user = db.users.find_one({'_id': db_insert.inserted_id})
             flask_login.login_user(User(db_user))
             return redirect(flask.url_for('pages.account'))
