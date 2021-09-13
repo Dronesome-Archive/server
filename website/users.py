@@ -48,9 +48,11 @@ def new():
     oauth_server = flask.session.get('oauth_server', None)
     key = flask.request.form.get('key', None)
     facility_id = flask.request.form.get('facility_id', None)
-    new_user = db.facilities.find_one({'_id': facility_id}).get('new_user', None) if facility_id else None
-    if not oauth_token or not oauth_server or not key or not facility_id or not new_user:
-        getLogger().warning('New user creation failed', name, oauth_token, oauth_server, key, facility_id, new_user)
+    facility = db.facilities.find_one({'_id': facility_id})
+    new_user = facility.get('new_user', None) if facility else None
+    getLogger().info(name, oauth_token, oauth_server, key, facility_id, facility, new_user)
+    if not oauth_token or not oauth_server or not key or not facility or not new_user:
+        getLogger().warning('New user creation failed', name, oauth_token, oauth_server, key, facility_id, facility, new_user)
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
         return redirect(flask.url_for('pages.register'))
 
