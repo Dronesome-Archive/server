@@ -11,8 +11,6 @@ pages = flask.Blueprint('pages', __name__, url_prefix='/')
 @pages.route('/sign_in')
 @login.unauthorized_handler
 def sign_in():
-    flask.flash('Testmessage')
-    flask.flash('Testerror')
     return flask.render_template('sign_in.html')
 
 

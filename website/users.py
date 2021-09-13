@@ -100,7 +100,10 @@ def new():
 @users.route('/edit', methods=['POST'])
 @flask_login.login_required
 def edit(user_id):
-    user_id = user_id if user_id else flask_login.current_user.id
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        user_id = flask_login.current_user.id
 
     # Set values to None if not specified
     name = None if flask.request.form.get('name', None) is None else markupsafe.escape(flask.request.form['name'])
@@ -112,15 +115,17 @@ def edit(user_id):
     if user_id == flask_login.current_user.id:
         # Change self
         if name is not None:
-            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'name': name}})
+            db.users.update_one({'_id': user_id}, {'$set': {'name': name}})
+        if can_control_drone is not None:
+            db.users.update_one({'_id': user_id}, {'$set': {'can_control_drone': can_control_drone}})
     elif flask_login.current_user.get()['can_manage_users']:
         # Change other user
         if name is not None:
-            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'name': name}})
+            db.users.update_one({'_id': user_id}, {'$set': {'name': name}})
         if can_manage_users is not None:
-            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_manage_users': can_manage_users}})
+            db.users.update_one({'_id': user_id}, {'$set': {'can_manage_users': can_manage_users}})
         if can_control_drone is not None:
-            db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'can_control_drone': can_control_drone}})
+            db.users.update_one({'_id': user_id}, {'$set': {'can_control_drone': can_control_drone}})
     else:
         log.warn(flask_login.current_user.id, "can't change user", user_id)
         flask.flash('Keine Berechtigung.', 'error')
@@ -133,7 +138,10 @@ def edit(user_id):
 @users.route('/delete', methods=['POST'])
 @flask_login.login_required
 def delete(user_id):
-    user_id = user_id if user_id else flask_login.current_user.id
+    try:
+        user_id = ObjectId(user_id)
+    except:
+        user_id = flask_login.current_user.id
     if flask_login.current_user.id == user_id:
         flask_login.logout_user()
         db.users.delete_one({'_id': user_id})

@@ -7,7 +7,7 @@ class User:
         self.is_authenticated = True
         self.is_active = True
         self.is_anonymous = False
-        self.id = db_user['id']
+        self.id = db_user['_id']
         self.login_id = db_user['login_id']
 
     def get_id(self):

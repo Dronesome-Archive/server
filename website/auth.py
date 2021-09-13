@@ -3,6 +3,7 @@ import flask_login
 import bson
 import markupsafe
 from werkzeug.utils import redirect
+from bson.objectid import ObjectId
 
 from app import db, login, oauth
 from user import User
@@ -16,7 +17,7 @@ auth = flask.Blueprint('auth', __name__, url_prefix='/auth')
 # Create user object from db for flask_login
 @login.user_loader
 def load_user(login_id):
-    user = db.users.find_one({'login_id': login_id})
+    user = db.users.find_one({'login_id': ObjectId(login_id)})
     if not user:
         return None
     else:
@@ -29,7 +30,7 @@ def login(oauth_server):
     if client := oauth.create_client(oauth_server):
         callback_url = flask.url_for('.callback', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)
-    log.warn('Invalid oauth server: ' + oauth_server)
+    log.warn('Invalid oauth server:', oauth_server)
     flask.flash('Ungültige Anmeldemethode!', 'error')
     return redirect(flask.url_for('pages.sign_in'))
 
@@ -42,7 +43,7 @@ def callback(oauth_server):
         # Use authorization code to fetch OIDC info (https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
         id_token = client.authorize_access_token()
         userinfo = client.parse_id_token(id_token)
-        if user := db.users.find_one({'oauth_server': oauth_server, 'oauth_token': userinfo.sub}):
+        if user := db.users.find_one({'oauth.server': oauth_server, 'oauth.token': userinfo.sub}):
 
             # Account already exists
             login.login_user(User(user))
@@ -54,6 +55,7 @@ def callback(oauth_server):
             flask.session['oauth_token'] = userinfo.sub
             return redirect(flask.url_for('pages.register'))
     else:
+        log.warn('Invalid oauth server:', oauth_server)
         flask.flash('Ungültige Anmeldemethode!', 'error')
         return redirect(flask.url_for('pages.sign_in'))
 
@@ -62,7 +64,7 @@ def callback(oauth_server):
 @auth.route('/logout')
 def logout():
     if flask_login.current_user.is_authenticated:
-        db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': bson.objectid.ObjectId()}})
+        db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': ObjectId()}})
         flask_login.logout_user()
         flask.flash('Ausgeloggt.')
     return redirect(flask.url_for('pages.sign_in'))
