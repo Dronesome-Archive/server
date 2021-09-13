@@ -3,46 +3,46 @@
     <div class="stretch window">
         <h1>Mitarbeiter</h1>
         <div class="flex_stack">
-            {% for member in staff %}
+            {% for member in members %}
                 <div class="item multi">
-                    <p class="stretch">{{ member.name }}</p>
-                    <button onclick="show_popup('{{ member.name }}_edit')"><i class="fas fa-pen-alt"></i></button>
-                    <button onclick="show_popup('{{ member.name }}_delete')"><i class="fas fa-trash-alt"></i></button>
+                    <p class="stretch">{{ member['name'] }}</p>
+                    <button onclick="show_popup('{{ member['name'] }}_edit')"><i class="fas fa-pen-alt"></i></button>
+                    <button onclick="show_popup('{{ member['name'] }}_delete')"><i class="fas fa-trash-alt"></i></button>
                 </div>
             {% endfor %}
         </div>
     </div>
 {% endblock %}
 
-{% for member in staff %}
-    {% block popup %}
-        <div class="popup centered window" id="{{ member.name }}_edit">
-            <h2>{{ member.name }}</h2>
-            <form method="post" action="{{ url_for('user.edit', user_id=member.id) }}">
-                <input type="text" name="name" value="{{ member.name }}">
+{% block popup %}
+    {% for member in members %}
+        <div class="popup centered window" id="{{ member['name'] }}_edit">
+            <h2>{{ member['name'] }}</h2>
+            <form method="post" action="{{ url_for('user.edit', user_id=member['id']) }}">
+                <input type="text" name="name" value="{{ member['name'] }}">
                 <div class="item multi">
-                    <input class="item" type="checkbox" name="can_control_drone">
-                    <label for="can_manage_users">Darf Drohne kontrollieren</label>
+                    <input class="item" type="checkbox" name="can_control_drone" {% if member['can_control_drone'] %}checked{% endif %}>
+                    <label for="can_control_drone">Darf Drohne kontrollieren</label>
                 </div>
                 <div class="item multi">
-                    <input class="item" type="checkbox" name="can_manage_users">
+                    <input class="item" type="checkbox" name="can_manage_users" {% if member['can_manage_users'] %}checked{% endif %}>
                     <label for="can_manage_users">Darf Nutzer verwalten</label>
                 </div>
                 <div class="flex_row">
-                    <button class="item" type="reset" onclick="hide_popup('{{ member.name }}_edit')">Abbrechen</button>
+                    <button class="item" type="reset" onclick="hide_popup('{{ member['name'] }}_edit')">Abbrechen</button>
                     <button class="item" type="submit">OK</button>
                 </div>
             </form>
         </div>
 
-        <div class="popup centered window" id="{{ member.name }}_delete">
-            <p>Account von {{ member.name }} wirklich löschen?</p>
-            <form method="post" action="{{ url_for('user.delete', user_id=member.id) }}">
+        <div class="popup centered window" id="{{ member['name'] }}_delete">
+            <p>Account von {{ member['name'] }} wirklich löschen?</p>
+            <form method="post" action="{{ url_for('user.delete', user_id=member['id']) }}">
                 <div class="flex_row">
-                    <button class="item" type="reset" onclick="hide_popup('{{ member.name }}_edit')">Nein, abbrechen</button>
+                    <button class="item" type="button" onclick="hide_popup('{{ member['name'] }}_edit')">Nein, abbrechen</button>
                     <button class="item" type="submit">Ja, löschen</button>
                 </div>
             </form>
         </div>
-    {% endblock %}
-{% endfor %}
+    {% endfor %}
+{% endblock %}

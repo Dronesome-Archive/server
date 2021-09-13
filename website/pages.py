@@ -19,26 +19,27 @@ def sign_in():
 def register():
     return flask.render_template(
         'register.html',
-        facilities=[{'id': f['_id'], 'name': f['name']} for f in db.facilities.find()]
+        facilities=db.facilities.find()
     )
-
-
-# Drone management
-@pages.route('/')
-@flask_login.login_required
-def courier():
-    flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
-
-
-# Staff management
-@pages.route('/staff')
-@flask_login.login_required
-def staff():
-    pass
 
 
 # Log out / change name
 @pages.route('/account')
 @flask_login.login_required
 def account():
-    pass
+    return flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
+
+
+# Drone management
+@pages.route('/')
+@flask_login.login_required
+def courier():
+    return flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
+
+
+# Staff management
+@pages.route('/staff')
+@flask_login.login_required
+def staff():
+    members = db.users.find_all({'facility_id': flask_login.current_user.get()['facility_id']})
+    return flask.render_template('staff.html', navbar=True, members=members)
