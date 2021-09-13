@@ -127,6 +127,7 @@ def edit(user_id=None):
     else:
         log.warn(flask_login.current_user.id, "can't change user", user_id)
         flask.flash('Keine Berechtigung.', 'error')
+        return redirect(flask.request.referrer)
 
     flask.flash('Bearbeitung erfolgreich.')
     return redirect(flask.request.referrer)

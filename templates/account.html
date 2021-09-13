@@ -15,7 +15,7 @@
         <form class="flex_stack" method="post" action="{{ url_for('users.edit') }}">
             <input class="item" type="text" name="name" value="{{ username }}"/>
             <div class="flex_row">
-                <button class="item" onclick="hide_popup('edit')">Abbrechen</button>
+                <button class="item" type="reset" onclick="hide_popup('edit')">Abbrechen</button>
                 <button class="item" type="submit">OK</button>
             </div>
         </form>
