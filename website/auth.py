@@ -1,6 +1,5 @@
 import flask
 import flask_login
-import bson
 import markupsafe
 from werkzeug.utils import redirect
 from bson.objectid import ObjectId
@@ -46,7 +45,7 @@ def callback(oauth_server):
         if user := db.users.find_one({'oauth.server': oauth_server, 'oauth.token': userinfo.sub}):
 
             # Account already exists
-            login.login_user(User(user))
+            flask_login.login_user(User(user))
             return redirect(flask.url_for('pages.account'))
         else:
 
