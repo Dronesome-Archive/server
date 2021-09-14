@@ -19,7 +19,7 @@ def sign_in():
 def register():
     return flask.render_template(
         'register.html',
-        facilities=db.facilities.find()
+        facilities=[f for f in db.facilities.find()]  # need list bc find() only returns a one-time-iterator
     )
 
 
@@ -41,5 +41,10 @@ def courier():
 @pages.route('/staff')
 @flask_login.login_required
 def staff():
-    members = db.users.find({'facility_id': flask_login.current_user.get()['facility_id']})
-    return flask.render_template('staff.html', navbar=True, members=members)
+    # need members as list bc find() only returns a one-time-iterator
+    members = [m for m in db.users.find({
+        '_id': {'$ne': flask_login.current_user.id},
+        'facility_id': flask_login.current_user.get()['facility_id']
+    })]
+    me = flask_login.current_user.get()
+    return flask.render_template('staff.html', navbar=True, members=members, me=me)

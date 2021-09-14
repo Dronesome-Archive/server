@@ -11,7 +11,8 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 logging.basicConfig(
     filename='log',
     level=logging.DEBUG,
-    format='%(levelname)s %(asctime)s - %(message)s'
+    format='%(asctime)s %(levelname)s\t[%(funcName)s] %(message)s',
+    datefmt='%y-%m-%d %H:%M:%S'
 )
 logging.getLogger().addHandler(logging.StreamHandler())  # without this errors only go to log, not stderr
 

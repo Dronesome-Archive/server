@@ -21,23 +21,35 @@ users = flask.Blueprint('users', __name__, url_prefix='/users')
 @users.route('/new_key', methods=['POST'])
 @flask_login.login_required
 def new_key():
-    log.info('Creating new user key')
-    if 'can_manage_users' in flask_login.current_user.get()['rights']:
+    # Get user input
+    try:
+        can_manage_users = flask.request.form['can_manage_users']
+        can_control_drone = flask.request.form['can_control_drone']
+    except:
+        log.warn('invalid input:', flask.request.form)
+        flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
+        return redirect(flask.request.referrer)
 
+    # Check permissions from db
+    if flask_login.current_user.get()['can_manage_users']:
         # Generate key with 8 numerals or uppercase ASCII letters (https://stackoverflow.com/q/2257441/10666216)
         new_user = {
             'key': ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8)),
-            'expiry': datetime.datetime.now() + datetime.timedelta(minutes=5)
+            'expiry': datetime.datetime.now() + datetime.timedelta(minutes=5),
+            'can_manage_users': can_manage_users,
+            'can_control_drone': can_control_drone
         }
         db.facilities.update_one(
-            {'_id': flask_login.current_user.get()['facility']},
+            {'_id': flask_login.current_user.get()['facility_id']},
             {'$set': {'new_user': new_user}}
         )
+        log.info('new key', new_user['key'])
         flask.flash('Schlüssel: ' + new_user['key'])
+    else:
+        log.warn('failed,', flask_login.current_user.id, 'does not have the rights')
+        flask.flash('Keine Berechtigung.', 'error')
 
-    log.warn('Creating new user key failed:', flask_login.current_user.id, 'does not have the rights')
-    flask.flash('Keine Berechtigung.', 'error')
-    return redirect(flask.url_for('pages.staff'))
+    return redirect(flask.request.referrer)
 
 
 # Arguments: facility, key, name; Create a new account, if correct creation key is posted
