@@ -56,6 +56,11 @@ def new_key():
 @users.route('/new', methods=['POST'])
 def new():
 
+    # Check if user is already logged in
+    if flask_login.current_user.is_authenticated:
+        flask.flash('Sie sind bereits angemeldet.')
+        return redirect(flask.url_for('pages.account'))
+
     # Get form input
     name = markupsafe.escape(flask.request.form.get('name', None))
     oauth_token = flask.session.get('oauth_token', None)
@@ -66,6 +71,8 @@ def new():
         log.warn('User creation failed; invalid input', name, oauth_token, oauth_server, key, facility_id)
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
         return redirect(flask.url_for('pages.sign_in'))
+    flask.session.pop('oauth_token')
+    flask.session.pop('oauth_server')
 
     # Check if user already exists
     if user := db.users.find_one({'oauth.server': oauth_server, 'oauth.token': oauth_token}):
