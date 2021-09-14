@@ -37,7 +37,7 @@ def login(oauth_server):
 # With the received OAuth credentials, redirect either to the home page or the account creation page
 @auth.route('/<string:oauth_server>/callback')
 def callback(oauth_server):
-    if client := oauth.create_client(markupsafe.escape(oauth_server)):
+    if client := oauth.create_client(oauth_server):
 
         # Use authorization code to fetch OIDC info (https://openid.net/specs/openid-connect-core-1_0.html#IDToken)
         id_token = client.authorize_access_token()
@@ -50,7 +50,7 @@ def callback(oauth_server):
         else:
 
             # New account
-            flask.session['oauth_server'] = markupsafe.escape(oauth_server)
+            flask.session['oauth_server'] = oauth_server
             flask.session['oauth_token'] = userinfo.sub
             return redirect(flask.url_for('pages.register'))
     else:
