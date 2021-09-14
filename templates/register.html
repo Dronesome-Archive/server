@@ -3,15 +3,15 @@
     <div class="stretch flex_stack window">
         <h1 class="stretch">Neuer Nutzer</h1>
         <form method="post" action="{{ url_for('users.new') }}" class="flex_stack">
-            <input class="item" required name="name" type="text" placeholder="Name"/>
-            <select class="item" required name="facility_id">
+            <input class="item" name="name" type="text" placeholder="Name" required/>
+            <select class="item" name="facility_id" required>
                 <option value="placeholder" disabled selected hidden>Betrieb</option>
                 {% for facility in facilities %}
                     <option value="{{ facility['_id'] }}">{{ facility['name'] }}</option>
                 {% endfor %}
             </select>
             <div class="item">
-                <input id="new_user_key" class="stretch" required name="key" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code"/>
+                <input id="new_user_key" class="stretch" name="key" maxlength="{{ config['NEW_USER_KEY_LENGTH'] }}" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code" required/>
                 <button onclick="show_popup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
             </div>
             <button class="item" type="submit">Registrieren</button>

@@ -1,6 +1,5 @@
 import flask
 import flask_login
-import markupsafe
 from werkzeug.utils import redirect
 from bson.objectid import ObjectId
 

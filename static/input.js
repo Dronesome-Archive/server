@@ -9,7 +9,7 @@ function setInputFilter(textbox) {
                 let isLower = 'a' <= char && char <= 'z';
                 if (isNumber || isUpper || isLower) out += char.toUpperCase();
             }
-            textbox.value = out.substr(0, 8);
+            textbox.value = out;
         });
     }
 }

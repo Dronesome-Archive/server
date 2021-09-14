@@ -1,6 +1,5 @@
 import logging
 
-import flask
 from authlib.integrations.flask_client import OAuth
 from flask_login import LoginManager
 from os import urandom
@@ -29,10 +28,6 @@ oauth = OAuth(app)
 oauth.register('google')
 oauth.register('apple')
 db = MongoClient()['db']
-
-# Globals
-flask.g.setdefault('MAX_NAME_LENGTH', 16)
-flask.g.setdefault('NEW_USER_KEY_LENGTH', 8)
 
 # Drone logic
 drone = []
