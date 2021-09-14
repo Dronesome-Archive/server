@@ -33,8 +33,11 @@ def new_key():
     # Check permissions from db
     if flask_login.current_user.get()['can_manage_users']:
         # Generate key with 8 numerals or uppercase ASCII letters (https://stackoverflow.com/q/2257441/10666216)
+        key = ''.join([
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(flask.g.get('NEW_USER_KEY_LENGTH'))
+        ])
         new_user = {
-            'key': ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(8)),
+            'key': key,
             'expiry': datetime.datetime.now() + datetime.timedelta(minutes=5),
             'can_manage_users': can_manage_users,
             'can_control_drone': can_control_drone
@@ -62,17 +65,16 @@ def new():
         return redirect(flask.url_for('pages.account'))
 
     # Get form input
-    name = markupsafe.escape(flask.request.form.get('name', None))
-    oauth_token = flask.session.get('oauth_token', None)
-    oauth_server = flask.session.get('oauth_server', None)
-    key = flask.request.form.get('key', None)
-    facility_id = flask.request.form.get('facility_id', None)
-    if not oauth_token or not oauth_server or not key or not facility_id:
-        log.warn('User creation failed; invalid input', name, oauth_token, oauth_server, key, facility_id)
+    try:
+        name = flask.request.form['name'].strip()[:flask.g.get('MAX_NAME_LENGTH')]
+        key = flask.request.form['key']
+        facility_id = flask.request.form['facility_id']
+        oauth_token = flask.session.pop('oauth_token')
+        oauth_server = flask.session.pop('oauth_server')
+    except:
+        log.warn('User creation failed; invalid input', flask.request.form, flask.session)
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
         return redirect(flask.url_for('pages.sign_in'))
-    flask.session.pop('oauth_token')
-    flask.session.pop('oauth_server')
 
     # Check if user already exists
     if user := db.users.find_one({'oauth.server': oauth_server, 'oauth.token': oauth_token}):
@@ -129,7 +131,7 @@ def edit(user_id=''):
         user_id = flask_login.current_user.id
 
     # Set values to None if not specified
-    name = None if flask.request.form.get('name', None) is None else markupsafe.escape(flask.request.form['name'])
+    name = None if flask.request.form.get('name', None) is None else flask.request.form['name'].strip()[:flask.g.get('MAX_NAME_LENGTH')]
     can_manage_users = None if flask.request.form.get('can_manage_users', None) is None else flask.request.form['can_manage_users'] == "True"
     can_control_drone = None if flask.request.form.get('can_control_drone', None) is None else flask.request.form['can_control_drone'] == "True"
 
