@@ -95,20 +95,19 @@ input:focus, button:focus, select:focus {
 .item {
     width: 100%;
     height: calc(var(--border) * 2);
-    display: block;
     background: white;
     padding: 0 1em;
     border-radius: var(--border);
     border: var(--col_fg) 1px solid;
+
+    /* in case the item contains multiple elements */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .item.focused {
     border: var(--col_fg_focus) 1px solid;
-}
-
-.multi {
-    display: flex;
-    flex-direction: row;
 }
 
 select[value="placeholder"], ::placeholder {

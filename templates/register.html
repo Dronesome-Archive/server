@@ -10,7 +10,7 @@
                     <option value="{{ facility['_id'] }}">{{ facility['name'] }}</option>
                 {% endfor %}
             </select>
-            <div class="item multi">
+            <div class="item">
                 <input id="new_user_key" class="stretch" required name="key" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code"/>
                 <button onclick="show_popup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
             </div>

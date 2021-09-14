@@ -4,7 +4,7 @@
         <h1>Kurier</h1>
         <div class="flex_stack">
             {% for member in staff %}
-                <div class="item multi">
+                <div class="item">
                     <p class="stretch">{{ member.name }}</p>
                     <button onclick="show_popup('{{ member.name }}_edit')"><i class="fas fa-pen-alt"></i></button>
                     <button onclick="show_popup('{{ member.name }}_delete')"><i class="fas fa-trash-alt"></i></button>
@@ -20,11 +20,11 @@
             <h2>{{ member.name }}</h2>
             <form method="post" action="{{ url_for('users.edit', user_id=member.id) }}">
                 <input type="text" name="name" value="{{ member.name }}">
-                <div class="item multi">
+                <div class="item">
                     <input class="item" type="checkbox" name="can_control_drone">
                     <label for="can_manage_users">Darf Drohne kontrollieren</label>
                 </div>
-                <div class="item multi">
+                <div class="item">
                     <input class="item" type="checkbox" name="can_manage_users">
                     <label for="can_manage_users">Darf Nutzer verwalten</label>
                 </div>

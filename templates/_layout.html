@@ -18,7 +18,7 @@
 <body>
     <div id="inner_body" class="centered flex_stack">
         {% for category, message in get_flashed_messages(with_categories=True) %}
-            <div class="item multi flash {{ category }}">
+            <div class="item flash {{ category }}">
                 <p class="stretch">{{ message }}</p>
                 <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
             </div>

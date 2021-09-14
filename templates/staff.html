@@ -1,13 +1,13 @@
 {% extends "_layout.html" %}
 {% block main %}
-    <div class="stretch window">
+    <div class="stretch window flex_stack">
         <h1>Mitarbeiter</h1>
         <div class="flex_stack stretch">
-            <div class="item multi">
+            <div class="item">
                 <p class="stretch">{{ me['name'] }}</p>
             </div>
             {% for member in members %}
-                <div class="item multi">
+                <div class="item">
                     <p class="stretch">{{ member['name'] }}</p>
                     {% if me['can_manage_users'] %}
                         <button onclick="show_popup('{{ member['name'] }}_edit')"><i class="fas fa-pen-alt"></i></button>
@@ -16,7 +16,7 @@
                 </div>
             {% endfor %}
         </div>
-        <div class="item multi">
+        <div class="item">
             <p class="stretch">Neuer Mitarbeiter</p>
             <button onclick="show_popup('new')"><i class="fas fa-user-plus"></i></button>
         </div>
@@ -26,14 +26,14 @@
 {% block popup %}
     <div class="popup centered window" id="new">
             <h2>Neuer Mitarbeiter</h2>
-            <form method="post" action="{{ url_for('users.new_key') }}">
-                <div class="item multi">
-                    <input class="item" type="checkbox" name="can_control_drone">
-                    <label for="can_control_drone">Darf Drohne kontrollieren</label>
+            <form class="flex_stack" method="post" action="{{ url_for('users.new_key') }}">
+                <div class="item">
+                    <label class="stretch" for="can_control_drone">Darf Drohne kontrollieren</label>
+                    <input type="checkbox" name="can_control_drone">
                 </div>
-                <div class="item multi">
-                    <input class="item" type="checkbox" name="can_manage_users">
-                    <label for="can_manage_users">Darf Nutzer verwalten</label>
+                <div class="item">
+                    <label class="stretch" for="can_manage_users">Darf Nutzer verwalten</label>
+                    <input type="checkbox" name="can_manage_users">
                 </div>
                 <div class="flex_row">
                     <button class="item" type="reset" onclick="hide_popup('new')">Abbrechen</button>
@@ -45,15 +45,15 @@
     {% for member in members %}
         <div class="popup centered window" id="{{ member['name'] }}_edit">
             <h2>{{ member['name'] }}</h2>
-            <form method="post" action="{{ url_for('users.edit', user_id=member['_id']) }}">
+            <form class="flex_stack" method="post" action="{{ url_for('users.edit', user_id=member['_id']) }}">
                 <input type="text" name="name" value="{{ member['name'] }}">
-                <div class="item multi">
-                    <input class="item" type="checkbox" name="can_control_drone" {% if member['can_control_drone'] %}checked{% endif %}>
-                    <label for="can_control_drone">Darf Drohne kontrollieren</label>
+                <div class="item">
+                    <label class="stretch" for="can_control_drone">Darf Drohne kontrollieren</label>
+                    <input type="checkbox" name="can_control_drone" {% if member['can_control_drone'] %}checked{% endif %}>
                 </div>
-                <div class="item multi">
-                    <input class="item" type="checkbox" name="can_manage_users" {% if member['can_manage_users'] %}checked{% endif %}>
-                    <label for="can_manage_users">Darf Nutzer verwalten</label>
+                <div class="item">
+                    <label class="stretch" for="can_manage_users">Darf Nutzer verwalten</label>
+                    <input type="checkbox" name="can_manage_users" {% if member['can_manage_users'] %}checked{% endif %}>
                 </div>
                 <div class="flex_row">
                     <button class="item" type="reset" onclick="hide_popup('{{ member['name'] }}_edit')">Abbrechen</button>
