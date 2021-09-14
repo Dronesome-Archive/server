@@ -28,6 +28,7 @@ oauth = OAuth(app)
 oauth.register('google')
 oauth.register('apple')
 db = MongoClient()['db']
+config = app.config
 
 # Drone logic
 drone = []

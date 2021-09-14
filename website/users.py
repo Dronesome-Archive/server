@@ -7,7 +7,7 @@ import flask_login
 from werkzeug.utils import redirect
 from bson.objectid import ObjectId
 
-from app import db
+from app import db, config
 from user import User
 import log
 
@@ -33,7 +33,7 @@ def new_key():
     if flask_login.current_user.get()['can_manage_users']:
         # Generate key with 8 numerals or uppercase ASCII letters (https://stackoverflow.com/q/2257441/10666216)
         key = ''.join([
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(flask.Config['NEW_USER_KEY_LENGTH'])
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(config['NEW_USER_KEY_LENGTH'])
         ])
         new_user = {
             'key': key,
@@ -65,7 +65,7 @@ def new():
 
     # Get form input
     try:
-        name = flask.request.form['name'].strip()[:flask.Config['MAX_NAME_LENGTH']]
+        name = flask.request.form['name'].strip()[:config['MAX_NAME_LENGTH']]
         key = flask.request.form['key']
         facility_id = flask.request.form['facility_id']
         oauth_token = flask.session.pop('oauth_token')
@@ -139,7 +139,7 @@ def edit(user_id=''):
     if user_id == flask_login.current_user.id:
         # Change self
         if name:
-            db.users.update_one({'_id': user_id}, {'$set': {'name': name.strip()[:flask.Config['MAX_NAME_LENGTH']]}})
+            db.users.update_one({'_id': user_id}, {'$set': {'name': name.strip()[:config['MAX_NAME_LENGTH']]}})
     elif flask_login.current_user.get()['can_manage_users']:
         # Change other user
         if can_manage_users:
