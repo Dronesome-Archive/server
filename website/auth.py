@@ -61,9 +61,9 @@ def callback(oauth_server):
 
 # Invalidate the session and bring back to login page
 @auth.route('/logout')
+@flask_login.login_required
 def logout():
-    if flask_login.current_user.is_authenticated:
-        db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': ObjectId()}})
-        flask_login.logout_user()
-        flask.flash('Ausgeloggt.')
+    db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': ObjectId()}})
+    flask_login.logout_user()
+    flask.flash('Ausgeloggt.')
     return redirect(flask.url_for('pages.sign_in'))

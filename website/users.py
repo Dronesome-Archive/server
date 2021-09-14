@@ -67,6 +67,12 @@ def new():
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
         return redirect(flask.url_for('pages.sign_in'))
 
+    # Check if user already exists
+    if user := db.users.find_one({'oauth.server': oauth_server, 'oauth.token': oauth_token}):
+        flask_login.login_user(User(user))
+        flask.flash('Der Account existiert bereits.')
+        return redirect(flask.url_for('pages.account'))
+
     # Query key from db
     new_user = {}
     try:
