@@ -33,7 +33,7 @@ def new_key():
     if flask_login.current_user.get()['can_manage_users']:
         # Generate key with 8 numerals or uppercase ASCII letters (https://stackoverflow.com/q/2257441/10666216)
         key = ''.join([
-            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(flask.config['NEW_USER_KEY_LENGTH'])
+            random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(flask.Config['NEW_USER_KEY_LENGTH'])
         ])
         new_user = {
             'key': key,
@@ -65,7 +65,7 @@ def new():
 
     # Get form input
     try:
-        name = flask.request.form['name'].strip()[:flask.config['MAX_NAME_LENGTH']]
+        name = flask.request.form['name'].strip()[:flask.Config['MAX_NAME_LENGTH']]
         key = flask.request.form['key']
         facility_id = flask.request.form['facility_id']
         oauth_token = flask.session.pop('oauth_token')
@@ -130,22 +130,22 @@ def edit(user_id=''):
         user_id = flask_login.current_user.id
 
     # Set values to None if not specified
-    name = None if flask.request.form.get('name', None) is None else flask.request.form['name'].strip()[:flask.config['MAX_NAME_LENGTH']]
-    can_manage_users = None if flask.request.form.get('can_manage_users', None) is None else flask.request.form['can_manage_users'] == "True"
-    can_control_drone = None if flask.request.form.get('can_control_drone', None) is None else flask.request.form['can_control_drone'] == "True"
+    name = flask.request.form.get('name', None)
+    can_manage_users = flask.request.form.get('can_manage_users', None)
+    can_control_drone = flask.request.form.get('can_control_drone', None)
 
     log.info('Changing user', user_id, 'to', name, can_manage_users, can_control_drone)
 
     if user_id == flask_login.current_user.id:
         # Change self
-        if name is not None:
-            db.users.update_one({'_id': user_id}, {'$set': {'name': name}})
+        if name:
+            db.users.update_one({'_id': user_id}, {'$set': {'name': name.strip()[:flask.Config['MAX_NAME_LENGTH']]}})
     elif flask_login.current_user.get()['can_manage_users']:
         # Change other user
-        if can_manage_users is not None:
-            db.users.update_one({'_id': user_id}, {'$set': {'can_manage_users': can_manage_users}})
-        if can_control_drone is not None:
-            db.users.update_one({'_id': user_id}, {'$set': {'can_control_drone': can_control_drone}})
+        if can_manage_users:
+            db.users.update_one({'_id': user_id}, {'$set': {'can_manage_users': (can_manage_users == 'True')}})
+        if can_control_drone:
+            db.users.update_one({'_id': user_id}, {'$set': {'can_control_drone': (can_control_drone == 'True')}})
     else:
         log.warn(flask_login.current_user.id, "can't change user", user_id)
         flask.flash('Keine Berechtigung.', 'error')
