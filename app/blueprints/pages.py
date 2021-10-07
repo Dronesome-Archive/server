@@ -1,8 +1,8 @@
 import flask
 import flask_login
 
-from exts import db, login
-import drones
+from app import drones
+from app.exts import db, login
 
 
 pages = flask.Blueprint('pages', __name__, url_prefix='/')

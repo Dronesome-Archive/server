@@ -3,9 +3,9 @@ import flask_login
 from werkzeug.utils import redirect
 from bson.objectid import ObjectId
 
-from exts import db, login, oauth
-from user import User
-import log
+from app import log
+from app.exts import db, login, oauth
+from app.user import User
 
 
 # Authentication API; Requests: GET; Response: redirect, flash

@@ -1,9 +1,9 @@
 import time
 from enum import Enum
 
-from exts import socketio
-from message import Namespace, ToFrontend
-from drones import home, drone
+from app.exts import socketio
+from app.drones import home, drone
+from app.drones.message import Namespace, ToFrontend
 
 
 # landing pad the users of which can request the drone

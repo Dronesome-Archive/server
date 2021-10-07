@@ -4,10 +4,10 @@ from time import time
 import flask_socketio
 from flask import current_app
 
-from drones import home, facilities
-import log
-from message import ToDrone, Namespace
-import facility
+from app import log
+from app.drones import home, facilities
+from app.drones import facility
+from app.drones.message import ToDrone
 
 
 class Drone(flask_socketio.Namespace):

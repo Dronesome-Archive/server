@@ -2,11 +2,11 @@ import flask_login
 import flask_socketio
 from flask import current_app
 
-from drone import Drone
-from exts import socketio, db
-from facility import Facility
-import log
-import message
+from app import log
+from app.exts import socketio, db
+from app.drones import message
+from app.drones.drone import Drone
+from app.drones.facility import Facility
 
 raw_facilities = db.facilities.find()
 facilities = []
