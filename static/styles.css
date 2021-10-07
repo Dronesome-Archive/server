@@ -3,7 +3,7 @@ TODO: find better color scheme
 TODO: resize fontawesome buttons
 TODO: make select pretty
 TODO: equal window/window window/body gap
-TODO: style OK/Abbrechen/Uninteractable buttons
+TODO: custom map markers
 TODO: make Mitarbeiter page scrollable
  */
 
@@ -119,6 +119,21 @@ select[value="placeholder"], ::placeholder {
 }
 
 
+/* BUTTONS */
+
+button.good_step {
+    background-color: lawngreen;
+}
+
+button.bad_step {
+    background-color: red;
+}
+
+button:disabled {
+    background-color: gray;
+}
+
+
 /* POPUP */
 
 .popup {
@@ -136,6 +151,7 @@ select[value="placeholder"], ::placeholder {
 
 
 /* FLASH */
+
 .flash, .flash * {
     color: white;
 }
@@ -146,4 +162,32 @@ select[value="placeholder"], ::placeholder {
 
 .message {
     background-color: lawngreen;
+}
+
+/* MAP */
+
+.battery {
+    border: 2px solid white;
+    border-radius: 2px;
+    width: 10px;
+    height: 40px;
+}
+
+.battery::after {
+    width: 50%;
+    height: 10%;
+    position: relative;
+    bottom: 100%;
+    border-radius: 2px;
+    background-color: white;
+}
+
+#map_container {
+    width: 100%;
+    border-radius: var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+#map {
 }

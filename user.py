@@ -1,4 +1,4 @@
-from app import db
+from exts import db
 
 
 # Class for flask_login.current_user; login_id gets reset everytime the user logs out

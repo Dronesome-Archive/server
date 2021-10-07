@@ -11,6 +11,7 @@
 - can_manage_users (can add new users to the facility)
 - can_control_drone (can control the drone)
 
+
 ## facilities
 - _id
 - name
@@ -19,5 +20,9 @@
 	- expiry
 	- can_manage_users
 	- can_control_drone
+- pos
+- path
+- is_home
+
 db.facilities.insertOne({"name": "Testpraxis2", "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}})
 db.facilities.updateOne({"name": "Testpraxis2"}, {$set: {"new_user.expiry": new Date("2022-01-01")}})

@@ -1,0 +1,54 @@
+{% extends "_layout.html" %}
+{% block main %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <div class="stretch flex_stack window">
+        <h1>Kurier</h1>
+        <div id="map_container">
+            <div id="map" class="stretch"></div>
+            <div id="battery_display"></div>
+            <div id="status_display"></div>
+        </div>
+        <div id="drone_buttons"></div>
+    </div>
+    <script>
+        {% for f in facilities %}
+            facilities[{{ f.id }}] = {
+                'name': {{ f.name }},
+                'pos': [{{ f.pos|join(', ') }}],
+                'path': [{{ f.path|join(', ') }}]
+            }
+        {% endfor %}
+        ownFacility = facilities[{{ own.id }}];
+        homeFacility = facilities[{{ home.id }}];
+        facilityDroneStatus = {{ own.drone_status.value }};
+        droneRequested = {{ own.drone_requested }};
+    </script>
+
+{% endblock %}
+
+{% block popup %}
+    <div class="popup centered window" id="return">
+        <form class="flex_stack" method="post" action="{{ url_for('drone_control.emergency_return') }}">
+            <h2>Wirklich umkehren?</h2>
+            <p>Der Kurier wird zum letzten Startpunkt zurückkehren und landen.
+                Sollte die Akkuladung nicht ausreichen, wird sofort eine Notlandung durchgeführt.</p>
+            <div class="flex_row">
+                <button class="item" type="reset" onclick="hide_popup()">Nein, abbrechen</button>
+                <button class="item bad_step" type="submit">Ja, umkehren</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="popup centered window" id="land">
+        <form class="flex_stack" method="post" action="{{ url_for('drone_control.emergency_return') }}">
+            <h2>Wirklich notlanden?</h2>
+            <p>Der Kurier wird unkontrolliert auf der Stelle landen.</p>
+            <div class="flex_row">
+                <button class="item" type="reset" onclick="hide_popup()">Nein, abbrechen</button>
+                <button class="item bad_step" type="submit">Ja, landen</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

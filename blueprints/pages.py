@@ -1,7 +1,8 @@
 import flask
 import flask_login
 
-from app import db, login
+from exts import db, login
+import drones
 
 
 pages = flask.Blueprint('pages', __name__, url_prefix='/')
@@ -33,8 +34,14 @@ def account():
 # Drone management
 @pages.route('/')
 @flask_login.login_required
-def courier():
-    return flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
+def drone():
+    user = flask_login.current_user.get()
+    user_facility = [f for f in drones.facilities if f.id == user['facility_id']][0]
+    if user_facility == drones.home:
+        facilities = drones.facilities
+    else:
+        facilities = [user_facility, drones.home]
+    return flask.render_template('drone.html', navbar=True, facilities=facilities, own=user_facility, home=drones.home)
 
 
 # Staff management

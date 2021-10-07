@@ -1,0 +1,26 @@
+[
+	{
+		"type": "update",
+		"body": {
+			"id": "SDM2EMFDSJ*S(LDJ&*S",
+			"start": {
+				"id": "M(*#J(*BD&HS&^",
+				"pos": [22.34, 56.43]
+			},
+			"path": [
+				[54.34, 23.45],
+				[12.34, 65.45]
+			],
+			"goal": {
+				"id": "M324#J(*BD&HS&^",
+				"pos": [43.34, 23.43]
+			}
+		}
+	},
+	{
+		"type": "return"
+	},
+	{
+		"type": "emergency_land"
+	}
+]

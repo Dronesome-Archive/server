@@ -3,12 +3,13 @@ import flask_login
 from werkzeug.utils import redirect
 from bson.objectid import ObjectId
 
-from app import db, login, oauth
+from exts import db, login, oauth
 from user import User
 import log
 
 
 # Authentication API; Requests: GET; Response: redirect, flash
+# TODO: apple auth
 auth = flask.Blueprint('auth', __name__, url_prefix='/auth')
 
 
