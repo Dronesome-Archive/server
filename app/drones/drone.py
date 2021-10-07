@@ -5,14 +5,15 @@ import flask_socketio
 from flask import current_app
 
 from app import log
-from app.drones import home, facilities
 from app.drones import facility
 from app.drones.message import ToDrone
 
 
 class Drone(flask_socketio.Namespace):
-	def __init__(self, namespace, serial):
+	def __init__(self, namespace, serial, home, facilities):
 		self.serial = serial
+		self.home = home
+		self.facilities = facilities
 		self.goal_facility = home
 		self.latest_facility = home
 		self.outbox = None
@@ -98,16 +99,16 @@ class Drone(flask_socketio.Namespace):
 
 		if status in [Status.IDLE]:
 			self.latest_facility.set_status(facility.Status.IDLE, goal_facility_id)
-			if last_facility_id == home.id:
+			if last_facility_id == self.home.id:
 				self.goal_facility.set_status(facility.Status.IDLE, goal_facility_id)
 				if last_facility_id == self.goal_facility.id:
 					# unplanned landing after return
-					self.goal_facility = home
+					self.goal_facility = self.home
 				self.check_for_missions()
 			else:
 				self.goal_facility.set_status(facility.Status.AWAITING_TAKEOFF, goal_facility_id)
-				self.goal_facility = home
-			self.latest_facility = [f for f in facilities if f.id == last_facility_id][0]
+				self.goal_facility = self.home
+			self.latest_facility = [f for f in self.facilities if f.id == last_facility_id][0]
 		elif status in [Status.EN_ROUTE, Status.LANDING]:
 			self.goal_facility.set_status(facility.Status.FLYING_TO, goal_facility_id)
 			self.latest_facility.set_status(facility.Status.FLYING_FROM, goal_facility_id)
@@ -123,8 +124,8 @@ class Drone(flask_socketio.Namespace):
 
 	# if we're waiting at home, we can do a new mission
 	def check_for_missions(self):
-		pending = [f for f in facilities if f.drone_requested]
-		if len(pending) and self.goal_facility == self.latest_facility == home:
+		pending = [f for f in self.facilities if f.drone_requested]
+		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			self.goal_facility = pending[0]
 			self.send(ToDrone.UPDATE, self.goal_facility.generate_mission())
@@ -135,12 +136,12 @@ class Drone(flask_socketio.Namespace):
 
 	# users from home or the goal can order the drone to emergency land
 	def emergency_land(self, user_facility_id):
-		if self.goal_facility.id == user_facility_id or user_facility_id == home.id:
+		if self.goal_facility.id == user_facility_id or user_facility_id == self.home.id:
 			self.send(ToDrone.EMERGENCY_LAND)
 
 	# users from home or the goal can order the drone to return
 	def return_to_last(self, user_facility_id):
-		if (self.goal_facility.id == user_facility_id or user_facility_id == home.id) and self.latest_facility != self.goal_facility:
+		if (self.goal_facility.id == user_facility_id or user_facility_id == self.home.id) and self.latest_facility != self.goal_facility:
 			self.send(ToDrone.RETURN)
 
 	# if the drone is waiting to take off at facility_id, start the mission to home

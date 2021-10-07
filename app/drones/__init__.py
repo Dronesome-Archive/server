@@ -18,7 +18,7 @@ for raw in raw_facilities:
 if not home:
     log.warn('no home found')
 
-drone = Drone('/drone', current_app.config['DRONE_SERIAL'])
+drone = Drone('/drone', current_app.config['DRONE_SERIAL'], home, facilities)
 socketio.on_namespace(drone)
 
 
