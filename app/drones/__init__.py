@@ -1,6 +1,5 @@
 import flask_login
 import flask_socketio
-from flask import current_app
 
 from app import log
 from app.exts import socketio, db
@@ -18,7 +17,7 @@ for raw in raw_facilities:
 if not home:
     log.warn('no home found')
 
-drone = Drone('/drone', current_app.config['DRONE_SERIAL'], home, facilities)
+drone = Drone('/drone', home, facilities)
 socketio.on_namespace(drone)
 
 

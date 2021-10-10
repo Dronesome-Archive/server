@@ -1,8 +1,8 @@
 from enum import Enum
 from time import time
+from os import environ
 
 import flask_socketio
-from flask import current_app
 
 from app import log
 from app.drones import facility
@@ -10,8 +10,7 @@ from app.drones.message import ToDrone
 
 
 class Drone(flask_socketio.Namespace):
-	def __init__(self, namespace, serial, home, facilities):
-		self.serial = serial
+	def __init__(self, namespace, home, facilities):
 		self.home = home
 		self.facilities = facilities
 		self.goal_facility = home
@@ -49,7 +48,7 @@ class Drone(flask_socketio.Namespace):
 
 	# if we have a message queued, send it
 	def on_connect(self, auth):
-		if auth == current_app.config['SUPER_SECRET_DRONE_KEY']:
+		if auth == environ['SUPER_SECRET_DRONE_KEY']:
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
