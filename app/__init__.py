@@ -27,10 +27,10 @@ def register_blueprints(app):
         app.register_blueprint(blueprint)
 
 
-def create_app(config_files):
+def create_app(config_objects):
     app = Flask(__name__)
-    for file in config_files:
-        app.config.from_pyfile(file)
+    for obj in config_objects:
+        app.config.from_object(obj)
     init_exts(app)
     register_blueprints(app)
     # socketio.run(app)
