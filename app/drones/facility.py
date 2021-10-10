@@ -13,7 +13,7 @@ class Facility:
         self.waypoints = waypoints  # in-between-waypoints from the facility to home
         self.name = name
         self.is_home = is_home
-        self.drone_state = State.AWAITING_REQUEST
+        self.drone_state = State.IDLE
         self.drone_requested = False
         self.drone_requested_on = time.time()
 

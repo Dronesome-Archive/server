@@ -37,7 +37,8 @@ db.facilities.insertOne({
         [51.725665795697026, 14.339136898341202],
         [51.72437634851853, 14.33875342899223],
     ],
-    "is_home": False
+    "is_home": false,
+    "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
 
 
@@ -50,7 +51,8 @@ db.facilities.insertOne({
         [51.72754244532547, 14.326364667641977],
         [51.725679793339324, 14.33909214535663],
     ],
-    "is_home": False
+    "is_home": false,
+    "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
 
 
@@ -59,9 +61,6 @@ db.facilities.insertOne({
     "name": "Praxis Dolor Amet",
     "pos": [51.72437634851853, 14.33875342899223],
     "waypoints": [],
-    "is_home": True
+    "is_home": true,
+    "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
-
-
-db.facilities.insertOne({"name": "Testpraxis2", "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}})
-db.facilities.updateOne({"name": "Testpraxis2"}, {$set: {"new_user.expiry": new Date("2022-01-01")}})
