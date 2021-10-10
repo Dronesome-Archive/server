@@ -36,7 +36,7 @@ def account():
 @flask_login.login_required
 def drone():
     user = flask_login.current_user.get()
-    user_facility = drones.facilities[user['facility_id']]
+    user_facility = drones.facilities[str(user['facility_id'])]
     if user_facility == drones.home:
         facilities = drones.facilities
     else:

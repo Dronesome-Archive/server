@@ -11,9 +11,9 @@ raw_facilities = db.facilities.find()
 facilities = {}
 home = None
 for raw in raw_facilities:
-    facilities[raw['_id']] = Facility(raw['_id'], raw['pos'], raw['waypoints'], raw['name'], raw['is_home'])
+    facilities[str(raw['_id'])] = Facility(str(raw['_id']), raw['pos'], raw['waypoints'], raw['name'], raw['is_home'])
     if raw['is_home']:
-        home = facilities[raw['_id']]
+        home = facilities[str(raw['_id'])]
 if not home:
     log.warn('no home found')
 
@@ -24,7 +24,7 @@ socketio.on_namespace(drone)
 @socketio.on('connect', namespace=message.Namespace.FRONTEND)
 def frontend_connect():
     if flask_login.current_user.is_authenticated:
-        fac = facilities[flask_login.current_user.get()['facility_id']]
+        fac = facilities[str(flask_login.current_user.get()['facility_id'])]
         flask_socketio.join_room(fac.id)
         if fac == home or fac.drone_state != State.IDLE:
             # send data right away
