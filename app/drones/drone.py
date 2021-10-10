@@ -5,7 +5,7 @@ import flask_socketio
 from flask import current_app
 
 from app import log
-from app.drones import facility
+from app.drones import facility, generate_mission
 from app.drones.message import ToDrone
 
 
@@ -39,7 +39,7 @@ class Drone(flask_socketio.Namespace):
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
-				self.send(self.outbox[0], self.outbox[1])
+				self.emit_to_drone(self.outbox[0], self.outbox[1])
 			log.info('connected')
 		else:
 			log.warn('rejected')
@@ -76,7 +76,7 @@ class Drone(flask_socketio.Namespace):
 		self.status_update(status, latest_facility_id, goal_facility_id)
 
 	# emit message to drone if connected, else queue in outbox
-	def send(self, msg_type, content=None):
+	def emit_to_drone(self, msg_type, content=None):
 		if self.connected:
 			if content:
 				self.emit(msg_type.value, content)
@@ -94,7 +94,7 @@ class Drone(flask_socketio.Namespace):
 	def status_update(self, status, last_facility_id, goal_facility_id):
 		if goal_facility_id != self.goal_facility.id and status != Status.UPDATING:
 			log.warn("drone's goal facility", goal_facility_id, "not equal to ours:", self.goal_facility.id)
-			self.send(ToDrone.EMERGENCY_LAND)
+			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
 			return
 
 		if status in [Status.IDLE]:
@@ -128,7 +128,7 @@ class Drone(flask_socketio.Namespace):
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			self.goal_facility = pending[0]
-			self.send(ToDrone.UPDATE, self.goal_facility.generate_mission())
+			self.emit_to_drone(ToDrone.UPDATE, generate_mission(self.goal_facility))
 
 	####################################################################################################################
 	# FRONTEND ORDERS
@@ -137,17 +137,33 @@ class Drone(flask_socketio.Namespace):
 	# users from home or the goal can order the drone to emergency land
 	def emergency_land(self, user_facility_id):
 		if self.goal_facility.id == user_facility_id or user_facility_id == self.home.id:
-			self.send(ToDrone.EMERGENCY_LAND)
+			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
+			return True
+		return False
 
 	# users from home or the goal can order the drone to return
 	def return_to_last(self, user_facility_id):
 		if (self.goal_facility.id == user_facility_id or user_facility_id == self.home.id) and self.latest_facility != self.goal_facility:
-			self.send(ToDrone.RETURN)
+			self.emit_to_drone(ToDrone.RETURN)
+			return True
+		return False
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id):
 		if user_facility_id == self.latest_facility and self.latest_facility != self.goal_facility:
-			self.send(ToDrone.UPDATE, self.goal_facility.generate_mission(True))
+			self.emit_to_drone(ToDrone.UPDATE, generate_mission(self.goal_facility, True))
+			return True
+		return False
+
+	# request the drone to land on user_facility
+	def request(self, user_facility_id):
+		user_facility = [f for f in self.facilities if f.id == user_facility_id][0]
+		allowed_statuses = [facility.Status.IDLE, facility.Status.FLYING_FROM, facility.Status.RETURNING_FROM]
+		if user_facility != self.home and user_facility.drone_status in allowed_statuses:
+			user_facility.set_drone_requested(True)
+			self.check_for_missions()
+			return True
+		return False
 
 
 # Physical status, i.e. what IS happening; There is NO GUARANTEE that these values are up-to-date

@@ -33,3 +33,18 @@ def frontend_connect():
             home.send_drone_status(drone.status)
         return True
     return False
+
+
+# generate mission update dictionary to be sent to the drone
+def generate_mission(fac, to_home=False):
+    return {
+        'start': {
+            'id': fac.id if to_home else home.id,
+            'pos': fac.pos if to_home else home.pos
+        },
+        'path': fac.path.reverse() if to_home else fac.path,
+        'goal': {
+            'id': home.id if to_home else fac.id,
+            'pos': home.pos if to_home else fac.pos
+        }
+    }
