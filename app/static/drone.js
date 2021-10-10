@@ -67,21 +67,21 @@ function showButton(text, classList) {
 function showTakeoff() {
     let button = showButton('Starterlaubnis erteilen', ['good_step']);
     button.onclick = () => {
-        window.location.href = '/drone_control/allow_request';
+        window.location.href = '/drone_control/allow_takeoff';
     };
 }
 
 function showReturn() {
     let button = showButton('Sofort umkehren', ['bad_step']);
     button.onclick = () => {
-        show_popup('return');
+        show_popup('emergency_return');
     }
 }
 
 function showLand() {
     let button = showButton('Notlanden', ['bad_step']);
     button.onclick = () => {
-        show_popup('land');
+        show_popup('emergency_land');
     }
 }
 

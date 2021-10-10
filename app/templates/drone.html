@@ -31,8 +31,8 @@
 {% endblock %}
 
 {% block popup %}
-    <div class="popup centered window" id="return">
-        <form class="flex_stack" method="post" action="{{ url_for('drone_control.emergency_return') }}">
+    <div class="popup centered window" id="emergency_return">
+        <form class="flex_stack" method="post" action="{{ url_for('drone_control.command', command='emergency_return') }}">
             <h2>Wirklich umkehren?</h2>
             <p>Der Kurier wird zum letzten Startpunkt zurückkehren und landen.
                 Sollte die Akkuladung nicht ausreichen, wird sofort eine Notlandung durchgeführt.</p>
@@ -43,8 +43,8 @@
         </form>
     </div>
 
-    <div class="popup centered window" id="land">
-        <form class="flex_stack" method="post" action="{{ url_for('drone_control.emergency_return') }}">
+    <div class="popup centered window" id="emergency_land">
+        <form class="flex_stack" method="post" action="{{ url_for('drone_control.command', command='emergency_land') }}">
             <h2>Wirklich notlanden?</h2>
             <p>Der Kurier wird unkontrolliert auf der Stelle landen.</p>
             <div class="flex_row">
