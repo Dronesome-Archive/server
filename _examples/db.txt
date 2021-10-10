@@ -58,7 +58,7 @@ db.facilities.insertOne({
 
 ## LABOR CONSECTETUR ELIT (MVZ Gemeinschaftslabor)
 db.facilities.insertOne({
-    "name": "Praxis Dolor Amet",
+    "name": "Labor Consectetur Elit",
     "pos": [51.72437634851853, 14.33875342899223],
     "waypoints": [],
     "is_home": true,

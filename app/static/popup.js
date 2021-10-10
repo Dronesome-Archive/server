@@ -18,7 +18,7 @@ function show_popup(id) {
 
 function hide_popup(id) {
     // Get DOM object
-    let popup = this ?? document.getElementById(id);
+    let popup = id ? document.getElementById(id) : this;
     while (!popup.classList.contains('popup')) popup = popup.parentElement;
     if (popup.style.getPropertyValue('display')==='none') return;
 

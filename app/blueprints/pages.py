@@ -20,7 +20,7 @@ def sign_in():
 def register():
     return flask.render_template(
         'register.html',
-        facilities=[f for f in db.facilities.find()]  # need list bc find() only returns a one-time-iterator
+        facilities=drones.facilities
     )
 
 

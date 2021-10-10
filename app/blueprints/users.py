@@ -159,6 +159,7 @@ def edit(user_id=''):
 @users.route('/delete', methods=['POST'])
 @flask_login.login_required
 def delete(user_id=''):
+    # TODO: handle user management
     try:
         user_id = ObjectId(user_id)
     except:
