@@ -16,11 +16,11 @@ function show_popup(id) {
     popup.style.setProperty('display', 'block');
 }
 
-function hide_popup() {
+function hide_popup(id) {
     // Get DOM object
-    let popup = this;
+    let popup = this ?? document.getElementById(id);
     while (!popup.classList.contains('popup')) popup = popup.parentElement;
-    if (!popup || popup.style.getPropertyValue('display')==='none') return;
+    if (popup.style.getPropertyValue('display')==='none') return;
 
     // Remove background
     for (const bg of document.getElementsByClassName('popup_background')) document.body.removeChild(bg);
