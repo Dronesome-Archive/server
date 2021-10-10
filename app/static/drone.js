@@ -3,14 +3,14 @@ const activeLineCol = '#99FF99';
 
 const droneButtons = document.getElementById('drone_buttons');
 const batteryDisplay = document.getElementById('battery_display');
-const statusDisplay = document.getElementById('status_display');
+const stateDisplay = document.getElementById('state_display');
 
 const accessToken = '';
 
 let facilities = [];
 let ownFacility = null;
 let homeFacility = null;
-let facilityDroneStatus = '';
+let facilityDroneState = '';
 let droneRequested = false;
 
 let droneMarker = {};
@@ -41,8 +41,8 @@ function init() {
     }
 
     const socket = io('/frontend');
-    socket.on('facility_drone_status', onFacilityDroneStatus);
-    socket.on('drone_status', onDroneStatus);
+    socket.on('facility_drone_state', onFacilityDroneState);
+    socket.on('drone_state', onDroneState);
     socket.on('heartbeat', onHeartbeat);
     socket.on('drone_requested', onDroneRequested);
 }
@@ -108,21 +108,21 @@ function showEmergency() {
 // SOCKETIO EVENT HANDLERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function onFacilityDroneStatus(...args) {
-    if (args.status === 'idle') {
+function onFacilityDroneState(...args) {
+    if (args.state === 'idle') {
         facilityLines[args.goal_facility_id].color = inactiveLineCol;
         if (ownFacility !== homeFacility) {
             batteryDisplay.style.display = 'none';
-            statusDisplay.style.display = 'none';
+            stateDisplay.style.display = 'none';
         }
     } else {
         batteryDisplay.style.display = 'initial';
-        statusDisplay.style.display = 'initial';
+        stateDisplay.style.display = 'initial';
         facilityLines[args.goal_facility_id].color = activeLineCol;
     }
 
     droneButtons.innerHTML = '';
-    switch (args.status) {
+    switch (args.state) {
         case 'idle':
         case 'flying_from':
         case 'returning_from':
@@ -147,7 +147,7 @@ function onHeartbeat(args) {
     droneMarker.setLatLng(args.pos)
 }
 
-function onDroneStatus(args) {
+function onDroneState(args) {
     let states = {
         'idle': "Am Boden",
         'en_route': "Fliegt",
@@ -157,7 +157,7 @@ function onDroneStatus(args) {
         'crashed': "Notgelandet",
         'updating': "Empfängt Mission"
     }
-    statusDisplay.innerText = states[args.status]
+    stateDisplay.innerText = states[args.state]
 }
 
 function onDroneRequested(arg) {

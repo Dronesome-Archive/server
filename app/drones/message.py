@@ -9,12 +9,12 @@ class ToDrone(Enum):
 
 class FromDrone(Enum):
     HEARTBEAT = 'heartbeat'
-    STATUS_UPDATE = 'status_update'
+    STATUS_UPDATE = 'state_update'
 
 
 class ToFrontend(Enum):
-    FACILITY_DRONE_STATUS = 'facility_drone_status'
-    DRONE_STATUS = 'drone_status'
+    FACILITY_DRONE_STATUS = 'facility_drone_state'
+    DRONE_STATUS = 'drone_state'
     HEARTBEAT = 'heartbeat'
     DRONE_REQUESTED = 'drone_requested'
 

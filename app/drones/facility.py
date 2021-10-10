@@ -13,7 +13,7 @@ class Facility:
         self.path = path
         self.name = name
         self.is_home = is_home
-        self.drone_status = Status.AWAITING_REQUEST
+        self.drone_state = State.AWAITING_REQUEST
         self.drone_requested = False
         self.drone_requested_on = time.time()
 
@@ -26,29 +26,29 @@ class Facility:
             to=self.id
         )
 
-    # the drone has a new internal status, relay to our facility
-    def send_drone_status(self, status):
+    # the drone has a new internal state, relay to our facility
+    def send_drone_state(self, state):
         socketio.emit(
             ToFrontend.DRONE_STATUS.value,
-            status.value,
+            state.value,
             namespace=Namespace.FRONTEND.value,
             to=self.id
         )
 
-    # the drone has a new status, relay to our facility
-    def set_status(self, status, goal_id):
-        if self.drone_status != status:
-            self.drone_status = status
-            if status != Status.IDLE:
+    # the drone has a new state, relay to our facility
+    def set_state(self, state, goal_id):
+        if self.drone_state != state:
+            self.drone_state = state
+            if state != State.IDLE:
                 self.set_drone_requested(False)
             socketio.emit(
                 ToFrontend.FACILITY_DRONE_STATUS.value,
-                {'status': status.value, 'goal_id': goal_id},
+                {'state': state.value, 'goal_id': goal_id},
                 namespace=Namespace.FRONTEND.value,
                 to=self.id
             )
 
-    # set drone request status and send to frontend
+    # set drone request state and send to frontend
     def set_drone_requested(self, drone_requested):
         if not self.drone_requested == drone_requested:
             if drone_requested:
@@ -62,8 +62,8 @@ class Facility:
             )
 
 
-# status of the drone in relation to our facility
-class Status(Enum):
+# state of the drone in relation to our facility
+class State(Enum):
     IDLE = 'idle'
     AWAITING_TAKEOFF = 'awaiting_takeoff'
     FLYING_TO = 'flying_to'
