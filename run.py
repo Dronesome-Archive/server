@@ -11,4 +11,3 @@ logging.basicConfig(
 )
 logging.getLogger().addHandler(logging.StreamHandler())  # without this, errors only go to log, not stderr
 app = create_app([config, secret])
-app.run()
