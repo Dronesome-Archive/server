@@ -7,18 +7,25 @@ from app.drones import message
 from app.drones.drone import Drone
 from app.drones.facility import Facility, State
 
-raw_facilities = db.facilities.find()
+
 facilities = {}
 home = None
-for raw in raw_facilities:
-    facilities[str(raw['_id'])] = Facility(str(raw['_id']), raw['pos'], raw['waypoints'], raw['name'], raw['is_home'])
-    if raw['is_home']:
-        home = facilities[str(raw['_id'])]
-if not home:
-    log.warn('no home found')
+drone = None
 
-drone = Drone('/drone', home, facilities)
-socketio.on_namespace(drone)
+
+def init():
+    global home, drone
+
+    raw_facilities = db.facilities.find()
+    for raw in raw_facilities:
+        facilities[str(raw['_id'])] = Facility(str(raw['_id']), raw['pos'], raw['waypoints'], raw['name'], raw['is_home'])
+        if raw['is_home']:
+            home = facilities[str(raw['_id'])]
+    if not home:
+        log.warn('no home found')
+
+    drone = Drone('/drone', home, facilities)
+    socketio.on_namespace(drone)
 
 
 @socketio.on('connect', namespace=message.Namespace.FRONTEND)

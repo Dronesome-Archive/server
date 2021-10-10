@@ -2,6 +2,7 @@ from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from app import log
+import app.drones
 from app.exts import oauth, login, socketio
 from app.blueprints import blueprints
 
@@ -32,6 +33,7 @@ def create_app(config_objects):
     for obj in config_objects:
         app.config.from_object(obj)
     init_exts(app)
+    drones.init()
     register_blueprints(app)
     # socketio.run(app)
     return app
