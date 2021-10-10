@@ -12,22 +12,17 @@ drone_control = flask.Blueprint('drone_control', __name__, url_prefix='/drone_co
 @drone_control.route('/', methods=['POST'])
 def control():
     commands = {
-        'request': drone.request,
-        'allow_takeoff': drone.allow_takeoff,
-        'return': drone.return_to_last,
-        'land': drone.emergency_land
+        'request': (drone.request, "Kurier angefordert"),
+        'allow_takeoff': (drone.allow_takeoff, "Starterlaubnis erteilt"),
+        'emergency_return': (drone.emergency_return, "Kurier kehrt um"),
+        'emergency_land': (drone.emergency_land, "Notlandung eingeleitet")
     }
     user = flask_login.current_user.get()
     try:
-        command = commands[flask.request.args['command']]
-    except IndexError:
+        command, success_message = commands[flask.request.args['command']]
+        assert user['can_control_drone']
+        if command(user['facility_id']):
+            flask.flash(success_message)
+    except Exception:
         flask.flash('Fehler', 'error')
-    else:
-        if user['can_control_drone']:
-            if command(user['facility_id']):
-                flask.flash('Starterlaubnis erteilt')
-            else:
-                flask.flash('Fehler', 'error')
-        else:
-            flask.flash('Keine Berechtigung', 'error')
     return flask.redirect(flask.request.referrer)

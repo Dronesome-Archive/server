@@ -6,6 +6,7 @@ const batteryDisplay = document.getElementById('battery_display');
 const stateDisplay = document.getElementById('state_display');
 
 const accessToken = '';
+let canControl = false
 
 let facilities = [];
 let ownFacility = null;
@@ -34,7 +35,7 @@ function init() {
         facilityMarkers[facilityId] = L.marker(facilities[facilityId].pos, {title: facilities[facilityId].name}).addTo(map);
         if (facilities[facilityId] !== homeFacility) {
             facilityLines[facilityId] = L.polyline(
-                [homeFacility.pos].concat(facilities[facilityId].path),
+                [facilities[facilityId].pos].concat(facilities[facilityId].waypoints).concat(homeFacility.pos),
                 {color: inactiveLineCol}
             ).addTo(map);
         }
@@ -122,23 +123,25 @@ function onFacilityDroneState(...args) {
     }
 
     droneButtons.innerHTML = '';
-    switch (args.state) {
-        case 'idle':
-        case 'flying_from':
-        case 'returning_from':
-            showRequest();
-            break;
-        case 'awaiting_takeoff':
-            showTakeoff();
-            break;
-        case 'flying_to':
-            showReturn();
-        case 'returning_to':
-            showLand();
-            break;
-        case 'emergency':
-            showEmergency();
-            break;
+    if (canControl) {
+        switch (args.state) {
+            case 'idle':
+            case 'flying_from':
+            case 'returning_from':
+                showRequest();
+                break;
+            case 'awaiting_takeoff':
+                showTakeoff();
+                break;
+            case 'flying_to':
+                showReturn();
+            case 'returning_to':
+                showLand();
+                break;
+            case 'emergency':
+                showEmergency();
+                break;
+        }
     }
 }
 

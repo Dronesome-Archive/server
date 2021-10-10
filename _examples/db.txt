@@ -24,5 +24,44 @@
 - path
 - is_home
 
+
+## PRAXIS LOREM IPSUM (Reha vita)
+db.facilities.insertOne({
+    "name": "Praxis Lorem Ipsum",
+    "pos": [51.75548871014251, 14.337482007009129],
+    "waypoints": [
+        [51.752411142877754, 14.33852990589787]
+        [51.75151460200192, 14.33318673250318],
+        [51.74539951910244, 14.331240983256903],
+        [51.725242305686336, 14.343051003119083],
+        [51.725665795697026, 14.339136898341202],
+        [51.72437634851853, 14.33875342899223],
+    ],
+    "is_home": False
+})
+
+
+## PRAXIS DOLOR AMET (Kokott)
+db.facilities.insertOne({
+    "name": "Praxis Dolor Amet",
+    "pos": [51.72802399574362, 14.325621128053765],
+    "waypoints": [
+        [51.728097937217655, 14.326288556332123]
+        [51.72754244532547, 14.326364667641977],
+        [51.725679793339324, 14.33909214535663],
+    ],
+    "is_home": False
+})
+
+
+## LABOR CONSECTETUR ELIT (MVZ Gemeinschaftslabor)
+db.facilities.insertOne({
+    "name": "Praxis Dolor Amet",
+    "pos": [51.72437634851853, 14.33875342899223],
+    "waypoints": [],
+    "is_home": True
+})
+
+
 db.facilities.insertOne({"name": "Testpraxis2", "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}})
 db.facilities.updateOne({"name": "Testpraxis2"}, {$set: {"new_user.expiry": new Date("2022-01-01")}})

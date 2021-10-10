@@ -1,0 +1,56 @@
+DRONE TO SERVER ########################################################################################################
+
+heartbeat {
+    "pos": [12.34, 23.54],
+    "battery": 0.45
+}
+
+state_update {
+    "state": "idle|en_route|landing|returning|emergency_landing|crashed|updating",
+    "latest_facility_id": "4353342",
+    "goal_facility_id": "6245343"
+}
+
+
+SERVER TO DRONE ########################################################################################################
+
+update {
+    "id": 1234543367,
+    "start": {
+        "id": 57683452354,
+        "pos": [22.34, 56.43]
+    },
+    "waypoints": [
+        [54.34, 23.45],
+        [12.34, 65.45]
+    ],
+    "goal": {
+        "id": 09684576345,
+        "pos": [43.34, 23.43]
+    }
+}
+
+emergency_return {}
+
+emergency_land {}
+
+
+SERVER TO FRONTEND #####################################################################################################
+
+facility_drone_status {
+    "state": "idle|awaiting_takeoff|flying_to|returning_to|flying_from|returning_from|emergency",
+    "goal_id": 13245893
+}
+
+drone_status {
+    "idle|en_route|landing|returning|emergency_landing|crashed|updating"
+}
+
+heartbeat {
+    "pos": [12.34, 23.54],
+    "battery": 0.45
+}
+
+drone_requested {
+    True|False
+}

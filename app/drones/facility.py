@@ -7,10 +7,10 @@ from app.drones.message import Namespace, ToFrontend
 
 # landing pad the users of which can request the drone
 class Facility:
-    def __init__(self, facility_id, pos, path, name, is_home):
+    def __init__(self, facility_id, pos, waypoints, name, is_home):
         self.id = facility_id
         self.pos = pos
-        self.path = path
+        self.waypoints = waypoints  # in-between-waypoints from the facility to home
         self.name = name
         self.is_home = is_home
         self.drone_state = State.AWAITING_REQUEST

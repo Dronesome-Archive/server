@@ -36,7 +36,7 @@ class Drone(flask_socketio.Namespace):
 				'id': fac.id if to_home else self.home.id,
 				'pos': fac.pos if to_home else self.home.pos
 			},
-			'path': fac.path.reverse() if to_home else fac.path,
+			'waypoints': fac.path if to_home else fac.path.reverse(),
 			'goal': {
 				'id': self.home.id if to_home else fac.id,
 				'pos': self.home.pos if to_home else fac.pos
@@ -156,9 +156,9 @@ class Drone(flask_socketio.Namespace):
 		return False
 
 	# users from home or the goal can order the drone to return
-	def return_to_last(self, user_facility_id):
+	def emergency_return(self, user_facility_id):
 		if (self.goal_facility.id == user_facility_id or user_facility_id == self.home.id) and self.latest_facility != self.goal_facility:
-			self.emit_to_drone(ToDrone.RETURN)
+			self.emit_to_drone(ToDrone.EMERGENCY_RETURN)
 			return True
 		return False
 

@@ -24,6 +24,8 @@
         homeFacility = facilities[{{ home.id }}];
         facilityDroneState = {{ own.drone_state.value }};
         droneRequested = {{ own.drone_requested }};
+        canControl = {{ can_control }};
+        init();
     </script>
 
 {% endblock %}
