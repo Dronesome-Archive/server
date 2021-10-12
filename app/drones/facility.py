@@ -11,13 +11,13 @@ class Facility:
         self.id = facility_id
         self.pos = pos
         self.waypoints = waypoints  # in-between-waypoints from the facility to home
-        print(self.name)
-        print(self.waypoints)
         self.name = name
         self.is_home = is_home
         self.drone_state = State.IDLE
         self.drone_requested = False
         self.drone_requested_on = time.time()
+        print(self.name)
+        print(self.waypoints)
 
     # the drone has new heartbeat data, relay to our facility
     def send_heartbeat(self, battery, pos):
