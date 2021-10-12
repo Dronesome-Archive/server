@@ -35,7 +35,7 @@ function init() {
         facilityMarkers[facilityId] = L.marker(facilities[facilityId].pos, {title: facilities[facilityId].name}).addTo(map);
         if (facilities[facilityId] !== homeFacility) {
             facilityLines[facilityId] = L.polyline(
-                [facilities[facilityId].pos].concat(facilities[facilityId].waypoints).concat(homeFacility.pos),
+                [facilities[facilityId].pos].concat(facilities[facilityId].waypoints).concat([homeFacility.pos]),
                 {color: inactiveLineCol}
             ).addTo(map);
         }
