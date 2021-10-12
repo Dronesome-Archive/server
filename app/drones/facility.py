@@ -11,6 +11,8 @@ class Facility:
         self.id = facility_id
         self.pos = pos
         self.waypoints = waypoints  # in-between-waypoints from the facility to home
+        print(self.name)
+        print(self.waypoints)
         self.name = name
         self.is_home = is_home
         self.drone_state = State.IDLE
