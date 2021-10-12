@@ -1,3 +1,5 @@
+from os import environ
+
 import flask
 import flask_login
 
@@ -28,7 +30,11 @@ def register():
 @pages.route('/account')
 @flask_login.login_required
 def account():
-    return flask.render_template('account.html', navbar=True, username=flask_login.current_user.get()['name'])
+    return flask.render_template(
+        'account.html',
+        navbar=True,
+        username=flask_login.current_user.get()['name']
+    )
 
 
 # Drone management
@@ -41,7 +47,15 @@ def drone():
         facilities = drones.facilities
     else:
         facilities = [user_facility, drones.home]
-    return flask.render_template('drone.html', navbar=True, facilities=facilities, own=user_facility, home=drones.home, can_control=user['can_control_drone'])
+    return flask.render_template(
+        'drone.html',
+        navbar=True,
+        facilities=facilities,
+        own=user_facility,
+        home=drones.home,
+        can_control=user['can_control_drone'],
+        mapbox_token=environ['MAPBOX_TOKEN']
+    )
 
 
 # Staff management
@@ -55,4 +69,10 @@ def staff():
     })]
     me = flask_login.current_user.get()
     facility_name = drones.facilities[str(me['facility_id'])].name
-    return flask.render_template('staff.html', navbar=True, members=members, me=me, facility_name=facility_name)
+    return flask.render_template(
+        'staff.html',
+        navbar=True,
+        members=members,
+        me=me,
+        facility_name=facility_name
+    )

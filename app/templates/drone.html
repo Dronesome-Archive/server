@@ -26,6 +26,7 @@
         facilityDroneState = '{{ own.drone_state.value }}';
         droneRequested = {{ own.drone_requested|lower }};
         canControl = {{ can_control|lower }};
+        accessToken = '{{ mapbox_token }}';
         init();
     </script>
 {% endblock %}

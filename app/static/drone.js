@@ -5,7 +5,7 @@ const droneButtons = document.getElementById('drone_buttons');
 const batteryDisplay = document.getElementById('battery_display');
 const stateDisplay = document.getElementById('state_display');
 
-const accessToken = '';
+let accessToken = '';
 let canControl = false
 
 let facilities = [];
