@@ -16,8 +16,6 @@ class Facility:
         self.drone_state = State.IDLE
         self.drone_requested = False
         self.drone_requested_on = time.time()
-        print(self.name)
-        print(self.waypoints)
 
     # the drone has new heartbeat data, relay to our facility
     def send_heartbeat(self, battery, pos):

@@ -28,7 +28,7 @@ function init() {
         tileSize: 512,
         zoomOffset: -1,
         accessToken: accessToken
-    }).addTo(mymap);
+    }).addTo(map);
 
     droneMarker = L.marker([0.0, 0.0], {title: 'Kurier'});
     for (let facilityId in facilities) {
