@@ -54,4 +54,5 @@ def staff():
         'facility_id': flask_login.current_user.get()['facility_id']
     })]
     me = flask_login.current_user.get()
-    return flask.render_template('staff.html', navbar=True, members=members, me=me)
+    facility_name = drones.facilities[str(me['facility_id'])].name
+    return flask.render_template('staff.html', navbar=True, members=members, me=me, facility_name=facility_name)
