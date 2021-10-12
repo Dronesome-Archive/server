@@ -15,17 +15,17 @@
     </div>
     <script>
         {% for f in facilities %}
-            facilities[{{ f.id }}] = {
-                'name': {{ f.name }},
-                'pos': [{{ f.pos|join(', ') }}],
-                'path': [{{ f.path|join(', ') }}]
+            facilities['{{ f.id }}'] = {
+                name: '{{ f.name }}',
+                pos: [{{ f.pos|join(', ') }}],
+                waypoints: [{{ f.waypoints|join(', ') }}]
             }
         {% endfor %}
-        ownFacility = facilities[{{ own.id }}];
-        homeFacility = facilities[{{ home.id }}];
-        facilityDroneState = {{ own.drone_state.value }};
-        droneRequested = {{ own.drone_requested }};
-        canControl = {{ can_control }};
+        ownFacility = facilities['{{ own.id }}'];
+        homeFacility = facilities['{{ home.id }}'];
+        facilityDroneState = '{{ own.drone_state.value }}';
+        droneRequested = {{ own.drone_requested|lower }};
+        canControl = {{ can_control|lower }};
         init();
     </script>
 {% endblock %}
