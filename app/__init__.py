@@ -35,5 +35,4 @@ def create_app(config_objects):
     init_exts(app)
     drones.init()
     register_blueprints(app)
-    # socketio.run(app)
     return app
