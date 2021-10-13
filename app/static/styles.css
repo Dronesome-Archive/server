@@ -185,6 +185,7 @@ button:disabled {
 #map_container {
     width: 100%;
     border-radius: var(--border);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
 }
