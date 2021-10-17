@@ -41,6 +41,8 @@ function init() {
         }
     }
 
+    onFacilityDroneState({state: facilityDroneState});
+
     const socket = io('/frontend');
     socket.on('facility_drone_state', onFacilityDroneState);
     socket.on('drone_state', onDroneState);
@@ -110,6 +112,7 @@ function showEmergency() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function onFacilityDroneState(...args) {
+    console.log('facilityDroneState', args)
     if (args.state === 'idle') {
         facilityLines[args.goal_facility_id].color = inactiveLineCol;
         if (ownFacility !== homeFacility) {
@@ -146,11 +149,13 @@ function onFacilityDroneState(...args) {
 }
 
 function onHeartbeat(args) {
+    console.log('heartbeat', args)
     batteryDisplay.children[0].style.height = (args.battery*100)+'%';
     droneMarker.setLatLng(args.pos)
 }
 
 function onDroneState(args) {
+    console.log('droneState', args)
     let states = {
         'idle': "Am Boden",
         'en_route': "Fliegt",
@@ -164,6 +169,7 @@ function onDroneState(args) {
 }
 
 function onDroneRequested(arg) {
+    console.log('droneRequested', arg)
     droneRequested = arg;
     document.getElementById('request').innerText = droneRequested ? "Kurier angefordert" : "Kurier anfordern";
     if (droneRequested) {
