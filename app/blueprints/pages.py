@@ -22,6 +22,9 @@ def sign_in():
 def register():
     print('register')
     print(drones.facilities)
+    for facility in drones.facilities:
+        print(facility.id)
+        print(facility.name)
     return flask.render_template(
         'register.html',
         facilities=drones.facilities
