@@ -7,7 +7,7 @@
             <select class="item" name="facility_id" required>
                 <option value="placeholder" disabled selected hidden>Betrieb</option>
                 {% for facility in facilities %}
-                    <option value="{{ str(facility['_id']) }}">{{ facility['name'] }}</option>
+                    <option value="{{ '{}'|format(facility['_id']) }}">{{ facility['name'] }}</option>
                 {% endfor %}
             </select>
             <div class="item">
