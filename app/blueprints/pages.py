@@ -20,6 +20,8 @@ def sign_in():
 # After sign up, register new user
 @pages.route('/register')
 def register():
+    print('register')
+    print(drones.facilities)
     return flask.render_template(
         'register.html',
         facilities=drones.facilities

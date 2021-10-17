@@ -27,6 +27,8 @@ def init():
     drone = Drone('/drone', home, facilities)
     socketio.on_namespace(drone)
 
+    print('facilities initialized')
+
 
 @socketio.on('connect', namespace=message.Namespace.FRONTEND)
 def frontend_connect():
