@@ -20,7 +20,7 @@ def sign_in():
 # After sign up, register new user
 @pages.route('/register')
 def register():
-    fac = [(f_id, f.name) for f_id, f in drones.facilities]
+    fac = [(f_id, f.name) for f_id, f in drones.facilities.items()]
     return flask.render_template(
         'register.html',
         facilities=fac
