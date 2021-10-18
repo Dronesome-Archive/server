@@ -112,7 +112,7 @@ function showEmergency() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function onFacilityDroneState(args) {
-    console.log(args)
+    console.log('facilityDroneState', args)
     if (args.state === 'idle') {
         facilityLines[args.goal_id].color = inactiveLineCol;
         if (ownFacility !== homeFacility) {

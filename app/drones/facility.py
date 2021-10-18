@@ -19,6 +19,7 @@ class Facility:
 
     # the drone has new heartbeat data, relay to our facility
     def send_heartbeat(self, battery, pos):
+        print(ToFrontend.HEARTBEAT.value, battery, pos)
         socketio.emit(
             ToFrontend.HEARTBEAT.value,
             {'battery': battery, 'pos': pos},
@@ -28,19 +29,21 @@ class Facility:
 
     # the drone has a new internal state, relay to our facility
     def send_drone_state(self, state):
+        print(ToFrontend.DRONE_STATUS.value, state)
         socketio.emit(
             ToFrontend.DRONE_STATUS.value,
-            state.value,
+            {'state': state.value},
             namespace=Namespace.FRONTEND.value,
             to=self.id
         )
 
-    # the drone has a new state, relay to our facility
+    # we have a new state, relay to our facility
     def set_state(self, state, goal_id):
         if self.drone_state != state:
             self.drone_state = state
             if state != State.IDLE:
                 self.set_drone_requested(False)
+            print(ToFrontend.FACILITY_DRONE_STATUS.value, state, goal_id)
             socketio.emit(
                 ToFrontend.FACILITY_DRONE_STATUS.value,
                 {'state': state.value, 'goal_id': goal_id},
@@ -54,9 +57,10 @@ class Facility:
             if drone_requested:
                 self.drone_requested_on = time.time()
             self.drone_requested = drone_requested
+            print(ToFrontend.DRONE_REQUESTED.value, drone_requested)
             socketio.emit(
                 ToFrontend.DRONE_REQUESTED.value,
-                self.drone_requested,
+                {'requested': drone_requested},
                 namespace=Namespace.FRONTEND.value,
                 to=self.id
             )
