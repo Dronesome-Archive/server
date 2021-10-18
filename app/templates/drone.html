@@ -17,6 +17,7 @@
     <script>
         {% for fac_id, fac in facilities.items() %}
             facilities['{{ fac_id }}'] = {
+                id: '{{ fac_id }}',
                 name: '{{ fac.name }}',
                 pos: [{{ fac.pos|join(', ') }}],
                 waypoints: [{{ fac.waypoints|join(', ') }}]
@@ -24,7 +25,6 @@
         {% endfor %}
         ownFacility = facilities['{{ own.id }}'];
         homeFacility = facilities['{{ home.id }}'];
-        facilityDroneState = '{{ own.drone_state.value }}';
         droneRequested = {{ own.drone_requested|lower }};
         canControl = {{ can_control|lower }};
         accessToken = '{{ mapbox_token }}';

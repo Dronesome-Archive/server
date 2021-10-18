@@ -13,9 +13,19 @@ class Facility:
         self.waypoints = waypoints  # in-between-waypoints from the facility to home
         self.name = name
         self.is_home = is_home
-        self.drone_state = State.IDLE
+        self.state = State.IDLE
         self.drone_requested = False
         self.drone_requested_on = time.time()
+
+    # the drone has a new goal, relay to our facility
+    def send_goal(self, goal_facility):
+        print(ToFrontend.DRONE_GOAL.value, str(goal_facility.id))
+        socketio.emit(
+            ToFrontend.DRONE_GOAL.value,
+            {'goal_facility_id': str(goal_facility.id)},
+            namespace=Namespace.FRONTEND.value,
+            to=self.id
+        )
 
     # the drone has new heartbeat data, relay to our facility
     def send_heartbeat(self, battery, pos):
@@ -29,27 +39,32 @@ class Facility:
 
     # the drone has a new internal state, relay to our facility
     def send_drone_state(self, state):
-        print(ToFrontend.DRONE_STATUS.value, state)
+        print(ToFrontend.DRONE_STATE.value, state)
         socketio.emit(
-            ToFrontend.DRONE_STATUS.value,
+            ToFrontend.DRONE_STATE.value,
             {'state': state.value},
             namespace=Namespace.FRONTEND.value,
             to=self.id
         )
 
+    # send our own state
+    def send_state(self):
+        print(ToFrontend.FACILITY_STATE.value, self.state.value)
+        socketio.emit(
+            ToFrontend.FACILITY_STATE.value,
+            {'state': self.state.value},
+            namespace=Namespace.FRONTEND.value,
+            to=self.id
+        )
+
     # we have a new state, relay to our facility
-    def set_state(self, state, goal_id):
-        if self.drone_state != state:
-            self.drone_state = state
+    def set_state(self, state):
+        if self.state != state:
+            self.state = state
             if state != State.IDLE:
                 self.set_drone_requested(False)
-            print(ToFrontend.FACILITY_DRONE_STATUS.value, state, goal_id)
-            socketio.emit(
-                ToFrontend.FACILITY_DRONE_STATUS.value,
-                {'state': state.value, 'goal_id': goal_id},
-                namespace=Namespace.FRONTEND.value,
-                to=self.id
-            )
+            print(ToFrontend.FACILITY_STATE.value, state)
+            self.send_state()
 
     # set drone request state and send to frontend
     def set_drone_requested(self, drone_requested):

@@ -1,6 +1,6 @@
+// DOM
 const inactiveLineCol = '#999999';
 const activeLineCol = '#99FF99';
-
 const droneButtons = document.getElementById('drone_buttons');
 const batteryDisplay = document.getElementById('battery_display');
 const stateDisplay = document.getElementById('state_display');
@@ -8,12 +8,14 @@ const stateDisplay = document.getElementById('state_display');
 let accessToken = '';
 let canControl = false
 
+// Facility data
 let facilities = [];
 let ownFacility = null;
 let homeFacility = null;
-let facilityDroneState = '';
+let goalFacility = null
 let droneRequested = false;
 
+// Map icons
 let droneMarker = {};
 let facilityMarkers = {};
 let facilityLines = {};
@@ -40,8 +42,6 @@ function init() {
             ).addTo(map);
         }
     }
-
-    onFacilityDroneState({state: facilityDroneState});
 
     const socket = io('/frontend');
     socket.on('facility_drone_state', onFacilityDroneState);
@@ -111,10 +111,20 @@ function showEmergency() {
 // SOCKETIO EVENT HANDLERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function onDroneGoal(args) {
+    console.log('droneGoal', args);
+    let goal = facilities[args.goal_facility_id];
+    if (goal !== homeFacility) {
+        goalFacility = goal;
+    }
+}
+
 function onFacilityDroneState(args) {
-    console.log('facilityDroneState', args)
+    console.log('facilityDroneState', args);
     if (args.state === 'idle') {
-        facilityLines[args.goal_id].color = inactiveLineCol;
+        for (facilityLine of facilityLines) {
+            facilityLine.color = inactiveLineCol;
+        }
         if (ownFacility !== homeFacility) {
             batteryDisplay.style.display = 'none';
             stateDisplay.style.display = 'none';
@@ -122,7 +132,7 @@ function onFacilityDroneState(args) {
     } else {
         batteryDisplay.style.display = 'initial';
         stateDisplay.style.display = 'initial';
-        facilityLines[args.goal_id].color = activeLineCol;
+        facilityLines[goalFacility.id].color = activeLineCol;
     }
 
     droneButtons.innerHTML = '';

@@ -35,8 +35,9 @@ def frontend_connect():
     if flask_login.current_user.is_authenticated:
         fac = facilities[str(flask_login.current_user.get()['facility_id'])]
         flask_socketio.join_room(fac.id)
-        if fac == home or fac.drone_state != State.IDLE:
-            # send data right away
+        fac.send_state()
+        if fac == home or fac.state != State.IDLE:
+            # send drone data right away
             home.send_heartbeat(drone.battery, drone.pos)
             home.send_drone_state(drone.state)
         return True
