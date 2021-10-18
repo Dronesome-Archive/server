@@ -11,6 +11,3 @@ logging.basicConfig(
 )
 logging.getLogger().addHandler(logging.StreamHandler())  # without this, errors only go to log, not stderr
 app = create_app([config, secret])
-if __name__ == '__main__':
-    app.run(ssl_context=('/root/.ssl/namecom.crt', '/root/.ssl/namecom.key'))
-
