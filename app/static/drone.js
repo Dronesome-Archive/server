@@ -111,10 +111,10 @@ function showEmergency() {
 // SOCKETIO EVENT HANDLERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function onFacilityDroneState(...args) {
-    console.log('facilityDroneState', args)
+function onFacilityDroneState(args) {
+    console.log(args)
     if (args.state === 'idle') {
-        facilityLines[args.goal_facility_id].color = inactiveLineCol;
+        facilityLines[args.goal_id].color = inactiveLineCol;
         if (ownFacility !== homeFacility) {
             batteryDisplay.style.display = 'none';
             stateDisplay.style.display = 'none';
@@ -122,7 +122,7 @@ function onFacilityDroneState(...args) {
     } else {
         batteryDisplay.style.display = 'initial';
         stateDisplay.style.display = 'initial';
-        facilityLines[args.goal_facility_id].color = activeLineCol;
+        facilityLines[args.goal_id].color = activeLineCol;
     }
 
     droneButtons.innerHTML = '';
