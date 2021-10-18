@@ -15,11 +15,11 @@
         <div id="drone_buttons"></div>
     </div>
     <script>
-        {% for f in facilities %}
-            facilities['{{ f.id }}'] = {
-                name: '{{ f.name }}',
-                pos: [{{ f.pos|join(', ') }}],
-                waypoints: [{{ f.waypoints|join(', ') }}]
+        {% for fac_id, fac in facilities.items() %}
+            facilities['{{ fac_id }}'] = {
+                name: '{{ fac.name }}',
+                pos: [{{ fac.pos|join(', ') }}],
+                waypoints: [{{ fac.waypoints|join(', ') }}]
             }
         {% endfor %}
         ownFacility = facilities['{{ own.id }}'];
