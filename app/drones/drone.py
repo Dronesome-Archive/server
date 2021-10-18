@@ -48,9 +48,9 @@ class Drone(flask_socketio.Namespace):
 
 	# if we have a message queued, send it
 	def on_connect(self, auth):
-		print("SIO CONNECTION", auth)
-		print('key', environ['SUPER_SECRET_DRONE_KEY'])
-		if auth == environ['SUPER_SECRET_DRONE_KEY']:
+		print("SIO CONNECTION", auth, type(auth))
+		print('key', environ['SUPER_SECRET_DRONE_KEY'], type(environ['SUPER_SECRET_DRONE_KEY']))
+		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
