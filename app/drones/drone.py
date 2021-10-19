@@ -48,23 +48,19 @@ class Drone(flask_socketio.Namespace):
 
 	# if we have a message queued, send it
 	def on_connect(self, auth):
-		print("SIO CONNECTION", auth, type(auth))
-		print('key', environ['SUPER_SECRET_DRONE_KEY'], type(environ['SUPER_SECRET_DRONE_KEY']))
-		print('12345678' == environ['SUPER_SECRET_DRONE_KEY'])
-		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:  # TODO: this fails for some reason?????
-			print('check')
+		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
 				self.emit_to_drone(self.outbox[0], self.outbox[1])
-			log.info('connected')
+			log.info('DRONE CONNECTED')
 		else:
-			log.warn('rejected')
+			log.warn('DRONE REJECTED')
 
 	# so long, partner
 	def on_disconnect(self):
 		self.connected = False
-		log.warn('disconnected')
+		log.warn('DRONE DISCONNECT')
 
 	# we received a heartbeat from the drone; will be registered as a socketio event handler
 	def on_heartbeat(self, json_msg):

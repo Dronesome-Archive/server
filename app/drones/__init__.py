@@ -32,9 +32,9 @@ def init():
 
 @socketio.on('connect', namespace=message.Namespace.FRONTEND)
 def frontend_connect():
-    print('FRONTEND CONNECT')
+    log.info('FRONTEND CONNECT')
     if flask_login.current_user.is_authenticated:
-        print('AUTHENTICATED')
+        log.info('AUTHENTICATED')
         fac = facilities[str(flask_login.current_user.get()['facility_id'])]
         flask_socketio.join_room(fac.id)
         fac.send_state()
