@@ -47,7 +47,7 @@ def drone():
     if user_facility == drones.home:
         facilities = drones.facilities
     else:
-        facilities = [user_facility, drones.home]
+        facilities = {f_id: f for f_id, f in drones.facilities.items() if f in [user_facility, drones.home]}
     return flask.render_template(
         'drone.html',
         navbar=True,
