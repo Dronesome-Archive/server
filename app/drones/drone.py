@@ -50,7 +50,8 @@ class Drone(flask_socketio.Namespace):
 	def on_connect(self, auth):
 		print("SIO CONNECTION", auth, type(auth))
 		print('key', environ['SUPER_SECRET_DRONE_KEY'], type(environ['SUPER_SECRET_DRONE_KEY']))
-		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:
+		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:  # TODO: this fails for some reason?????
+			print('check')
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
