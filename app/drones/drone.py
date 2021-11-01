@@ -11,15 +11,18 @@ from app.drones.message import ToDrone
 
 class Drone(flask_socketio.Namespace):
 	def __init__(self, namespace, home, facilities):
+		# facilities
 		self.home = home
 		self.facilities = facilities
 		self.goal_facility = home
 		self.latest_facility = home
-		self.outbox = None
+		for f in self.facilities:
+			f.set_state(facility.State.IDLE, self.goal_facility.id)
 
 		# connection to physical drone
 		self.lastUpdate = 0
 		self.connected = False
+		self.outbox = None
 
 		# values from physical drone
 		self.pos = (0.0, 0.0)
@@ -29,16 +32,16 @@ class Drone(flask_socketio.Namespace):
 		flask_socketio.Namespace.__init__(self, namespace)
 
 	# generate mission update dictionary to be sent to the drone
-	def generate_mission(self, fac, to_home=False):
+	def generate_mission(self, start, goal):
 		return {
 			'start': {
-				'id': fac.id if to_home else self.home.id,
-				'pos': fac.pos if to_home else self.home.pos
+				'id': start.id,
+				'pos': start.pos
 			},
-			'waypoints': fac.path if to_home else fac.path.reverse(),
+			'waypoints': start.waypoints if goal == self.home else reversed(goal.waypoints),
 			'goal': {
-				'id': self.home.id if to_home else fac.id,
-				'pos': self.home.pos if to_home else fac.pos
+				'id': start.id,
+				'pos': start.pos
 			}
 		}
 
@@ -103,41 +106,33 @@ class Drone(flask_socketio.Namespace):
 	# STATE
 	####################################################################################################################
 
-	# set a new goal facility and relay to involved facilities
-	def set_goal_facility(self, goal_facility):
-		self.goal_facility = goal_facility
-		self.latest_facility.send_goal(self.goal_facility)
-		self.goal_facility.send_goal(self.goal_facility)
-
 	# we got a state update from the drone; even if drone was returning, goal_facility_id is still the original goal's id
 	def state_update(self, state, current_facility_id_str, goal_facility_id_str):
 		current_facility = self.facilities[current_facility_id_str]
 		goal_facility = self.facilities[goal_facility_id_str]
 		if goal_facility != self.goal_facility and state != State.UPDATING:
 			log.warn("drone's goal facility", goal_facility.id, "not equal to ours:", self.goal_facility.id)
-			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
-			return
+			self.goal_facility = goal_facility
 
 		if state in [State.IDLE]:
+			self.goal_facility = self.home
 			if current_facility == self.home:
 				# landed on home, errand complete
-				self.latest_facility.set_state(facility.State.IDLE)
-				self.goal_facility.set_state(facility.State.IDLE)
-				self.check_for_missions()
+				self.latest_facility.set_state(facility.State.IDLE, self.goal_facility)
+				self.goal_facility.set_state(facility.State.IDLE, self.goal_facility)
 			else:
 				# landed on non-home
-				self.home.set_state(facility.State.IDLE)
-				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF)
-				self.set_goal_facility(self.home)
+				self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
+				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 		elif state in [State.EN_ROUTE, State.LANDING]:
-			self.goal_facility.set_state(facility.State.FLYING_TO)
-			self.latest_facility.set_state(facility.State.FLYING_FROM)
-		elif state in [State.RETURNING]:
-			self.goal_facility.set_state(facility.State.RETURNING_FROM)
-			self.latest_facility.set_state(facility.State.RETURNING_TO)
+			self.latest_facility.set_state(facility.State.FLYING, self.goal_facility)
+			self.goal_facility.set_state(facility.State.FLYING, self.goal_facility)
+		elif state in [State.EMERGENCY_RETURNING, State.RETURN_LANDING]:
+			self.latest_facility.set_state(facility.State.RETURNING, self.goal_facility)
+			self.goal_facility.set_state(facility.State.RETURNING, self.goal_facility)
 		elif state in [State.EMERGENCY_LANDING, State.CRASHED]:
-			self.goal_facility.set_state(facility.State.EMERGENCY)
-			self.latest_facility.set_state(facility.State.EMERGENCY)
+			self.latest_facility.set_state(facility.State.EMERGENCY, self.goal_facility)
+			self.goal_facility.set_state(facility.State.EMERGENCY, self.goal_facility)
 
 		self.latest_facility = current_facility
 		self.goal_facility.send_drone_state(state)
@@ -148,8 +143,9 @@ class Drone(flask_socketio.Namespace):
 		pending = [fac for fac_id, fac in self.facilities.items() if fac.drone_requested]
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
-			self.set_goal_facility(pending[0])
-			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.goal_facility))
+			self.goal_facility = pending[0]
+			self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
+			self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 
 	####################################################################################################################
 	# FRONTEND ORDERS
@@ -157,31 +153,33 @@ class Drone(flask_socketio.Namespace):
 
 	# users from home or the goal can order the drone to emergency land
 	def emergency_land(self, user_facility_id):
-		if self.goal_facility.id == user_facility_id or user_facility_id == self.home.id:
+		if user_facility_id in [self.goal_facility.id, self.latest_facility.id, self.home.id]:
 			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
 			return True
 		return False
 
 	# users from home or the goal can order the drone to return
 	def emergency_return(self, user_facility_id):
-		if (self.goal_facility.id == user_facility_id or user_facility_id == self.home.id) and self.latest_facility != self.goal_facility:
+		if user_facility_id in [self.goal_facility.id, self.latest_facility.id, self.home.id]:
 			self.emit_to_drone(ToDrone.EMERGENCY_RETURN)
 			return True
 		return False
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id):
-		if user_facility_id == self.latest_facility and self.latest_facility != self.goal_facility:
-			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.goal_facility, True))
+		if user_facility_id == self.latest_facility and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
+			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.latest_facility, self.goal_facility))
 			return True
 		return False
 
 	# request the drone to land on user_facility
 	def request(self, user_facility_id):
-		user_facility = [f for f in self.facilities if f.id == user_facility_id][0]
-		allowed_states = [facility.State.IDLE, facility.State.FLYING_FROM, facility.State.RETURNING_FROM]
-		if user_facility != self.home and user_facility.state in allowed_states:
-			user_facility.set_drone_requested(True)
+		fac = self.facilities[user_facility_id]
+		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
+		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
+		returning = (fac.state == facility.State.RETURNING and fac.drone_goal == fac)
+		if fac != self.home and (idle or en_route or returning):
+			fac.set_drone_requested(True)
 			self.check_for_missions()
 			return True
 		return False
@@ -192,7 +190,8 @@ class State(Enum):
 	IDLE = 'idle'
 	EN_ROUTE = 'en_route'
 	LANDING = 'landing'
-	RETURNING = 'returning'
+	RETURN_LANDING = 'return_landing'
+	EMERGENCY_RETURNING = 'emergency_returning'
 	EMERGENCY_LANDING = 'emergency_landing'
 	CRASHED = 'crashed'
 	UPDATING = 'updating'

@@ -37,13 +37,13 @@ emergency_land {}
 
 SERVER TO FRONTEND #####################################################################################################
 
-facility_drone_status {
-    "state": "idle|awaiting_takeoff|flying_to|returning_to|flying_from|returning_from|emergency",
+facility_state {
+    "state": "idle|emergency|awaiting_takeoff|en_route|returning",
     "goal_id": 13245893
 }
 
-drone_status {
-    "idle|en_route|landing|returning|emergency_landing|crashed|updating"
+drone_state {
+    "state": "idle|en_route|landing|returning|emergency_landing|crashed|updating"
 }
 
 heartbeat {
@@ -52,5 +52,5 @@ heartbeat {
 }
 
 drone_requested {
-    True|False
+    "requested": True|False
 }

@@ -93,7 +93,7 @@ def new():
         return redirect(flask.url_for('pages.register'))
 
     # Check key
-    if str(key) == str(new_user['key']):
+    if key == new_user['key']:
         if new_user['expiry'] > datetime.datetime.now():
             db_insert = db.users.insert_one({
                 'facility_id': ObjectId(facility_id),

@@ -13,7 +13,6 @@ class FromDrone(Enum):
 
 
 class ToFrontend(Enum):
-    DRONE_GOAL = 'drone_goal'
     FACILITY_STATE = 'facility_state'
     DRONE_STATE = 'drone_state'
     HEARTBEAT = 'heartbeat'

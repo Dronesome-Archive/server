@@ -40,7 +40,16 @@ def frontend_connect():
         fac.send_state()
         if fac == home or fac.state != State.IDLE:
             # send drone data right away
-            home.send_heartbeat(drone.battery, drone.pos)
-            home.send_drone_state(drone.state)
+            fac.send(message.ToFrontend.FACILITY_STATE)
+            fac.send(message.ToFrontend.DRONE_REQUESTED)
+            fac.send(message.ToFrontend.HEARTBEAT, battery=drone.battery, pos=drone.pos)
+            fac.send(message.ToFrontend.DRONE_STATE, state=drone.state)
         return True
     return False
+
+
+@socketio.on('message', namespace=message.Namespace.FRONTEND)
+def test_message(msg):
+    log.info('FRONTEND MESSAGE')  # TODO: how to even receive messages correctly?
+    print('FRONTEND MESSAGE')
+    print(msg)

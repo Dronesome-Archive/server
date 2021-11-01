@@ -1,6 +1,7 @@
 import time
 from enum import Enum
 
+from app import log
 from app.exts import socketio
 from app.drones.message import Namespace, ToFrontend
 
@@ -16,77 +17,43 @@ class Facility:
         self.state = State.IDLE
         self.drone_requested = False
         self.drone_requested_on = time.time()
-
-    # the drone has a new goal, relay to our facility
-    def send_goal(self, goal_facility):
-        print(ToFrontend.DRONE_GOAL.value, str(goal_facility.id))
-        socketio.emit(
-            ToFrontend.DRONE_GOAL.value,
-            {'goal_facility_id': str(goal_facility.id)},
-            namespace=Namespace.FRONTEND.value,
-            to=self.id
-        )
-
-    # the drone has new heartbeat data, relay to our facility
-    def send_heartbeat(self, battery, pos):
-        print(ToFrontend.HEARTBEAT.value, battery, pos)
-        socketio.emit(
-            ToFrontend.HEARTBEAT.value,
-            {'battery': battery, 'pos': pos},
-            namespace=Namespace.FRONTEND.value,
-            to=self.id
-        )
-
-    # the drone has a new internal state, relay to our facility
-    def send_drone_state(self, state):
-        print(ToFrontend.DRONE_STATE.value, state)
-        socketio.emit(
-            ToFrontend.DRONE_STATE.value,
-            {'state': state.value},
-            namespace=Namespace.FRONTEND.value,
-            to=self.id
-        )
-
-    # send our own state
-    def send_state(self):
-        print(ToFrontend.FACILITY_STATE.value, self.state.value)
-        socketio.emit(
-            ToFrontend.FACILITY_STATE.value,
-            {'state': self.state.value},
-            namespace=Namespace.FRONTEND.value,
-            to=self.id
-        )
+        self.drone_goal = self
 
     # we have a new state, relay to our facility
-    def set_state(self, state):
-        if self.state != state:
+    def set_state(self, state, goal_facility):
+        if self.state != state or self.drone_goal != goal_facility:
             self.state = state
+            self.drone_goal = goal_facility
             if state != State.IDLE:
                 self.set_drone_requested(False)
-            print(ToFrontend.FACILITY_STATE.value, state)
-            self.send_state()
+            self.send(ToFrontend.FACILITY_STATE)
 
     # set drone request state and send to frontend
     def set_drone_requested(self, drone_requested):
-        if not self.drone_requested == drone_requested:
+        if self.drone_requested != drone_requested:
             if drone_requested:
                 self.drone_requested_on = time.time()
             self.drone_requested = drone_requested
-            print(ToFrontend.DRONE_REQUESTED.value, drone_requested)
-            socketio.emit(
-                ToFrontend.DRONE_REQUESTED.value,
-                {'requested': drone_requested},
-                namespace=Namespace.FRONTEND.value,
-                to=self.id
-            )
+            self.send(ToFrontend.DRONE_REQUESTED)
+
+    # send a socketio message to the frontend
+    def send(self, msg_type, **kwargs):
+        if msg_type == ToFrontend.FACILITY_STATE:
+            content = {'state': self.state.value, 'goal_id': self.drone_goal.id}
+        elif msg_type == ToFrontend.DRONE_REQUESTED:
+            content = {'requested': self.drone_requested}
+        elif msg_type == ToFrontend.DRONE_STATE:
+            content = {'state': kwargs['state']}
+        elif msg_type == ToFrontend.HEARTBEAT:
+            content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
+        log.info(msg_type.value, content)
+        socketio.emit(msg_type.value, content, namespace=Namespace.FRONTEND.value, to=self.id)
 
 
 # state of the drone in relation to our facility
 class State(Enum):
     IDLE = 'idle'
     AWAITING_TAKEOFF = 'awaiting_takeoff'
-    FLYING_TO = 'flying_to'
-    RETURNING_TO = 'returning_to'
-    FLYING_FROM = 'flying_from'
-    RETURNING_FROM = 'returning_from'
+    EN_ROUTE = 'en_route'
+    RETURNING = 'returning'
     EMERGENCY = 'emergency'

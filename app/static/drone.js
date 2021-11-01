@@ -45,7 +45,8 @@ function init() {
 
     console.log('CONNECTING')
     const socket = io('/frontend');
-    console.log(io.protocol)
+    console.log(socket.protocol)
+    console.log(socket.connected)
     socket.on('facility_drone_state', onFacilityDroneState);
     socket.on('drone_state', onDroneState);
     socket.on('heartbeat', onHeartbeat);
@@ -172,6 +173,7 @@ function onDroneState(args) {
         'idle': "Am Boden",
         'en_route': "Fliegt",
         'landing': "Landet",
+        'return_landing': "Landet",
         'returning': "Kehrt zurück",
         'emergency_landing': "Macht Notlandung",
         'crashed': "Notgelandet",

@@ -64,3 +64,11 @@ db.facilities.insertOne({
     "is_home": true,
     "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
+
+# LABORUSER
+db.users.insertOne({
+    "facility_id" : ObjectId("61631a905c62c1f3e9a38df2"),
+    "name" : "Michelle Möbus",
+	"can_manage_users" : true,
+	"can_control_drone" : true
+})
