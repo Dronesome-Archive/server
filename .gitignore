@@ -3,3 +3,4 @@ _venv
 _setup
 secret.py
 log
+run.sh
