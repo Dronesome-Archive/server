@@ -1,5 +1,6 @@
-__pycache__
-_venv
-_setup
+__pycache__/
+_venv/
+_setup/
+.idea/
 secret.py
 log
