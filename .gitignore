@@ -4,3 +4,4 @@ _setup/
 .idea/
 secret.py
 log
+run.sh
