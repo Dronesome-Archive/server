@@ -17,7 +17,7 @@ class Drone(flask_socketio.Namespace):
 		self.goal_facility = home
 		self.latest_facility = home
 		for f in self.facilities.values():
-			f.set_state(facility.State.IDLE, self.goal_facility.id)
+			f.set_state(facility.State.IDLE, self.goal_facility)
 
 		# connection to physical drone
 		self.lastUpdate = 0
