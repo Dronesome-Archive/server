@@ -56,17 +56,19 @@ class Drone(flask_socketio.Namespace):
 			self.lastUpdate = time()
 			if self.outbox:
 				self.emit_to_drone(self.outbox[0], self.outbox[1])
-			log.info('DRONE CONNECTED')
+			log.info('CON')
 		else:
-			log.warn('DRONE REJECTED')
+			log.warn('REJ')
 
 	# so long, partner
 	def on_disconnect(self):
 		self.connected = False
-		log.warn('DRONE DISCONNECT')
+		log.warn('DIS')
 
 	# we received a heartbeat from the drone; will be registered as a socketio event handler
 	def on_heartbeat(self, json_msg):
+		log.info('RCV: heartbeat')
+		print(json_msg)
 		self.lastUpdate = time()
 		try:
 			pos = json_msg['pos']
@@ -81,6 +83,8 @@ class Drone(flask_socketio.Namespace):
 
 	# we received a state update from the drone; will be registered as a socketio event handler
 	def on_state_update(self, json_msg):
+		log.info('RCV: state_update')
+		print(json_msg)
 		self.lastUpdate = time()
 		try:
 			state = State(json_msg['state'])
@@ -94,12 +98,14 @@ class Drone(flask_socketio.Namespace):
 	# emit message to drone if connected, else queue in outbox
 	def emit_to_drone(self, msg_type, content=None):
 		if self.connected:
+			log.info('SND: ', msg_type.value)
 			if content:
+				log.info(content)
 				self.emit(msg_type.value, content)
 			else:
 				self.emit(msg_type.value)
-			log.info('sent', (msg_type, content))
 		else:
+			log.info('QUE: ', msg_type)
 			self.outbox = (msg_type, content)
 
 	####################################################################################################################
