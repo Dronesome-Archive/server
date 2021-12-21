@@ -6,7 +6,7 @@ import flask_socketio
 
 from app import log
 from app.drones import facility
-from app.drones.message import ToDrone
+from app.drones.message import ToDrone, ToFrontend
 
 
 class Drone(flask_socketio.Namespace):
@@ -78,8 +78,8 @@ class Drone(flask_socketio.Namespace):
 			return
 		self.pos = pos
 		self.battery = battery
-		self.goal_facility.send_heartbeat(battery, pos)
-		self.latest_facility.send_heartbeat(battery, pos)
+		self.goal_facility.send(ToFrontend.HEARTBEAT, **json_msg)
+		self.latest_facility.send(ToFrontend.HEARTBEAT, **json_msg)
 
 	# we received a state update from the drone; will be registered as a socketio event handler
 	def on_state_update(self, json_msg):
