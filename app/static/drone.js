@@ -47,7 +47,7 @@ function init() {
     const socket = io('/frontend');
     console.log(socket.protocol)
     console.log(socket.connected)
-    socket.on('facility_drone_state', onFacilityDroneState);
+    socket.on('facility_state', onFacilityState);
     socket.on('drone_state', onDroneState);
     socket.on('heartbeat', onHeartbeat);
     socket.on('drone_requested', onDroneRequested);
@@ -122,8 +122,8 @@ function onDroneGoal(args) {
     }
 }
 
-function onFacilityDroneState(args) {
-    console.log('facilityDroneState', args);
+function onFacilityState(args) {
+    console.log('onFacilityState', args);
     if (args.state === 'idle') {
         for (facilityLine of facilityLines) {
             facilityLine.color = inactiveLineCol;
@@ -162,13 +162,13 @@ function onFacilityDroneState(args) {
 }
 
 function onHeartbeat(args) {
-    console.log('heartbeat', args)
+    console.log('onHeartbeat', args)
     batteryDisplay.children[0].style.height = (args.battery*100)+'%';
     droneMarker.setLatLng(args.pos)
 }
 
 function onDroneState(args) {
-    console.log('droneState', args)
+    console.log('onDroneState', args)
     let states = {
         'idle': "Am Boden",
         'en_route': "Fliegt",
@@ -183,7 +183,7 @@ function onDroneState(args) {
 }
 
 function onDroneRequested(arg) {
-    console.log('droneRequested', arg)
+    console.log('onDroneRequested', arg)
     droneRequested = arg;
     document.getElementById('request').innerText = droneRequested ? "Kurier angefordert" : "Kurier anfordern";
     if (droneRequested) {
