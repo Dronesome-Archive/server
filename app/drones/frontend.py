@@ -11,7 +11,7 @@ class Frontend(flask_socketio.Namespace):
         self.home = home
         self.facilities = facilities
         self.drone = drone
-        super().__init__(self, namespace)
+        flask_socketio.Namespace.__init__(self, namespace)
     
     def on_connect(self):
         log.info('FRONTEND CONNECT')
