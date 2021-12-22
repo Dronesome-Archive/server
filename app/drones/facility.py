@@ -43,7 +43,7 @@ class Facility:
         elif msg_type == ToFrontend.DRONE_REQUESTED:
             content = {'requested': self.drone_requested}
         elif msg_type == ToFrontend.DRONE_STATE:
-            content = {'state': kwargs['state']}
+            content = {'state': kwargs['state'].value}
         elif msg_type == ToFrontend.HEARTBEAT:
             content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
         log.info(msg_type.value, content)

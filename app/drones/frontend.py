@@ -24,7 +24,6 @@ class Frontend(flask_socketio.Namespace):
             fac.send(message.ToFrontend.FACILITY_STATE)
             if fac == self.home or fac.state != State.IDLE:
                 # send drone data right away
-                fac.send(message.ToFrontend.FACILITY_STATE)
                 fac.send(message.ToFrontend.DRONE_REQUESTED)
                 fac.send(message.ToFrontend.HEARTBEAT, battery=self.drone.battery, pos=self.drone.pos)
                 fac.send(message.ToFrontend.DRONE_STATE, state=self.drone.state)
