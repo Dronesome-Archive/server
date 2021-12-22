@@ -1,25 +1,26 @@
 <script src="https://unpkg.com/socket.io-client@4.3.2/dist/socket.io.min.js"></script>
 <script>
-	const socket = io("/frontend");
-	console.log("connect");
-	socket.on('facility_state', onFacilityState);
+    const socket = io("/frontend");
+    console.log("connect");
+    socket.on('facility_state', onFacilityState);
     socket.on('drone_state', onDroneState);
     socket.on('heartbeat', onHeartbeat);
     socket.on('drone_requested', onDroneRequested);
+    socket.emit('message', 'its ya boi');
 
-	function onFacilityState(args) {
-		console.log('onFacilityState', args);
-	}
+    function onFacilityState(args) {
+        console.log('onFacilityState', args);
+    }
 
-	function onDroneState(args) {
-		console.log('onDroneState', args);
-	}
+    function onDroneState(args) {
+        console.log('onDroneState', args);
+    }
 
-	function onHeartbeat(args) {
-		console.log('onHeartbeat', args);
-	}
+    function onHeartbeat(args) {
+        console.log('onHeartbeat', args);
+    }
 
-	function onDroneRequested(args) {
-		console.log('onDroneRequested', args);
-	}
+    function onDroneRequested(args) {
+        console.log('onDroneRequested', args);
+    }
 </script>
