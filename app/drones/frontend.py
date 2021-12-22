@@ -21,7 +21,7 @@ class Frontend(flask_socketio.Namespace):
             #fac = self.facilities[str(flask_login.current_user.get()['facility_id'])]
             fac = self.home
             flask_socketio.join_room(fac.id)
-            fac.send_state()
+            fac.send(message.ToFrontend.FACILITY_STATE)
             if fac == self.home or fac.state != State.IDLE:
                 # send drone data right away
                 fac.send(message.ToFrontend.FACILITY_STATE)
