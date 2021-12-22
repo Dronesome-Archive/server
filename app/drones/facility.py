@@ -47,7 +47,7 @@ class Facility:
         elif msg_type == ToFrontend.HEARTBEAT:
             content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
         log.info(msg_type.value, content)
-        socketio.emit(msg_type.value, content, namespace=Namespace.FRONTEND.value, to=self.id)
+        socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id)
 
 
 # state of the drone in relation to our facility
