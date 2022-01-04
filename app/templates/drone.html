@@ -28,7 +28,8 @@
         droneRequested = {{ own.drone_requested|lower }};
         canControl = {{ can_control|lower }};
         accessToken = '{{ mapbox_token }}';
-        init();
+
+        window.onload = init;
     </script>
 {% endblock %}
 

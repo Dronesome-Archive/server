@@ -1,27 +1,35 @@
-// DOM
+// style
 const inactiveLineCol = '#999999';
 const activeLineCol = '#99FF99';
-const droneButtons = document.getElementById('drone_buttons');
-const batteryDisplay = document.getElementById('battery_display');
-const stateDisplay = document.getElementById('state_display');
+
+// DOM
+let droneButtons;
+let batteryDisplay;
+let stateDisplay;
 
 let accessToken = '';
 let canControl = false
 
-// Facility data
+// facility data
 let facilities = [];
 let ownFacility = null;
 let homeFacility = null;
 let goalFacility = null
 let droneRequested = false;
 
-// Map icons
+// map icons
 let droneMarker = {};
 let facilityMarkers = [];
 let facilityLines = [];
 
 
 function init() {
+    // get DOM elements
+    droneButtons = document.getElementById('drone_buttons');
+    batteryDisplay = document.getElementById('battery_display');
+    stateDisplay = document.getElementById('state_display');
+
+    // init map
     let map = L.map('map').setView(ownFacility.pos, 13);
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -31,7 +39,6 @@ function init() {
         zoomOffset: -1,
         accessToken: accessToken
     }).addTo(map);
-
     droneMarker = L.marker([0.0, 0.0], {title: 'Kurier'});
     for (let facilityId in facilities) {
         facilityMarkers[facilityId] = L.marker(facilities[facilityId].pos, {title: facilities[facilityId].name}).addTo(map);
@@ -43,10 +50,8 @@ function init() {
         }
     }
 
-    console.log('CONNECTING')
+    // connect via socketio
     const socket = io('/frontend');
-    console.log(socket.protocol)
-    console.log(socket.connected)
     socket.on('facility_state', onFacilityState);
     socket.on('drone_state', onDroneState);
     socket.on('heartbeat', onHeartbeat);
