@@ -17,8 +17,8 @@ let droneRequested = false;
 
 // Map icons
 let droneMarker = {};
-let facilityMarkers = {};
-let facilityLines = {};
+let facilityMarkers = [];
+let facilityLines = [];
 
 
 function init() {
@@ -125,8 +125,8 @@ function onDroneGoal(args) {
 function onFacilityState(args) {
     console.log('onFacilityState', args);
     if (args.state === 'idle') {
-        for (facilityLine of facilityLines) {
-            facilityLine.color = inactiveLineCol;
+        for (const i in facilityLines) {
+            facilityLines[i].color = inactiveLineCol;
         }
         if (ownFacility !== homeFacility) {
             batteryDisplay.style.display = 'none';
