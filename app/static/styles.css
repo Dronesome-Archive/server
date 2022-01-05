@@ -166,7 +166,7 @@ button:disabled {
 
 /* MAP */
 
-#battery-display, #battery-display::after {
+#battery_display, #battery_display::after {
     position: absolute;
     border: 1px solid black;
     border-radius: 4px;
