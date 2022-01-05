@@ -168,7 +168,7 @@ function onFacilityState(args) {
 
 function onHeartbeat(args) {
     console.log('onHeartbeat', args)
-    batteryDisplay.children[0].style.height = (args.battery*100)+'%';
+    batteryDisplay.children[0].style.width = (args.battery*100)+'%';
     droneMarker.setLatLng(args.pos)
 }
 

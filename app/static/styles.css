@@ -101,7 +101,7 @@ input:focus, button:focus, select:focus {
     background: white;
     padding: 0 1em;
     border-radius: var(--border);
-    border: var(--col_fg) 1px solid;
+    border: 1px solid var(--col_fg);
 
     /* in case the item contains multiple elements */
     display: flex;
@@ -111,7 +111,7 @@ input:focus, button:focus, select:focus {
 }
 
 .item.focused {
-    border: var(--col_fg_focus) 1px solid;
+    border: 1px solid var(--col_fg_focus);
 }
 
 select[value="placeholder"], ::placeholder {
@@ -166,20 +166,35 @@ button:disabled {
 
 /* MAP */
 
-.battery {
-    border: 2px solid white;
-    border-radius: 2px;
-    width: 10px;
-    height: 40px;
+#battery-display, #battery-display::after {
+    position: absolute;
+    border: 1px solid black;
+    border-radius: 4px;
+    background: white;
 }
 
-.battery::after {
-    width: 50%;
-    height: 10%;
-    position: relative;
-    bottom: 100%;
-    border-radius: 2px;
-    background-color: white;
+#battery-display {
+    top: 100px;
+    left: 100px;
+    width: 40px;
+    height: 30px;
+    padding: 4px;
+}
+
+#battery-display::after {
+    box-sizing: border-box; /* include borders in size; the * selector doesn't cover this */
+    top: 20%;
+    left: 100%;
+    width: 15%;
+    height: 60%;
+    content: ''; /* ::after only gets rendered when there's content */
+    border-left-style: none;
+}
+
+#battery-display div {
+    height: 100%;
+    width: 100%;
+    background: green;
 }
 
 #map_container {
