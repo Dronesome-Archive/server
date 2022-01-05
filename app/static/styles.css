@@ -173,7 +173,7 @@ button:disabled {
     background: white;
 }
 
-#battery-display {
+#battery_display {
     top: 100px;
     left: 100px;
     width: 40px;
@@ -181,7 +181,7 @@ button:disabled {
     padding: 4px;
 }
 
-#battery-display::after {
+#battery_display::after {
     box-sizing: border-box; /* include borders in size; the * selector doesn't cover this */
     top: 20%;
     left: 100%;
@@ -191,7 +191,7 @@ button:disabled {
     border-left-style: none;
 }
 
-#battery-display div {
+#battery_display div {
     height: 100%;
     width: 100%;
     background: green;
