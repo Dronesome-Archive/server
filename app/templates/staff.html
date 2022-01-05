@@ -10,8 +10,8 @@
                 <div class="item">
                     <p class="stretch">{{ member['name'] }}</p>
                     {% if me['can_manage_users'] %}
-                        <button onclick="show_popup('{{ member['name'] }}_edit')"><i class="fas fa-pen-alt"></i></button>
-                        <button onclick="show_popup('{{ member['name'] }}_delete')"><i class="fas fa-trash-alt"></i></button>
+                        <button onclick="show_popup('{{ member['_id'] }}_edit')"><i class="fas fa-pen-alt"></i></button>
+                        <button onclick="show_popup('{{ member['_id'] }}_delete')"><i class="fas fa-trash-alt"></i></button>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -43,7 +43,7 @@
         </div>
 
     {% for member in members %}
-        <div class="popup centered window" id="{{ member['name'] }}_edit">
+        <div class="popup centered window" id="{{ member['_id'] }}_edit">
             <h2>{{ member['name'] }}</h2>
             <form class="flex_stack" method="post" action="{{ url_for('users.edit', user_id=member['_id']) }}">
                 <input type="text" name="name" value="{{ member['name'] }}">
@@ -56,17 +56,17 @@
                     <input type="checkbox" name="can_manage_users" {% if member['can_manage_users'] %}checked{% endif %}>
                 </div>
                 <div class="flex_row">
-                    <button class="item" type="reset" onclick="hide_popup('{{ member['name'] }}_edit')">Abbrechen</button>
+                    <button class="item" type="reset" onclick="hide_popup('{{ member['_id'] }}_edit')">Abbrechen</button>
                     <button class="item" type="submit">OK</button>
                 </div>
             </form>
         </div>
 
-        <div class="popup centered window" id="{{ member['name'] }}_delete">
+        <div class="popup centered window" id="{{ member['_id'] }}_delete">
             <p>Account von {{ member['name'] }} wirklich löschen?</p>
             <form method="post" action="{{ url_for('users.delete', user_id=member['_id']) }}">
                 <div class="flex_row">
-                    <button class="item" type="button" onclick="hide_popup('{{ member['name'] }}_edit')">Nein, abbrechen</button>
+                    <button class="item" type="button" onclick="hide_popup('{{ member['_id'] }}_edit')">Nein, abbrechen</button>
                     <button class="item" type="submit">Ja, löschen</button>
                 </div>
             </form>
