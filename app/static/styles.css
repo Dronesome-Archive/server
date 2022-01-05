@@ -198,6 +198,7 @@ button:disabled {
 
 #map_container {
     width: 100%;
+    border: 1px solid var(--col_fg);
     border-radius: var(--border);
     overflow: hidden;
     display: flex;
@@ -205,7 +206,7 @@ button:disabled {
 }
 
 #state_container {
-    padding: 0 var(--margin);
+    padding: var(--margin);
     display: flex;
     gap: var(--margin);
     justify-content: space-between;

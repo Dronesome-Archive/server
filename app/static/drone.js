@@ -187,9 +187,9 @@ function onDroneState(args) {
     stateDisplay.innerText = states[args.state]
 }
 
-function onDroneRequested(arg) {
-    console.log('onDroneRequested', arg)
-    droneRequested = arg;
+function onDroneRequested(args) {
+    console.log('onDroneRequested', args)
+    droneRequested = args.requested;
     document.getElementById('request').innerText = droneRequested ? "Kurier angefordert" : "Kurier anfordern";
     if (droneRequested) {
         document.getElementById('request').classList.add('good_step');
