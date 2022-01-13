@@ -3,13 +3,13 @@ import flask_login
 
 from app.drones import drone, facilities
 
-# Drone control API; Requests: POST; Response: redirect, flash
+# Drone control API; Requests: GET; Response: redirect, flash
 drone_control = flask.Blueprint('drone_control', __name__, url_prefix='/drone_control')
 
 
 # allow the drone to take off from our facility
 @flask_login.login_required
-@drone_control.route('/<string:command>', methods=['POST'])
+@drone_control.route('/<string:command>', methods=['GET'])
 def control(command):
     commands = {
         'request': (drone.request, "Kurier angefordert"),
