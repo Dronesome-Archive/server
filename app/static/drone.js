@@ -22,9 +22,10 @@ let facilityState = '';
 let droneRequested = false;
 
 // map icons
-let droneMarker = {};
+let droneMarker = null;
 let facilityMarkers = [];
 let facilityLines = [];
+let currentFacilityLine = null;
 
 
 function init() {
@@ -146,8 +147,8 @@ function onFacilityState(args) {
     }
 
     // show / hide facility line
-    if (goalFacility != homeFacility) facilityLine = facilityLines[goalFacility.id];
-    facilityLine.color = (args.state === 'idle') ? inactiveLineCol : activeLineCol;
+    if (goalFacility != homeFacility) currentFacilityLine = facilityLines[goalFacility.id];
+    if (currentFacilityLine) currentFacilityLine.color = (args.state === 'idle') ? inactiveLineCol : activeLineCol;
 
     // show interactions
     droneButtons.innerHTML = '';
