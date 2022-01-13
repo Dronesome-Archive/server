@@ -91,14 +91,14 @@ function showReturn() {
     let button = showButton('Sofort umkehren', ['bad_step']);
     button.onclick = () => {
         show_popup('emergency_return');
-    }
+    };
 }
 
 function showLand() {
     let button = showButton('Notlanden', ['bad_step']);
     button.onclick = () => {
         show_popup('emergency_land');
-    }
+    };
 }
 
 function showRequest() {
@@ -170,13 +170,13 @@ function onFacilityState(args) {
 }
 
 function onHeartbeat(args) {
-    console.log('onHeartbeat', args)
+    console.log('onHeartbeat', args);
     batteryDisplay.children[0].style.width = (args.battery*100)+'%';
-    droneMarker.setLatLng(args.pos)
+    droneMarker.setLatLng(args.pos);
 }
 
 function onDroneState(args) {
-    console.log('onDroneState', args)
+    console.log('onDroneState', args);
     let states = {
         'idle': "Am Boden",
         'en_route': "Fliegt",
@@ -186,17 +186,12 @@ function onDroneState(args) {
         'emergency_landing': "Macht Notlandung",
         'crashed': "Notgelandet",
         'updating': "Empfängt Mission"
-    }
-    stateDisplay.innerText = states[args.state]
+    };
+    stateDisplay.innerText = states[args.state];
 }
 
 function onDroneRequested(args) {
-    console.log('onDroneRequested', args)
+    console.log('onDroneRequested', args);
     droneRequested = args.requested; // only true when we are waiting for the mission to start
-    document.getElementById('request').innerText = droneRequested ? "Kurier angefordert" : "Kurier anfordern";
-    if (droneRequested) {
-        document.getElementById('request').classList.add('good_step');
-    } else {
-        document.getElementById('request').classList.remove('good_step')
-    }
+    showRequest();
 }
