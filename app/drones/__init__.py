@@ -11,11 +11,11 @@ from app.drones.facility import Facility, State
 
 facilities = {}
 home = None
-drone = None
+droneObj = None
 
 
 def init():
-    global home, drone
+    global home, droneObj
 
     raw_facilities = db.facilities.find()
     for raw in raw_facilities:
@@ -25,10 +25,10 @@ def init():
     if not home:
         log.warn('no home found')
 
-    drone = Drone('/drone', home, facilities)
-    socketio.on_namespace(drone)
+    droneObj = Drone('/drone', home, facilities)
+    socketio.on_namespace(droneObj)
 
-    frontend = Frontend('/frontend', home, facilities, drone)
+    frontend = Frontend('/frontend', home, facilities, droneObj)
     socketio.on_namespace(frontend)
 
     print('facilities initialized')
