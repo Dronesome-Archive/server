@@ -131,8 +131,8 @@ class Drone(flask_socketio.Namespace):
 				self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 		elif state in [State.EN_ROUTE, State.LANDING]:
-			self.latest_facility.set_state(facility.State.FLYING, self.goal_facility)
-			self.goal_facility.set_state(facility.State.FLYING, self.goal_facility)
+			self.latest_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
+			self.goal_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
 		elif state in [State.EMERGENCY_RETURNING, State.RETURN_LANDING]:
 			self.latest_facility.set_state(facility.State.RETURNING, self.goal_facility)
 			self.goal_facility.set_state(facility.State.RETURNING, self.goal_facility)

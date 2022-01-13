@@ -6,15 +6,19 @@ const activeLineCol = '#99FF99';
 let droneButtons;
 let batteryDisplay;
 let stateDisplay;
+let stateContainer;
 
 let accessToken = '';
-let canControl = false
+let canControl = false;
 
-// facility data
+// facility data (set at the beginning)
 let facilities = [];
 let ownFacility = null;
 let homeFacility = null;
-let goalFacility = null
+
+// facility data (set dynamically)
+let goalFacility = null;
+let facilityState = '';
 let droneRequested = false;
 
 // map icons
@@ -28,6 +32,7 @@ function init() {
     droneButtons = document.getElementById('drone_buttons');
     batteryDisplay = document.getElementById('battery_display');
     stateDisplay = document.getElementById('state_display');
+    stateContainer = document.getElementById('state_container');
 
     // init map
     let map = L.map('map').setView(ownFacility.pos, 13);
@@ -96,10 +101,14 @@ function showLand() {
 }
 
 function showRequest() {
-    let button = showButton(
-        droneRequested ? "Kurier angefordert" : "Kurier anfordern",
-        droneRequested ? [] : ['good_step']
-    )
+    let canRequest = (ownFacility != goalFacility) && !droneRequested;
+    let button = document.getElementById('request');
+    if (!button) {
+        button = showButton(
+            canRequest ? "Kurier anfordern" : "Kurier angefordert",
+            canRequest ? ['good_step'] : []
+        );
+    }
     button.onclick = () => {
         window.location.href = '/drone_control/request';
     }
@@ -119,44 +128,37 @@ function showEmergency() {
 // SOCKETIO EVENT HANDLERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function onDroneGoal(args) {
-    console.log('droneGoal', args);
-    let goal = facilities[args.goal_facility_id];
-    if (goal !== homeFacility) {
-        goalFacility = goal;
-    }
-}
-
 function onFacilityState(args) {
     console.log('onFacilityState', args);
-    if (args.state === 'idle') {
-        for (const i in facilityLines) {
-            facilityLines[i].color = inactiveLineCol;
-        }
-        if (ownFacility !== homeFacility) {
-            batteryDisplay.style.display = 'none';
-            stateDisplay.style.display = 'none';
-        }
+
+    // show request button
+    goalFacility = facilities[args.goal_id];
+    if (ownFacility != homeFacility) showRequest();
+
+    // highlight goal
+    facilityMarkers[goalFacility.id].color = '#FF0000';
+
+    // show / hide drone state
+    if (args.state === 'idle' && goalFacility != ownFacility) {
+        stateContainer.style.display = 'none';
     } else {
-        batteryDisplay.style.display = 'initial';
-        stateDisplay.style.display = 'initial';
-        facilityLines[goalFacility.id].color = activeLineCol;
+        stateContainer.style.display = 'initial';
     }
 
+    // show / hide facility line
+    if (goalFacility != homeFacility) facilityLine = facilityLines[goalFacility.id];
+    facilityLine.color = (args.state === 'idle') ? inactiveLineCol : activeLineCol;
+
+    // show interactions
     droneButtons.innerHTML = '';
     if (canControl) {
         switch (args.state) {
-            case 'idle':
-            case 'flying_from':
-            case 'returning_from':
-                showRequest();
-                break;
             case 'awaiting_takeoff':
                 showTakeoff();
                 break;
-            case 'flying_to':
+            case 'en_route':
                 showReturn();
-            case 'returning_to':
+            case 'returning':
                 showLand();
                 break;
             case 'emergency':
@@ -189,7 +191,7 @@ function onDroneState(args) {
 
 function onDroneRequested(args) {
     console.log('onDroneRequested', args)
-    droneRequested = args.requested;
+    droneRequested = args.requested; // only true when we are waiting for the mission to start
     document.getElementById('request').innerText = droneRequested ? "Kurier angefordert" : "Kurier anfordern";
     if (droneRequested) {
         document.getElementById('request').classList.add('good_step');
