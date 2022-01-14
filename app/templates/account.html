@@ -23,7 +23,7 @@
 
     <div class="popup centered window" id="delete">
         <p>Account wirklich löschen?</p>
-        <form class="flex_row" method="post" action="{{ url_for('users.delete') }}">
+        <form class="flex_row" method="post" action="{{ url_for('users.delete', user_id=userid) }}">
             <button class="item" type="reset" onclick="hide_popup('delete')">Nein, abbrechen</button>
             <button class="item" type="submit">Ja, löschen</button>
         </form>

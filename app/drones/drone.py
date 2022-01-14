@@ -35,12 +35,12 @@ class Drone(flask_socketio.Namespace):
 	def generate_mission(self, start, goal):
 		return {
 			'start': {
-				'id': start.id,
+				'id': start.id_str,
 				'pos': start.pos
 			},
 			'waypoints': start.waypoints if goal == self.home else reversed(goal.waypoints),
 			'goal': {
-				'id': start.id,
+				'id': start.id_str,
 				'pos': start.pos
 			}
 		}
@@ -117,7 +117,7 @@ class Drone(flask_socketio.Namespace):
 		current_facility = self.facilities[current_facility_id_str]
 		goal_facility = self.facilities[goal_facility_id_str]
 		if goal_facility != self.goal_facility and state != State.UPDATING:
-			log.warn("drone's goal facility", goal_facility.id, "not equal to ours:", self.goal_facility.id)
+			log.warn("drone's goal facility", goal_facility.id_str, "not equal to ours:", self.goal_facility.id_str)
 			self.goal_facility = goal_facility
 
 		if state in [State.IDLE]:
@@ -160,22 +160,22 @@ class Drone(flask_socketio.Namespace):
 	####################################################################################################################
 
 	# users from home or the goal can order the drone to emergency land
-	def emergency_land(self, user_facility_id):
-		if user_facility_id in [self.goal_facility.id, self.latest_facility.id, self.home.id]:
+	def emergency_land(self, user_facility_id_str):
+		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
 			return True
 		return False
 
 	# users from home or the goal can order the drone to return
-	def emergency_return(self, user_facility_id):
-		if user_facility_id in [self.goal_facility.id, self.latest_facility.id, self.home.id]:
+	def emergency_return(self, user_facility_id_str):
+		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.emit_to_drone(ToDrone.EMERGENCY_RETURN)
 			return True
 		return False
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
-	def allow_takeoff(self, user_facility_id):
-		if user_facility_id == self.latest_facility.id and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
+	def allow_takeoff(self, user_facility_id_str):
+		if user_facility_id_str == self.latest_facility.id_str and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
 			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.latest_facility, self.goal_facility))
 			return True
 		return False

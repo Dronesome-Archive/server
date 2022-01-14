@@ -63,7 +63,7 @@ def callback(oauth_server):
 @auth.route('/logout')
 @flask_login.login_required
 def logout():
-    db.users.update_one({'_id': flask_login.current_user.id}, {'$set': {'login_id': ObjectId()}})
+    db.users.update_one({'_id': ObjectId(flask_login.current_user.id_str)}, {'$set': {'login_id': ObjectId()}})
     flask_login.logout_user()
     flask.flash('Ausgeloggt.')
     return redirect(flask.url_for('pages.sign_in'))

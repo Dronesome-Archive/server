@@ -2,6 +2,7 @@ from os import environ
 
 import flask
 import flask_login
+from bson.objectid import ObjectId
 
 from app import drones
 from app.exts import db, login
@@ -39,7 +40,8 @@ def account():
     return flask.render_template(
         'account.html',
         navbar=True,
-        username=flask_login.current_user.get()['name']
+        username=flask_login.current_user.get()['name'],
+        userid=flask_login.current_user.id_str
     )
 
 
@@ -70,7 +72,7 @@ def drone():
 def staff():
     # need members as list bc find() only returns a one-time-iterator
     members = [m for m in db.users.find({
-        '_id': {'$ne': flask_login.current_user.id},
+        '_id': {'$ne': ObjectId(flask_login.current_user.id_str)},
         'facility_id': flask_login.current_user.get()['facility_id']
     })]
     me = flask_login.current_user.get()

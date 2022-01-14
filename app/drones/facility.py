@@ -8,8 +8,8 @@ from app.drones.message import Namespace, ToFrontend
 
 # landing pad the users of which can request the drone
 class Facility:
-    def __init__(self, facility_id, pos, waypoints, name, is_home):
-        self.id = facility_id
+    def __init__(self, id_str, pos, waypoints, name, is_home):
+        self.id_str = id_str
         self.pos = pos
         self.waypoints = waypoints  # in-between-waypoints from the facility to home
         self.name = name
@@ -39,7 +39,7 @@ class Facility:
     # send a socketio message to the frontend
     def send(self, msg_type, **kwargs):
         if msg_type == ToFrontend.FACILITY_STATE:
-            content = {'state': self.state.value, 'goal_id': self.drone_goal.id}
+            content = {'state': self.state.value, 'goal_id': self.drone_goal.id_str}
         elif msg_type == ToFrontend.DRONE_REQUESTED:
             content = {'requested': self.drone_requested}
         elif msg_type == ToFrontend.DRONE_STATE:
@@ -47,7 +47,7 @@ class Facility:
         elif msg_type == ToFrontend.HEARTBEAT:
             content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
         log.info(msg_type.value, content)
-        socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id)
+        socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id_str)
 
 
 # state of the drone in relation to our facility

@@ -49,7 +49,7 @@ def new_key():
         log.info('new key', new_user['key'])
         flask.flash('Schlüssel: ' + new_user['key'])
     else:
-        log.warn('failed,', flask_login.current_user.id, 'does not have the rights')
+        log.warn('failed,', flask_login.current_user.id_str, 'does not have the rights')
         flask.flash('Keine Berechtigung.', 'error')
 
     return redirect(flask.request.referrer)
@@ -120,34 +120,32 @@ def new():
         return redirect(flask.url_for('pages.register'))
 
 
-# Arguments: name, can_manage_users, can_control_drone, user_id; change attributes of a user
+# Arguments: name, can_manage_users, can_control_drone, user_id_str; change attributes of a user
 @users.route('/edit', methods=['POST'])
 @flask_login.login_required
-def edit(user_id=''):
-    try:
-        user_id = ObjectId(user_id)
-    except:
-        user_id = flask_login.current_user.id
+def edit(user_id_str=''):
+    if not db.users.find({'_id': ObjectId(user_id_str)}):
+        user_id_str = flask_login.current_user.id_str
 
     # Set values to None if not specified
     name = flask.request.form.get('name', None)
     can_manage_users = flask.request.form.get('can_manage_users', None)
     can_control_drone = flask.request.form.get('can_control_drone', None)
 
-    log.info('Changing user', user_id, 'to', name, can_manage_users, can_control_drone)
+    log.info('Changing user', user_id_str, 'to', name, can_manage_users, can_control_drone)
 
-    if user_id == flask_login.current_user.id:
+    if user_id_str == flask_login.current_user.id_str:
         # Change self
         if name:
-            db.users.update_one({'_id': user_id}, {'$set': {'name': name.strip()[:current_app.config['MAX_NAME_LENGTH']]}})
+            db.users.update_one({'_id': user_id_str}, {'$set': {'name': name.strip()[:current_app.config['MAX_NAME_LENGTH']]}})
     elif flask_login.current_user.get()['can_manage_users']:
         # Change other user
         if can_manage_users:
-            db.users.update_one({'_id': user_id}, {'$set': {'can_manage_users': (can_manage_users == 'True')}})
+            db.users.update_one({'_id': user_id_str}, {'$set': {'can_manage_users': (can_manage_users == 'True')}})
         if can_control_drone:
-            db.users.update_one({'_id': user_id}, {'$set': {'can_control_drone': (can_control_drone == 'True')}})
+            db.users.update_one({'_id': user_id_str}, {'$set': {'can_control_drone': (can_control_drone == 'True')}})
     else:
-        log.warn(flask_login.current_user.id, "can't change user", user_id)
+        log.warn(flask_login.current_user.id_str, "can't change user", user_id_str)
         flask.flash('Keine Berechtigung.', 'error')
         return redirect(flask.request.referrer)
 
@@ -158,22 +156,20 @@ def edit(user_id=''):
 # Permanently remove a user's account
 @users.route('/delete', methods=['POST'])
 @flask_login.login_required
-def delete(user_id=''):
-    # TODO: handle user management
-    try:
-        user_id = ObjectId(user_id)
-    except:
-        user_id = flask_login.current_user.id
-    if flask_login.current_user.id == user_id:
+def delete(user_id_str=''):
+    if not db.users.find({'_id': ObjectId(user_id_str)}):
+        return
+    
+    if flask_login.current_user.id_str == user_id_str:
         flask_login.logout_user()
-        db.users.delete_one({'_id': user_id})
+        db.users.delete_one({'_id': user_id_str})
         flask.flash('Account gelöscht.')
         return redirect(flask.url_for('pages.sign_in'))
     elif flask_login.current_user.get()['can_manage_users']:
-        db.users.delete_one({'_id': user_id})
+        db.users.delete_one({'_id': user_id_str})
         flask.flash('Account gelöscht.')
     else:
-        log.warn(flask_login.current_user.id, " can't delete user ", user_id)
+        log.warn(flask_login.current_user.id_str, " can't delete user ", user_id_str)
         flask.flash('Keine Berechtigung.', 'error')
-    log.info('Deleted user ' + user_id)
+    log.info('Deleted user ' + user_id_str)
     return redirect(flask.request.referrer)
