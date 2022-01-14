@@ -14,25 +14,25 @@ from app.blueprints import blueprints
 # 5. For UI text use double quotes, for internal strings use single quotes
 
 
-def init_exts(app):
-    app.wsgi_app = ProxyFix(app.wsgi_app)
-    oauth.init_app(app)
-    for server in app.config['OAUTH_SERVERS']:
+def init_exts(flaskApp):
+    flaskApp.wsgi_app = ProxyFix(flaskApp.wsgi_app)
+    oauth.init_app(flaskApp)
+    for server in flaskApp.config['OAUTH_SERVERS']:
         oauth.register(server)
-    login.init_app(app)
-    socketio.init_app(app)
+    login.init_app(flaskApp)
+    socketio.init_app(flaskApp)
 
 
-def register_blueprints(app):
+def register_blueprints(flaskApp):
     for blueprint in blueprints:
-        app.register_blueprint(blueprint)
+        flaskApp.register_blueprint(blueprint)
 
 
 def create_app(config_objects):
-    app = Flask(__name__)
+    flaskApp = Flask(__name__)
     for obj in config_objects:
-        app.config.from_object(obj)
-    init_exts(app)
-    drones.init()
-    register_blueprints(app)
-    return app
+        flaskApp.config.from_object(obj)
+    init_exts(flaskApp)
+    app.drones.init()
+    register_blueprints(flaskApp)
+    return flaskApp

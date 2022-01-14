@@ -1,7 +1,7 @@
 import flask
 import flask_login
 
-import app.drones
+import app.drones as drones
 
 # Drone control API; Requests: GET; Response: redirect, flash
 drone_control = flask.Blueprint('drone_control', __name__, url_prefix='/drone_control')
