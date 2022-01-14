@@ -110,9 +110,13 @@ function showRequest() {
             canRequest ? ['good_step'] : []
         );
     }
-    button.onclick = () => {
-        window.location.href = '/drone_control/request';
-    }
+    if (canRequest) {
+        button.onclick = () => {
+            window.location.href = '/drone_control/request';
+        }
+    } else {
+        button.onclick = null;
+    }    
     button.id = 'request';
 }
 
@@ -155,7 +159,7 @@ function onFacilityState(args) {
     if (canControl) {
         switch (args.state) {
             case 'awaiting_takeoff':
-                showTakeoff();
+                if (goalFacility != ownFacility) showTakeoff();
                 break;
             case 'en_route':
                 showReturn();

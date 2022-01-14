@@ -146,7 +146,9 @@ class Drone(flask_socketio.Namespace):
 
 	# if we're waiting at home, we can do a new mission
 	def check_for_missions(self):
+		log.info('checking for missions...')
 		pending = [fac for fac_id, fac in self.facilities.items() if fac.drone_requested]
+		log.info(pending)
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			self.goal_facility = pending[0]
