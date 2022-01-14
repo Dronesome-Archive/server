@@ -1,7 +1,7 @@
 import flask
 import flask_login
 
-from app.drones import droneObj
+import app.drones
 
 # Drone control API; Requests: GET; Response: redirect, flash
 drone_control = flask.Blueprint('drone_control', __name__, url_prefix='/drone_control')
@@ -12,10 +12,10 @@ drone_control = flask.Blueprint('drone_control', __name__, url_prefix='/drone_co
 @drone_control.route('/<string:command>', methods=['GET'])
 def control(command):
     commands = {
-        'request': (droneObj.request, "Kurier angefordert"),
-        'allow_takeoff': (droneObj.allow_takeoff, "Starterlaubnis erteilt"),
-        'emergency_return': (droneObj.emergency_return, "Kurier kehrt um"),
-        'emergency_land': (droneObj.emergency_land, "Notlandung eingeleitet")
+        'request': (drones.droneObj.request, "Kurier angefordert"),
+        'allow_takeoff': (drones.droneObj.allow_takeoff, "Starterlaubnis erteilt"),
+        'emergency_return': (drones.droneObj.emergency_return, "Kurier kehrt um"),
+        'emergency_land': (drones.droneObj.emergency_land, "Notlandung eingeleitet")
     }
     user = flask_login.current_user.get()
     try:
