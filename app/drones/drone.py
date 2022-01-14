@@ -175,7 +175,7 @@ class Drone(flask_socketio.Namespace):
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id):
-		if user_facility_id == self.latest_facility and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
+		if user_facility_id == self.latest_facility.id and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
 			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.latest_facility, self.goal_facility))
 			return True
 		return False

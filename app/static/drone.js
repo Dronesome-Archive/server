@@ -102,6 +102,7 @@ function showLand() {
 }
 
 function showRequest() {
+    if (ownFacility == homeFacility) return;
     let canRequest = (ownFacility != goalFacility) && canControl && !droneRequested;
     let button = document.getElementById('request');
     if (!button) {
@@ -138,7 +139,7 @@ function onFacilityState(args) {
 
     // show request button
     goalFacility = facilities[args.goal_id];
-    if (ownFacility != homeFacility) showRequest();
+    showRequest();
 
     // highlight goal
     facilityMarkers[goalFacility.id].color = '#FF0000';
