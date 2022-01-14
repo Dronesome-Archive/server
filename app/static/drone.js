@@ -102,7 +102,7 @@ function showLand() {
 }
 
 function showRequest() {
-    let canRequest = (ownFacility != goalFacility) && !droneRequested;
+    let canRequest = (ownFacility != goalFacility) && canControl && !droneRequested;
     let button = document.getElementById('request');
     if (!button) {
         button = showButton(
