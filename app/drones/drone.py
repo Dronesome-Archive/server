@@ -180,7 +180,7 @@ class Drone(flask_socketio.Namespace):
 
 	# request the drone to land on user_facility
 	def request(self, user_facility_id):
-		fac = self.facilities[user_facility_id]
+		fac = self.facilities[str(user_facility_id)]
 		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
 		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
 		returning = (fac.state == facility.State.RETURNING and fac.drone_goal == fac)
