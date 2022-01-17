@@ -21,7 +21,7 @@ def control(command):
     try:
         func, success_message = commands[command]
         assert user['can_control_drone']
-        if func(user['facility_id']):
+        if func(str(user['facility_id'])):
             flask.flash(success_message)
     except Exception:
         flask.flash('Fehler', 'error')

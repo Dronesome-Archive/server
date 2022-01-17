@@ -180,10 +180,6 @@ class Drone(flask_socketio.Namespace):
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id_str):
 		log.info('CMD: allow_takeoff')
-		print(user_facility_id_str)
-		print(self.latest_facility.id_str)
-		print(user_facility_id_str == self.latest_facility.id_str)
-		print(self.latest_facility.state == facility.State.AWAITING_TAKEOFF)
 		if user_facility_id_str == self.latest_facility.id_str and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
 			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.latest_facility, self.goal_facility))
 			return True
@@ -191,9 +187,9 @@ class Drone(flask_socketio.Namespace):
 		return False
 
 	# request the drone to land on user_facility
-	def request(self, user_facility_id):
+	def request(self, user_facility_id_str):
 		log.info('CMD: request')
-		fac = self.facilities[str(user_facility_id)]
+		fac = self.facilities[user_facility_id_str]
 		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
 		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
 		returning = (fac.state == facility.State.RETURNING and fac.drone_goal == fac)
