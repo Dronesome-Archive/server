@@ -161,27 +161,38 @@ class Drone(flask_socketio.Namespace):
 
 	# users from home or the goal can order the drone to emergency land
 	def emergency_land(self, user_facility_id_str):
+		log.info('CMD: emergency_land')
 		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
 			return True
+		log.warn('emergency_land denied')
 		return False
 
 	# users from home or the goal can order the drone to return
 	def emergency_return(self, user_facility_id_str):
+		log.info('CMD: emergency_return')
 		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.emit_to_drone(ToDrone.EMERGENCY_RETURN)
 			return True
+		log.warn('emergency_return denied')
 		return False
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id_str):
+		log.info('CMD: allow_takeoff')
+		print(user_facility_id_str)
+		print(self.latest_facility.id_str)
+		print(user_facility_id_str == self.latest_facility.id_str)
+		print(self.latest_facility.state == facility.State.AWAITING_TAKEOFF)
 		if user_facility_id_str == self.latest_facility.id_str and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
 			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.latest_facility, self.goal_facility))
 			return True
+		log.warn('allow_takeoff denied')
 		return False
 
 	# request the drone to land on user_facility
 	def request(self, user_facility_id):
+		log.info('CMD: request')
 		fac = self.facilities[str(user_facility_id)]
 		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
 		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
@@ -190,6 +201,7 @@ class Drone(flask_socketio.Namespace):
 			fac.set_drone_requested(True)
 			self.check_for_missions()
 			return True
+		log.warn('request denied')
 		return False
 
 
