@@ -24,8 +24,8 @@
                 waypoints: [{{ fac.waypoints|join(', ') }}]
             }
         {% endfor %}
-        ownFacility = facilities['{{ own.id }}'];
-        homeFacility = facilities['{{ home.id }}'];
+        ownFacility = facilities['{{ own.id_str }}'];
+        homeFacility = facilities['{{ home.id_str }}'];
         droneRequested = {{ own.drone_requested|lower }};
         canControl = {{ can_control|lower }};
         accessToken = '{{ mapbox_token }}';
