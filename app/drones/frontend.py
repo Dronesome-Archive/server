@@ -14,10 +14,9 @@ class Frontend(flask_socketio.Namespace):
         flask_socketio.Namespace.__init__(self, namespace)
     
     def on_connect(self):
-        log.info('FRONTEND CONNECT')
+        log.info('FE_CON')
         #if flask_login.current_user.is_authenticated:
         if True:
-            log.info('AUTHENTICATED')
             #fac = self.facilities[str(flask_login.current_user.get()['facility_id'])]
             fac = self.home
             flask_socketio.join_room(fac.id_str)
@@ -28,4 +27,5 @@ class Frontend(flask_socketio.Namespace):
                 fac.send(message.ToFrontend.HEARTBEAT, battery=self.drone.battery, pos=self.drone.pos)
                 fac.send(message.ToFrontend.DRONE_STATE, state=self.drone.state)
             return True
+        log.warn('FE_REJ')
         return False

@@ -30,5 +30,3 @@ def init():
 
     frontend = Frontend('/frontend', home, facilities, droneObj)
     socketio.on_namespace(frontend)
-
-    print('facilities initialized')
