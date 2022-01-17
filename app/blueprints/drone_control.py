@@ -18,11 +18,11 @@ def control(command):
         'emergency_land': (drones.droneObj.emergency_land, "Notlandung eingeleitet")
     }
     user = flask_login.current_user.get()
-    try:
-        func, success_message = commands[command]
-        assert user['can_control_drone']
-        if func(str(user['facility_id'])):
-            flask.flash(success_message)
-    except Exception:
-        flask.flash('Fehler', 'error')
+    #try:
+    func, success_message = commands[command]
+    assert user['can_control_drone']
+    if func(str(user['facility_id'])):
+        flask.flash(success_message)
+    #except Exception:
+    #    flask.flash('Fehler', 'error')
     return flask.redirect(flask.request.referrer)
