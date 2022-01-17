@@ -1,0 +1,7 @@
+CON: drone connected
+DIS: drone disconnected
+CMD: frontend command
+RCV: message from drone
+QUE: queued message to drone
+SND: sent message to drone
+FAC: sent message to facility

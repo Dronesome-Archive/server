@@ -46,7 +46,7 @@ class Facility:
             content = {'state': kwargs['state'].value}
         elif msg_type == ToFrontend.HEARTBEAT:
             content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
-        log.info(msg_type.value, content)
+        log.info('FAC:', msg_type.value, content)
         socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id_str)
 
 

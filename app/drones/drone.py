@@ -38,7 +38,7 @@ class Drone(flask_socketio.Namespace):
 				'id': start.id_str,
 				'pos': start.pos
 			},
-			'waypoints': start.waypoints if goal == self.home else reversed(goal.waypoints),
+			'waypoints': start.waypoints if goal == self.home else goal.waypoints[::-1],
 			'goal': {
 				'id': start.id_str,
 				'pos': start.pos
