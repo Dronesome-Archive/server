@@ -52,11 +52,11 @@ class Drone(flask_socketio.Namespace):
 	# if we have a message queued, send it
 	def on_connect(self, auth):
 		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:
+			log.info('DR_CON')
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
 				self.emit_to_drone(self.outbox[0], self.outbox[1])
-			log.info('DR_CON')
 		else:
 			log.warn('DR_REJ')
 

@@ -6,4 +6,4 @@ from flask_socketio import SocketIO
 login = LoginManager()
 oauth = OAuth()
 db = MongoClient()['db']
-socketio = SocketIO()
+socketio = SocketIO(logger=True, engineio_logger=True, ping_interval=10, ping_timeout=10)
