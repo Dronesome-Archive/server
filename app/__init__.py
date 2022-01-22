@@ -16,6 +16,7 @@ from app.blueprints import blueprints
 
 def init_exts(flaskApp):
     flaskApp.wsgi_app = ProxyFix(flaskApp.wsgi_app)
+    log.init()
     log.l = flaskApp.logger
     oauth.init_app(flaskApp)
     for server in flaskApp.config['OAUTH_SERVERS']:
