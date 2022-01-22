@@ -23,7 +23,7 @@ def init():
         if raw['is_home']:
             home = facilities[str(raw['_id'])]
     if not home:
-        log.warn('no home found')
+        log.l.warn('no home found')
 
     droneObj = Drone('/drone', home, facilities)
     socketio.on_namespace(droneObj)

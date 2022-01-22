@@ -29,7 +29,7 @@ def login(oauth_server):
     if client := oauth.create_client(oauth_server):
         callback_url = flask.url_for('.callback', oauth_server=oauth_server, _external=True, _scheme='https')
         return client.authorize_redirect(callback_url)
-    log.warn('Invalid oauth server:', oauth_server)
+    log.l.warn(f'Invalid oauth server: {oauth_server}')
     flask.flash('Ungültige Anmeldemethode!', 'error')
     return redirect(flask.url_for('pages.sign_in'))
 
@@ -54,7 +54,7 @@ def callback(oauth_server):
             flask.session['oauth_token'] = userinfo.sub
             return redirect(flask.url_for('pages.register'))
     else:
-        log.warn('Invalid oauth server:', oauth_server)
+        log.l.warn(f'Invalid oauth server: {oauth_server}')
         flask.flash('Ungültige Anmeldemethode!', 'error')
         return redirect(flask.url_for('pages.sign_in'))
 

@@ -1,9 +1,20 @@
-import logging
+from logging import config
 
+l = None
 
-def warn(*args):
-    logging.getLogger().warning(' '.join([str(arg) for arg in args]))
-
-
-def info(*args):
-    logging.getLogger().info(' '.join([str(arg) for arg in args]))
+def init():
+    config.dictConfig({
+        'version': 1,
+        'formatters': {'default': {
+            'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+        }},
+        'handlers': {'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'
+        }},
+        'root': {
+            'level': 'INFO',
+            'handlers': ['wsgi']
+        }
+    })

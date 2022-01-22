@@ -52,22 +52,22 @@ class Drone(flask_socketio.Namespace):
 	# if we have a message queued, send it
 	def on_connect(self, auth):
 		if str(auth) == environ['SUPER_SECRET_DRONE_KEY']:
-			log.info('DR_CON')
+			log.l.info('DR_CON')
 			self.connected = True
 			self.lastUpdate = time()
 			if self.outbox:
 				self.emit_to_drone(self.outbox[0], self.outbox[1])
 		else:
-			log.warn('DR_REJ')
+			log.l.warn('DR_REJ')
 
 	# so long, partner
 	def on_disconnect(self):
 		self.connected = False
-		log.warn('FE_DIS')
+		log.l.warn('FE_DIS')
 
 	# we received a heartbeat from the drone; will be registered as a socketio event handler
 	def on_heartbeat(self, json_msg):
-		log.info('DR_RCV: heartbeat', json_msg)
+		log.l.info(f'DR_RCV: heartbeat {json_msg}')
 		self.lastUpdate = time()
 		try:
 			pos = json_msg['pos']
@@ -82,7 +82,7 @@ class Drone(flask_socketio.Namespace):
 
 	# we received a state update from the drone; will be registered as a socketio event handler
 	def on_state_update(self, json_msg):
-		log.info('DR_RCV: state_update', json_msg)
+		log.l.info(f'DR_RCV: state_update {json_msg}')
 		self.lastUpdate = time()
 		try:
 			state = State(json_msg['state'])
@@ -96,14 +96,14 @@ class Drone(flask_socketio.Namespace):
 	# emit message to drone if connected, else queue in outbox
 	def emit_to_drone(self, msg_type, content=None):
 		if self.connected:
-			log.info('DR_SND: ', msg_type.value)
+			log.l.info(f'DR_SND: {msg_type.value}')
 			if content:
-				log.info(content)
+				log.l.info(content)
 				self.emit(msg_type.value, content)
 			else:
 				self.emit(msg_type.value)
 		else:
-			log.info('DR_QUE: ', msg_type.value)
+			log.l.info(f'DR_QUE: {msg_type.value}')
 			self.outbox = (msg_type, content)
 
 	####################################################################################################################
@@ -115,7 +115,7 @@ class Drone(flask_socketio.Namespace):
 		current_facility = self.facilities[current_facility_id_str]
 		goal_facility = self.facilities[goal_facility_id_str]
 		if goal_facility != self.goal_facility and state != State.UPDATING:
-			log.warn("drone's goal facility", goal_facility.id_str, "not equal to ours:", self.goal_facility.id_str)
+			log.l.warn(f"drone's goal facility {goal_facility.id_str} not equal to ours: {self.goal_facility.id_str}")
 			self.goal_facility = goal_facility
 
 		if state in [State.IDLE]:
@@ -144,9 +144,8 @@ class Drone(flask_socketio.Namespace):
 
 	# if we're waiting at home, we can do a new mission
 	def check_for_missions(self):
-		log.info('checking for missions...')
 		pending = [fac for fac_id, fac in self.facilities.items() if fac.drone_requested]
-		log.info(pending)
+		log.l.info(f'Found pending missions: {pending}')
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			self.goal_facility = pending[0]
@@ -159,34 +158,34 @@ class Drone(flask_socketio.Namespace):
 
 	# users from home or the goal can order the drone to emergency land
 	def emergency_land(self, user_facility_id_str):
-		log.info('FE_RCV: emergency_land', user_facility_id_str)
+		log.l.info(f'FE_RCV: emergency_land from {user_facility_id_str}')
 		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.emit_to_drone(ToDrone.EMERGENCY_LAND)
 			return True
-		log.warn('emergency_land denied')
+		log.l.warn('emergency_land denied')
 		return False
 
 	# users from home or the goal can order the drone to return
 	def emergency_return(self, user_facility_id_str):
-		log.info('FE_RCV: emergency_return', user_facility_id_str)
+		log.l.info(f'FE_RCV: emergency_return from {user_facility_id_str}')
 		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.emit_to_drone(ToDrone.EMERGENCY_RETURN)
 			return True
-		log.warn('emergency_return denied')
+		log.l.warn('emergency_return denied')
 		return False
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id_str):
-		log.info('FE_RCV: allow_takeoff', user_facility_id_str)
+		log.l.info(f'FE_RCV: allow_takeoff from {user_facility_id_str}')
 		if user_facility_id_str == self.latest_facility.id_str and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
 			self.emit_to_drone(ToDrone.UPDATE, self.generate_mission(self.latest_facility, self.goal_facility))
 			return True
-		log.warn('allow_takeoff denied')
+		log.l.warn('allow_takeoff denied')
 		return False
 
 	# request the drone to land on user_facility
 	def request(self, user_facility_id_str):
-		log.info('FE_RCV: request', user_facility_id_str)
+		log.l.info(f'FE_RCV: request {user_facility_id_str}')
 		fac = self.facilities[user_facility_id_str]
 		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
 		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
@@ -195,7 +194,7 @@ class Drone(flask_socketio.Namespace):
 			fac.set_drone_requested(True)
 			self.check_for_missions()
 			return True
-		log.warn('request denied')
+		log.l.warn('request denied')
 		return False
 
 
