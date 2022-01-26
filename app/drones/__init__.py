@@ -11,6 +11,7 @@ home = None
 droneObj = None
 
 
+# construct facility and drone objects from mongodb entries
 def init():
     global home, droneObj
 
@@ -23,7 +24,6 @@ def init():
         logging.warning('no home found')
 
     droneObj = Drone('/drone', home, facilities)
-    socketio.on_namespace(droneObj)
 
     frontend = Frontend('/frontend', home, facilities, droneObj)
     socketio.on_namespace(frontend)

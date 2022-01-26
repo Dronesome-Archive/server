@@ -11,11 +11,6 @@ from app.exts import db, login
 pages = flask.Blueprint('pages', __name__, url_prefix='/')
 
 
-# TESTING ONLY
-@pages.route('/testpage')
-def testpage():
-    return flask.render_template('testpage.html')
-
 # Sign in > Log in / Sign up
 @pages.route('/sign_in')
 @login.unauthorized_handler

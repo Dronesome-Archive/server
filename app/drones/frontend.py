@@ -6,6 +6,7 @@ from app.drones import message
 from app.drones.facility import State
 
 
+# SocketIO connection to the courier page on the user's device
 class Frontend(flask_socketio.Namespace):
     def __init__(self, namespace, home, facilities, drone):
         self.home = home
@@ -13,6 +14,7 @@ class Frontend(flask_socketio.Namespace):
         self.drone = drone
         flask_socketio.Namespace.__init__(self, namespace)
     
+    # authenticate user and send all info they are allowed to see
     def on_connect(self):
         logging.info('FE_CON')
         #if flask_login.current_user.is_authenticated:
