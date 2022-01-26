@@ -1,4 +1,4 @@
-import logging
+import logging.config
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
