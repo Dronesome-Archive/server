@@ -1,7 +1,7 @@
+import logging
 import time
 from enum import Enum
 
-from app import log
 from app.exts import socketio
 from app.drones.message import Namespace, ToFrontend
 
@@ -46,7 +46,7 @@ class Facility:
             content = {'state': kwargs['state'].value}
         elif msg_type == ToFrontend.HEARTBEAT:
             content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
-        log.l.info(f'FE_SND: {msg_type.value}, {content}')
+        logging.info(f'FE_SND: {msg_type.value}, {content}')
         socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id_str)
 
 

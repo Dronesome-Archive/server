@@ -1,7 +1,7 @@
+import logging
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from app import log
 import app.drones
 from app.exts import oauth, login, socketio
 from app.blueprints import blueprints
@@ -13,11 +13,31 @@ from app.blueprints import blueprints
 # 4. For naming, only use 'state', never 'status'
 # 5. For UI text use double quotes, for internal strings use single quotes
 
+def init_log():
+    logging.config.dictConfig({
+        'version': 1,
+        'formatters': {
+            'default': {
+                'format': '[%(asctime)s %(levelname)s %(funcName)s]:\t%(message)s',
+                'datefmt': '%H:%M:%S',
+            }
+        },
+        'handlers': {
+            'wsgi': {
+                'class': 'logging.StreamHandler',
+                'stream': 'ext://flask.logging.wsgi_errors_stream',
+                'formatter': 'default',
+            }
+        },
+        'root': {
+            'level': 'INFO',
+            'handlers': ['wsgi'],
+        }
+    })
+
 
 def init_exts(flaskApp):
     flaskApp.wsgi_app = ProxyFix(flaskApp.wsgi_app)
-    log.init()
-    log.l = flaskApp.logger
     oauth.init_app(flaskApp)
     for server in flaskApp.config['OAUTH_SERVERS']:
         oauth.register(server)
@@ -34,6 +54,7 @@ def create_app(config_objects):
     flaskApp = Flask(__name__)
     for obj in config_objects:
         flaskApp.config.from_object(obj)
+    init_log()
     init_exts(flaskApp)
     app.drones.init()
     register_blueprints(flaskApp)

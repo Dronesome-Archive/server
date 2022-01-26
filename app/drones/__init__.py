@@ -1,12 +1,9 @@
-import flask_login
-import flask_socketio
+import logging
 
-from app import log
 from app.drones.frontend import Frontend
 from app.exts import socketio, db
-from app.drones import message
 from app.drones.drone import Drone
-from app.drones.facility import Facility, State
+from app.drones.facility import Facility
 
 
 facilities = {}
@@ -23,7 +20,7 @@ def init():
         if raw['is_home']:
             home = facilities[str(raw['_id'])]
     if not home:
-        log.l.warn('no home found')
+        logging.warning('no home found')
 
     droneObj = Drone('/drone', home, facilities)
     socketio.on_namespace(droneObj)
