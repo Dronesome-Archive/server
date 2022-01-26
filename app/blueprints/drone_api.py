@@ -12,7 +12,7 @@ drone_api = flask.Blueprint('drone_api', __name__, url_prefix='/drone_api')
 # received a message from the drone; authenticated by nginx via mTLS
 @drone_api.route('/<string:msg_type>', methods=['POST'])
 def message(msg_type):
-	if msg_type == FromDrone.HEARTBEAT:
+	if msg_type == FromDrone.HEARTBEAT.value:
 		logging.info('DR_RCV: heartbeat')
 		try:
 			position = flask.request.json['position']
@@ -21,7 +21,7 @@ def message(msg_type):
 			logging.warning(e)
 			return reply()
 		drones.droneObj.on_heartbeat(position, battery)
-	elif msg_type == FromDrone.STATUS_UPDATE:
+	elif msg_type == FromDrone.STATUS_UPDATE.value:
 		logging.info('DR_RCV: status update')
 		try:
 			state = State(flask.request.json['state'])
