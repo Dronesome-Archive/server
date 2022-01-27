@@ -30,7 +30,11 @@ def message(msg_type):
 		except Exception as e:
 			logging.warning(e)
 			return reply()
-		drones.droneObj.on_state_update(state, latest_facility_id_str, goal_facility_id_str)
+		if latest_facility_id_str and goal_facility_id_str:
+			drones.droneObj.on_state_update(state, latest_facility_id_str, goal_facility_id_str)
+		else:
+			# the drone has no latest/goal facilities when just starting up
+			drones.droneObj.on_state_update(state, drones.home.id_str, drones.home.id_str)
 	else:
 		logging.warning(f'DR_RCV: unknown type {msg_type}')
 	return reply()
@@ -41,5 +45,5 @@ def reply():
 		msg = drones.droneObj.outbox
 		drones.droneObj.outbox = None
 	else:
-		msg = { 'type': 'none' }
+		msg = { 'type': None }
 	return msg
