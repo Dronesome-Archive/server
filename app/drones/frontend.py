@@ -19,7 +19,7 @@ class Frontend(flask_socketio.Namespace):
     def on_connect(self):
         if flask_login.current_user.is_authenticated:
             fac = self.facilities[str(flask_login.current_user.get()['facility_id'])]
-            logging.info(f'FE_CON: facility_id {fac.id_str}')
+            logging.info(f'FE_CON: {fac.name} ({fac.id_str})')
             flask_socketio.join_room(fac.id_str)
             fac.send(message.ToFrontend.FACILITY_STATE)
             if fac == self.home or fac.state != State.IDLE:
