@@ -1,11 +1,13 @@
 DRONE TO SERVER ########################################################################################################
 
-heartbeat {
+{
+    "type": "heartbeat",
     "pos": [12.34, 23.54],
     "battery": 0.45
 }
 
-state_update {
+{
+    "type": "state_update",
     "state": "idle|en_route|landing|returning|emergency_landing|crashed|updating",
     "latest_facility_id": "61631a905c62c1f3e9a38df2",
     "goal_facility_id": "61631a905c62c1f3e9a38df2"
