@@ -37,4 +37,9 @@ def message(msg_type):
 
 # messages are answered with an order from us or just an empty order
 def reply():
-	return drones.droneObj.outbox if drones.droneObj.outbox else { 'type': 'none' }
+	if drones.droneObj.outbox:
+		msg = drones.droneObj.outbox
+		drones.droneObj.outbox = None
+	else:
+		msg = { 'type': 'none' }
+	return msg
