@@ -40,7 +40,7 @@ class Drone:
 	# put a message into self.outbox
 	def queue_message(self, msg_type, content={}):
 		self.outbox = content
-		self.outbox['type'] = msg_type.val
+		self.outbox['type'] = msg_type.value
 
 	# if we're waiting at home, we can do a new mission
 	def check_for_missions(self):
