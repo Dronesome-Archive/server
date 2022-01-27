@@ -93,8 +93,8 @@ class Drone:
 			self.goal_facility.set_state(facility.State.EMERGENCY, self.goal_facility)
 
 		self.latest_facility = current_facility
-		self.goal_facility.send_drone_state(state)
-		self.latest_facility.send_drone_state(state)
+		self.goal_facility.send(ToFrontend.DRONE_STATE, state=state)
+		self.latest_facility.send(ToFrontend.DRONE_STATE, state=state)
 
 
 	####################################################################################################################
