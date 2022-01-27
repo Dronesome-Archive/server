@@ -32,8 +32,8 @@ class Drone:
 			},
 			'waypoints': start.waypoints if goal == self.home else goal.waypoints[::-1],
 			'goal': {
-				'id': start.id_str,
-				'pos': start.pos
+				'id': goal.id_str,
+				'pos': goal.pos
 			}
 		}
 
