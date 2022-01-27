@@ -1,6 +1,7 @@
 import logging
 
 import flask_socketio
+import flask_login
 
 from app.drones import message
 from app.drones.facility import State
@@ -16,11 +17,9 @@ class Frontend(flask_socketio.Namespace):
     
     # authenticate user and send all info they are allowed to see
     def on_connect(self):
-        logging.info('FE_CON')
-        #if flask_login.current_user.is_authenticated:
-        if True:
-            #fac = self.facilities[str(flask_login.current_user.get()['facility_id'])]
-            fac = self.home
+        if flask_login.current_user.is_authenticated:
+            fac = self.facilities[str(flask_login.current_user.get()['facility_id'])]
+            logging.info(f'FE_CON: facility_id {fac.id_str}')
             flask_socketio.join_room(fac.id_str)
             fac.send(message.ToFrontend.FACILITY_STATE)
             if fac == self.home or fac.state != State.IDLE:
