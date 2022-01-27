@@ -15,12 +15,12 @@ def message(msg_type):
 	if msg_type == FromDrone.HEARTBEAT.value:
 		logging.info('DR_RCV: heartbeat')
 		try:
-			position = flask.request.json['position']
+			pos = flask.request.json['pos']
 			battery = flask.request.json['battery']
 		except Exception as e:
 			logging.warning(e)
 			return reply()
-		drones.droneObj.on_heartbeat(position, battery)
+		drones.droneObj.on_heartbeat(pos, battery)
 	elif msg_type == FromDrone.STATUS_UPDATE.value:
 		logging.info('DR_RCV: status update')
 		try:

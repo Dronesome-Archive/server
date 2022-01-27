@@ -70,7 +70,7 @@ body {
 
 .centered {
     margin: 0;
-    position: absolute;
+    pos: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -173,14 +173,14 @@ button:disabled {
 }
 
 #battery_display {
-    position: relative;
+    pos: relative;
     width: 40px;
     height: 30px;
     padding: 4px;
 }
 
 #battery_display::after {
-    position: absolute;
+    pos: absolute;
     box-sizing: border-box; /* include borders in size; the * selector doesn't cover this */
     top: 20%;
     left: 100%;
