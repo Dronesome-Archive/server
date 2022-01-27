@@ -25,4 +25,4 @@ def control(command):
         flask.flash(success_message)
     #except Exception:
     #    flask.flash('Fehler', 'error')
-    return flask.redirect(flask.request.referrer)
+    return flask.redirect(flask.request.referrer if flask.request.referrer else flask.url_for('pages.drone'))

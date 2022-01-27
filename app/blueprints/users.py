@@ -17,6 +17,10 @@ from app.user import User
 users = flask.Blueprint('users', __name__, url_prefix='/users')
 
 
+# 'Referer'-header may not be set by the client
+def get_referrer():
+    return flask.request.referrer if flask.request.referrer else flask.url_for('pages.users')
+
 # Admins can generate one temporary key for their facility so a new user can register
 @users.route('/new_key', methods=['POST'])
 @flask_login.login_required
