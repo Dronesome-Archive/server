@@ -2,6 +2,7 @@ __pycache__/
 _venv/
 _setup/
 .idea/
+.ssl/
 secret.py
 log
 run.sh
