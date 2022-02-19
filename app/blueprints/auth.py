@@ -65,9 +65,10 @@ def callback(oauth_server):
 @flask_login.login_required
 def logout():
 	db.users.update_one({'_id': ObjectId(flask_login.current_user.id_str)}, {'$set': {'login_id': ObjectId()}})
+	oauth_server = flask_login.current_user.get()['oauth']['server']
 	flask_login.logout_user()
 	flask.flash('Ausgeloggt.')
-	if (flask_login.current_user.get()['oauth']['server'] == 'google'):
+	if (oauth_server == 'google'):
 		# https://stackoverflow.com/q/4202161/
 		return redirect('https://accounts.google.com/logout?continue=https://appengine.google.com/_ah/logout?continue=https://droneso.me/')
 	else:
