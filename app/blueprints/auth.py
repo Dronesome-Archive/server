@@ -67,4 +67,4 @@ def logout():
     db.users.update_one({'_id': ObjectId(flask_login.current_user.id_str)}, {'$set': {'login_id': ObjectId()}})
     flask_login.logout_user()
     flask.flash('Ausgeloggt.')
-    return redirect(flask.url_for('pages.sign_in'))
+    return redirect('https://www.google.com/accounts/logout?continue=' + flask.url_for('pages.sign_in'))
