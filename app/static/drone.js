@@ -1,12 +1,12 @@
 // style
 const colors = {
-	line = '#008800',
-	lineActive = '#00FF00',
-	drone = '#FFFFFF',
-	facility = '#008800',
-	facilityGoal = '#00FF00',
-	facilityHome = '#000088',
-	facilityHomeGoal = '#0000FF',
+	line: '#008800',
+	lineActive: '#00FF00',
+	drone: '#FFFFFF',
+	facility: '#008800',
+	facilityGoal: '#00FF00',
+	facilityHome: '#000088',
+	facilityHomeGoal: '#0000FF',
 }
 
 // DOM

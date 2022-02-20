@@ -17,12 +17,12 @@
     </div>
     <script>
         {% for fac_id, fac in facilities.items() %}
-            facilities['{{ fac_id }}'] = {
-                id: '{{ fac_id }}',
-                name: '{{ fac.name }}',
-                pos: [{{ fac.pos|join(', ') }}],
-                waypoints: [{{ fac.waypoints|join(', ') }}]
-            }
+		facilities['{{ fac_id }}'] = {
+			id: '{{ fac_id }}',
+			name: '{{ fac.name }}',
+			pos: [{{ fac.pos|join(', ') }}],
+			waypoints: [{{ fac.waypoints|join(', ') }}]
+		}
         {% endfor %}
         ownFacility = facilities['{{ own.id_str }}'];
         homeFacility = facilities['{{ home.id_str }}'];
