@@ -28,5 +28,5 @@ class Frontend(flask_socketio.Namespace):
                 fac.send(message.ToFrontend.HEARTBEAT, battery=self.drone.battery, pos=self.drone.pos)
                 fac.send(message.ToFrontend.DRONE_STATE, state=self.drone.state)
             return True
-        logging.warn('FE_REJ')
+        logging.warning('FE_REJ')
         return False

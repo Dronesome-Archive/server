@@ -27,6 +27,11 @@ def init_log():
                 'class': 'logging.StreamHandler',
                 'stream': 'ext://flask.logging.wsgi_errors_stream',
                 'formatter': 'default',
+            },
+			'file': {
+                'class': 'logging.FileHandler',
+                'filename': 'log',
+                'formatter': 'default'
             }
         },
         'root': {
