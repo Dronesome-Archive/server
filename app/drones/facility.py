@@ -1,6 +1,7 @@
-import logging
 import time
 from enum import Enum
+
+from flask import current_app
 
 from app.exts import socketio
 from app.drones.message import Namespace, ToFrontend
@@ -21,14 +22,14 @@ class Facility:
 
 	# we have a new state, relay to our facility
 	def set_state(self, state, goal_facility):
-		logging.info(f"{self.name} state update to {state}, {goal_facility.name}")
+		current_app.logger.info(f"{self.name} state update to {state}, {goal_facility.name}")
 		if self.state != state or self.drone_goal != goal_facility:
 			self.state = state
 			self.drone_goal = goal_facility
 			if state != State.IDLE:
 				self.set_drone_requested(False)
 			self.send(ToFrontend.FACILITY_STATE)
-		logging.warning("state update failed")
+		current_app.logger.warning("state update failed")
 
 	# set drone request state and send to frontend
 	def set_drone_requested(self, drone_requested):
@@ -48,7 +49,7 @@ class Facility:
 			content = {'state': kwargs['state'].value}
 		elif msg_type == ToFrontend.HEARTBEAT:
 			content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
-		logging.info(f'FE_SND: {msg_type.value}, {content}')
+		current_app.logger.info(f'FE_SND: {msg_type.value}, {content}')
 		socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id_str)
 
 

@@ -1,5 +1,5 @@
 import flask
-import logging
+from flask import current_app
 
 from app import drones
 from app.drones.message import FromDrone
@@ -13,7 +13,7 @@ drone_api = flask.Blueprint('drone_api', __name__, url_prefix='/drone_api')
 @drone_api.route('/', methods=['POST'])
 def message():
 	req = flask.request.json
-	logging.info(f'DR_RCV: {req}')
+	current_app.logger.info(f'DR_RCV: {req}')
 	if req['type'] == FromDrone.HEARTBEAT.value:
 		pos = req['pos']
 		battery = req['battery']
@@ -28,9 +28,9 @@ def message():
 			# the drone has no latest/goal facilities when just starting up
 			drones.droneObj.on_state_update(state, drones.home.id_str, drones.home.id_str)
 	else:
-		logging.warning(f"DR_RCV: unknown type")
+		current_app.logger.warning(f"DR_RCV: unknown type")
 	rep = reply()
-	logging.info(f"DR_SND: {rep}")
+	current_app.logger.info(f"DR_SND: {rep}")
 	return rep
 
 # messages are answered with an order from us or just an empty order

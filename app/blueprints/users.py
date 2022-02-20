@@ -1,7 +1,6 @@
 import random
 import string
 import datetime
-import logging
 
 import flask
 import flask_login
@@ -30,7 +29,7 @@ def new_key():
         can_manage_users = flask.request.form['can_manage_users']
         can_control_drone = flask.request.form['can_control_drone']
     except:
-        logging.warning(f'invalid input: {flask.request.form}')
+        current_app.logger.warning(f'invalid input: {flask.request.form}')
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
         return redirect(flask.request.referrer)
 
@@ -50,10 +49,10 @@ def new_key():
             {'_id': flask_login.current_user.get()['facility_id']},
             {'$set': {'new_user': new_user}}
         )
-        logging.info(f"new key: {new_user['key']}")
+        current_app.logger.info(f"new key: {new_user['key']}")
         flask.flash('Schlüssel: ' + new_user['key'])
     else:
-        logging.warning(f'{flask_login.current_user.id_str} cannot manage users')
+        current_app.logger.warning(f'{flask_login.current_user.id_str} cannot manage users')
         flask.flash('Keine Berechtigung.', 'error')
 
     return redirect(flask.request.referrer)
@@ -76,7 +75,7 @@ def new():
         oauth_token = flask.session.pop('oauth_token')
         oauth_server = flask.session.pop('oauth_server')
     except:
-        logging.warning(f'User creation failed; invalid input {flask.request.form} {flask.session}')
+        current_app.logger.warning(f'User creation failed; invalid input {flask.request.form} {flask.session}')
         flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
         return redirect(flask.url_for('pages.sign_in'))
 
@@ -91,8 +90,8 @@ def new():
         facility = db.facilities.find_one({'_id': ObjectId(facility_id)})
         new_user = facility['new_user']
     except Exception as e:
-        logging.warning(f'User creation failed, {name}, {oauth_token}, {oauth_server}, {key}, {facility_id}')
-        logging.warning(e)
+        current_app.logger.warning(f'User creation failed, {name}, {oauth_token}, {oauth_server}, {key}, {facility_id}')
+        current_app.logger.warning(e)
         flask.flash('Fehler.', 'error')
         return redirect(flask.url_for('pages.register'))
 
@@ -115,11 +114,11 @@ def new():
             flask_login.login_user(User(db_user))
             return redirect(flask.url_for('pages.account'))
         else:
-            logging.warning(f'Key {key} expired')
+            current_app.logger.warning(f'Key {key} expired')
             flask.flash('Der Schlüssel ist abgelaufen.', 'error')
             return redirect(flask.url_for('pages.register'))
     else:
-        logging.warning(f'Invalid key {key}')
+        current_app.logger.warning(f'Invalid key {key}')
         flask.flash('Der Schlüssel ist ungültig.', 'error')
         return redirect(flask.url_for('pages.register'))
 
@@ -136,7 +135,7 @@ def edit(user_id_str=''):
     can_manage_users = flask.request.form.get('can_manage_users', None)
     can_control_drone = flask.request.form.get('can_control_drone', None)
 
-    logging.info(f'Changing user {user_id_str} to {name}, {can_manage_users}, {can_control_drone}')
+    current_app.logger.info(f'Changing user {user_id_str} to {name}, {can_manage_users}, {can_control_drone}')
 
     if user_id_str == flask_login.current_user.id_str:
         # Change self
@@ -149,7 +148,7 @@ def edit(user_id_str=''):
         if can_control_drone:
             db.users.update_one({'_id': user_id_str}, {'$set': {'can_control_drone': (can_control_drone == 'True')}})
     else:
-        logging.warning(f'{flask_login.current_user.id_str} cannot change user {user_id_str}')
+        current_app.logger.warning(f'{flask_login.current_user.id_str} cannot change user {user_id_str}')
         flask.flash('Keine Berechtigung.', 'error')
         return redirect(flask.request.referrer)
 
@@ -173,7 +172,7 @@ def delete(user_id_str=''):
         db.users.delete_one({'_id': user_id_str})
         flask.flash('Account gelöscht.')
     else:
-        logging.warning(f'{flask_login.current_user.id_str} cannot delete user {user_id_str}')
+        current_app.logger.warning(f'{flask_login.current_user.id_str} cannot delete user {user_id_str}')
         flask.flash('Keine Berechtigung.', 'error')
-    logging.info(f'Deleted user {user_id_str}')
+    current_app.logger.info(f'Deleted user {user_id_str}')
     return redirect(flask.request.referrer)

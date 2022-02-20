@@ -1,5 +1,6 @@
-import logging
 from enum import Enum
+
+from flask import current_app
 
 from app.drones import facility
 from app.drones.message import ToDrone, ToFrontend
@@ -39,14 +40,14 @@ class Drone:
 
 	# put a message into self.outbox
 	def queue_message(self, msg_type, content={}):
-		logging.info(f"DR_QUE: {msg_type}: {content}")
+		current_app.logger.info(f"DR_QUE: {msg_type}: {content}")
 		self.outbox = content
 		self.outbox['type'] = msg_type.value
 
 	# if we're waiting at home, we can do a new mission
 	def check_for_missions(self):
 		pending = [fac for fac_id, fac in self.facilities.items() if fac.drone_requested]
-		logging.info(f'Found pending missions: {pending}')
+		current_app.logger.info(f'Found pending missions: {pending}')
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			self.goal_facility = pending[0]
@@ -70,7 +71,7 @@ class Drone:
 		current_facility = self.facilities[current_facility_id_str]
 		goal_facility = self.facilities[goal_facility_id_str]
 		if goal_facility != self.goal_facility and state != State.UPDATING:
-			logging.warning(f"drone's goal facility '{self.facilities[goal_facility.id_str].name}' not equal to ours: '{self.facilities[self.goal_facility.id_str].name}'")
+			current_app.logger.warning(f"drone's goal facility '{self.facilities[goal_facility.id_str].name}' not equal to ours: '{self.facilities[self.goal_facility.id_str].name}'")
 			self.goal_facility = goal_facility
 
 		if state in [State.IDLE]:
@@ -104,34 +105,34 @@ class Drone:
 
 	# users from home or the goal can order the drone to emergency land
 	def emergency_land(self, user_facility_id_str):
-		logging.info(f'FE_RCV: emergency_land from {self.facilities[user_facility_id_str].name}')
+		current_app.logger.info(f'FE_RCV: emergency_land from {self.facilities[user_facility_id_str].name}')
 		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.queue_message(ToDrone.EMERGENCY_LAND)
 			return True
-		logging.warning('emergency_land denied')
+		current_app.logger.warning('emergency_land denied')
 		return False
 
 	# users from home or the goal can order the drone to return
 	def emergency_return(self, user_facility_id_str):
-		logging.info(f'FE_RCV: emergency_return from {self.facilities[user_facility_id_str].name}')
+		current_app.logger.info(f'FE_RCV: emergency_return from {self.facilities[user_facility_id_str].name}')
 		if user_facility_id_str in [self.goal_facility.id_str, self.latest_facility.id_str, self.home.id_str]:
 			self.queue_message(ToDrone.EMERGENCY_RETURN)
 			return True
-		logging.warning('emergency_return denied')
+		current_app.logger.warning('emergency_return denied')
 		return False
 
 	# if the drone is waiting to take off at facility_id, start the mission to home
 	def allow_takeoff(self, user_facility_id_str):
-		logging.info(f'FE_RCV: allow_takeoff from {self.facilities[user_facility_id_str].name}')
+		current_app.logger.info(f'FE_RCV: allow_takeoff from {self.facilities[user_facility_id_str].name}')
 		if user_facility_id_str == self.latest_facility.id_str and self.latest_facility.state == facility.State.AWAITING_TAKEOFF:
 			self.queue_message(ToDrone.UPDATE, self.generate_update(self.latest_facility, self.goal_facility))
 			return True
-		logging.warning('allow_takeoff denied')
+		current_app.logger.warning('allow_takeoff denied')
 		return False
 
 	# request the drone to land on user_facility
 	def request(self, user_facility_id_str):
-		logging.info(f'FE_RCV: request from {self.facilities[user_facility_id_str].name}')
+		current_app.logger.info(f'FE_RCV: request from {self.facilities[user_facility_id_str].name}')
 		fac = self.facilities[user_facility_id_str]
 		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
 		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
@@ -140,7 +141,7 @@ class Drone:
 			fac.set_drone_requested(True)
 			self.check_for_missions()
 			return True
-		logging.warning('request denied')
+		current_app.logger.warning('request denied')
 		return False
 
 

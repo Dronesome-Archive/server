@@ -1,4 +1,4 @@
-import logging.config
+import logging
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -13,63 +13,36 @@ from app.blueprints import blueprints
 # 4. For naming, only use 'state', never 'status'
 # 5. For UI text use double quotes, for internal strings use single quotes
 
-def init_log():
+def init_log(flask_app):
 	# https://docs.python.org/3/library/logging.html#logrecord-attributes
-	logging.config.dictConfig({
-		'version': 1,
-		'formatters': {
-			'wsgi': {
-				'format': '%(message)s',
-			},
-			'default': {
-				'format': '[%(asctime)s %(levelname)s]\t[%(module)s:%(lineno)d] %(message)s',
-				'datefmt': '%H:%M:%S',
-			},
-		},
-		'handlers': {
-			'wsgi': {
-				'class': 'logging.StreamHandler',
-				'stream': 'ext://flask.logging.wsgi_errors_stream',
-				'formatter': 'wsgi',
-			},
-			'default': {
-				'class': 'logging.StreamHandler',
-				'stream': 'ext://flask.logging.wsgi_errors_stream',
-				'formatter': 'default',
-			},
-			'file': {
-				'class': 'logging.FileHandler',
-				'filename': 'log',
-				'formatter': 'default',
-			},
-		},
-		'root': {
-			'level': 'INFO',
-			'handlers': ['default'],
-		}
-	})
+	# https://docs.python.org/3/library/string.html#format-string-syntax
+	formatter = logging.Formatter('[{levelname:4.4} {asctime}]\t{message}', style='{', datefmt='%Y-%m-%d %H:%M:%S')
+	handler = logging.StreamHandler()
+	handler.setFormatter(formatter)
+	flask_app.logger.removeHandler(flask_app.logger.handlers[0])
+	flask_app.logger.addHandler(handler)
+	flask_app.logger.setLevel(logging.INFO)
 
-
-def init_exts(flaskApp):
-	flaskApp.wsgi_app = ProxyFix(flaskApp.wsgi_app)
-	oauth.init_app(flaskApp)
-	for server in flaskApp.config['OAUTH_SERVERS']:
+def init_exts(flask_app):
+	flask_app.wsgi_app = ProxyFix(flask_app.wsgi_app)
+	oauth.init_app(flask_app)
+	for server in flask_app.config['OAUTH_SERVERS']:
 		oauth.register(server)
-	login.init_app(flaskApp)
-	socketio.init_app(flaskApp)
+	login.init_app(flask_app)
+	socketio.init_app(flask_app)
 
 
-def register_blueprints(flaskApp):
+def register_blueprints(flask_app):
 	for blueprint in blueprints:
-		flaskApp.register_blueprint(blueprint)
+		flask_app.register_blueprint(blueprint)
 
 
 def create_app(config_objects):
-	flaskApp = Flask(__name__)
+	flask_app = Flask(__name__)
 	for obj in config_objects:
-		flaskApp.config.from_object(obj)
-	init_log()
-	init_exts(flaskApp)
+		flask_app.config.from_object(obj)
+	init_log(flask_app)
+	init_exts(flask_app)
 	app.drones.init()
-	register_blueprints(flaskApp)
-	return flaskApp
+	register_blueprints(flask_app)
+	return flask_app

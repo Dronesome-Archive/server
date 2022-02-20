@@ -1,7 +1,6 @@
-import logging
-
 import flask
 import flask_login
+from flask import current_app
 from werkzeug.utils import redirect
 from bson.objectid import ObjectId
 
@@ -30,7 +29,7 @@ def login(oauth_server):
 	if client := oauth.create_client(oauth_server):
 		callback_url = flask.url_for('.callback', oauth_server=oauth_server, _external=True, _scheme='https')
 		return client.authorize_redirect(callback_url)
-	logging.warning(f'Invalid oauth server: {oauth_server}')
+	current_app.logger.warning(f'Invalid oauth server: {oauth_server}')
 	flask.flash('Ungültige Anmeldemethode!', 'error')
 	return redirect(flask.url_for('pages.sign_in'))
 
@@ -55,7 +54,7 @@ def callback(oauth_server):
 			flask.session['oauth_token'] = userinfo.sub
 			return redirect(flask.url_for('pages.register'))
 	else:
-		logging.warning(f'Invalid oauth server: {oauth_server}')
+		current_app.logger.warning(f'Invalid oauth server: {oauth_server}')
 		flask.flash('Ungültige Anmeldemethode!', 'error')
 		return redirect(flask.url_for('pages.sign_in'))
 
