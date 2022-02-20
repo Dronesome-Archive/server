@@ -1,6 +1,13 @@
 // style
-const inactiveLineCol = '#999999';
-const activeLineCol = '#99FF99';
+const colors = {
+	line = '#008800',
+	lineActive = '#00FF00',
+	drone = '#FFFFFF',
+	facility = '#008800',
+	facilityGoal = '#00FF00',
+	facilityHome = '#000088',
+	facilityHomeGoal = '#0000FF',
+}
 
 // DOM
 let droneButtons = {};
@@ -23,6 +30,7 @@ let facilityState = '';
 let droneRequested = false;
 
 // map icons
+let map = null;
 let droneMarker = null;
 let facilityMarkers = [];
 let facilityLines = [];
@@ -55,13 +63,25 @@ function init() {
 		zoomOffset: -1,
 		accessToken: accessToken
 	}).addTo(map);
-	droneMarker = L.marker([0.0, 0.0], {title: 'Kurier'});
-	for (let facilityId in facilities) {
-		facilityMarkers[facilityId] = L.marker(facilities[facilityId].pos, {title: facilities[facilityId].name}).addTo(map);
+	
+	// drone marker
+	droneMarker = L.marker([0.0, 0.0], {title: 'Kurier', color: colors.drone});
+
+	// map items
+	for (const facilityId in facilities) {
+		// facility marker
+		facilityMarkers[facilityId] = L.marker(
+			facilities[facilityId].pos,
+			{
+				title: facilities[facilityId].name,
+				color: (facilities[facilityId] == homeFacility) ? colors.facilityHome : colors.facility,
+			}
+		).addTo(map);
+		// facility line
 		if (facilities[facilityId] !== homeFacility) {
 			facilityLines[facilityId] = L.polyline(
 				[facilities[facilityId].pos].concat(facilities[facilityId].waypoints).concat([homeFacility.pos]),
-				{color: inactiveLineCol}
+				{color: colors.line}
 			).addTo(map);
 		}
 	}
@@ -142,19 +162,35 @@ function onFacilityState(args) {
 	console.log('onFacilityState', args);
 	goalFacility = facilities[args.goal_id];
 
-	// highlight goal
-	facilityMarkers[goalFacility.id].color = '#FF0000';
-
-	// show / hide drone state
-	if (args.state === 'idle' && goalFacility != ownFacility) {
-		stateContainer.style.display = 'none';
-	} else {
-		stateContainer.style.display = 'initial';
+	// facility marker colors
+	for (const facilityId in facilities) {
+		if (facilityId == homeFacility.id == goalFacility.id)
+			facilityMarkers[facilityId].color = colors.facilityHomeGoal;
+		else if (facilityId == homeFacility.id)
+			facilityMarkers[facilityId].color = colors.facilityHome;
+		else if (facilityId == goalFacility.id)
+			facilityMarkers[facilityId].color = colors.facilityGoal;
+		else
+			facilityMarkers[facilityId].color = colors.facility;
 	}
 
-	// show / hide facility line
-	if (goalFacility != homeFacility) currentFacilityLine = facilityLines[goalFacility.id];
-	if (currentFacilityLine) currentFacilityLine.color = (args.state === 'idle') ? inactiveLineCol : activeLineCol;
+	// facility line colors
+	if (goalFacility == homeFacility && args.state === 'idle') {
+		for (const facilityLineId in facilityLines) {
+			facilityLines[facilityLineId].color = colors.line;
+		}
+	} else if (goalFacility != homeFacility) {
+		facilityLines[goalFacility.id].color = colors.lineActive;
+	}
+
+	// drone state
+	if (args.state === 'idle' && goalFacility != ownFacility) {
+		stateContainer.style.display = 'none';
+		droneMarker.remove();
+	} else {
+		stateContainer.style.display = 'initial';
+		droneMarker.addTo(map);
+	}
 
 	// request button
 	if (ownFacility != goalFacility && ownFacility != homeFacility) droneButtons.request.show(droneRequested);
