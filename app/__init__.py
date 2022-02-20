@@ -16,7 +16,7 @@ from app.blueprints import blueprints
 def init_log(flask_app):
 	# https://docs.python.org/3/library/logging.html#logrecord-attributes
 	# https://docs.python.org/3/library/string.html#format-string-syntax
-	formatter = logging.Formatter('[{levelname:4.4} {asctime}]\t{message}', style='{', datefmt='%Y-%m-%d %H:%M:%S')
+	formatter = logging.Formatter('[{levelname:4.4} {asctime} {module}:{funcName}] {message}', style='{', datefmt='%H:%M:%S')
 	handler = logging.StreamHandler()
 	handler.setFormatter(formatter)
 	flask_app.logger.removeHandler(flask_app.logger.handlers[0])

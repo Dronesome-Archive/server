@@ -26,6 +26,7 @@
 
 
 ## PRAXIS LOREM IPSUM (Reha vita)
+6162c265089535c20545116d
 db.facilities.insertOne({
     "name": "Praxis Lorem Ipsum",
     "pos": [51.75548871014251, 14.337482007009129],
@@ -43,6 +44,7 @@ db.facilities.insertOne({
 
 
 ## PRAXIS DOLOR AMET (Kokott)
+6162c26c089535c20545116e
 db.facilities.insertOne({
     "name": "Praxis Dolor Amet",
     "pos": [51.72802399574362, 14.325621128053765],
@@ -57,6 +59,7 @@ db.facilities.insertOne({
 
 
 ## LABOR CONSECTETUR ELIT (MVZ Gemeinschaftslabor)
+61631a905c62c1f3e9a38df2
 db.facilities.insertOne({
     "name": "Labor Consectetur Elit",
     "pos": [51.72437634851853, 14.33875342899223],

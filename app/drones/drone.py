@@ -69,8 +69,9 @@ class Drone:
 	def on_state_update(self, state, current_facility_id_str, goal_facility_id_str):
 		current_facility = self.facilities[current_facility_id_str]
 		goal_facility = self.facilities[goal_facility_id_str]
+		getLogger('app').info(f"{state.value} from {current_facility.name} to {goal_facility.name}")
 		if goal_facility != self.goal_facility and state != State.UPDATING:
-			getLogger('app').warning(f"drone's goal facility '{self.facilities[goal_facility.id_str].name}' not equal to ours: '{self.facilities[self.goal_facility.id_str].name}'")
+			getLogger('app').warning(f"drone's goal facility '{goal_facility.name}' not equal to ours: '{self.goal_facility.name}'")
 			self.goal_facility = goal_facility
 
 		if state in [State.IDLE]:

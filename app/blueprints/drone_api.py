@@ -21,13 +21,9 @@ def message():
 		drones.droneObj.on_heartbeat(pos, battery)
 	elif req['type'] == FromDrone.STATUS_UPDATE.value:
 		state = State(req['state'])
-		latest_facility_id_str = req['latest_facility_id']
-		goal_facility_id_str = req['goal_facility_id']
-		if latest_facility_id_str and goal_facility_id_str:
-			drones.droneObj.on_state_update(state, latest_facility_id_str, goal_facility_id_str)
-		else:
-			# the drone has no latest/goal facilities when just starting up
-			drones.droneObj.on_state_update(state, drones.home.id_str, drones.home.id_str)
+		latest_facility_id_str = req['latest_facility_id'] if req['latest_facility_id'] else drones.home.id_str
+		goal_facility_id_str = req['goal_facility_id'] if req['goal_facility_id'] else drones.home.id_str
+		drones.droneObj.on_state_update(state, latest_facility_id_str, goal_facility_id_str)
 	else:
 		getLogger('app').warning(f"DR_RCV: unknown type")
 	rep = reply()
