@@ -96,40 +96,40 @@ function createButton(parent) {
 }
 
 showRequest = function(requested) {
-	this.button.style.display = 'initial';
+	this.dom.style.display = 'initial';
 	if (requested) {
-		this.button.innerText = "Kurier angefordert";
+		this.dom.innerText = "Kurier angefordert";
 	} else {
-		this.button.innerText = "Kurier anfordern";
-		this.button.classList.add('good_step');
-		this.button.onclick = () => window.location.href = '/drone_control/request';
+		this.dom.innerText = "Kurier anfordern";
+		this.dom.classList.add('good_step');
+		this.dom.onclick = () => window.location.href = '/drone_control/request';
 	}
 }
 
 showAllowTakeoff = function() {
-	this.button.style.display = 'initial';
-	this.button.innerText = "Starterlaubnis erteilen";
-	this.button.classList.add('good_step');
+	this.dom.style.display = 'initial';
+	this.dom.innerText = "Starterlaubnis erteilen";
+	this.dom.classList.add('good_step');
 }
 
 showEmergencyReturn = function() {
-	this.button.style.display = 'initial';
-	this.button.innerText = "Sofort umkehren";
-	this.button.classList.add('bad_step');
-	this.button.onclick = () => showPopup('emergency_return');
+	this.dom.style.display = 'initial';
+	this.dom.innerText = "Sofort umkehren";
+	this.dom.classList.add('bad_step');
+	this.dom.onclick = () => showPopup('emergency_return');
 }
 
 showEmergencyLand = function() {
-	this.button.style.display = 'initial';
-	this.button.innerText = "Sofort notlanden";
-	this.button.classList.add('bad_step');
-	this.button.onclick = () => showPopup('emergency_land');
+	this.dom.style.display = 'initial';
+	this.dom.innerText = "Sofort notlanden";
+	this.dom.classList.add('bad_step');
+	this.dom.onclick = () => showPopup('emergency_land');
 }
 
 showCrashed = function(show) {
-	this.button.style.display = 'initial';
-	this.button.innerText = "Notgelandet";
-	this.button.classList.add('bad_step');
+	this.dom.style.display = 'initial';
+	this.dom.innerText = "Notgelandet";
+	this.dom.classList.add('bad_step');
 }
 
 
