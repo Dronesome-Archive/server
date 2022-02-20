@@ -1,6 +1,7 @@
+from logging import getLogger
+
 import flask_socketio
 import flask_login
-from flask import current_app
 
 from app.drones import message
 from app.drones.facility import State
@@ -18,7 +19,7 @@ class Frontend(flask_socketio.Namespace):
     def on_connect(self):
         if flask_login.current_user.is_authenticated:
             fac = self.facilities[str(flask_login.current_user.get()['facility_id'])]
-            current_app.logger.info(f'FE_CON: {fac.name} ({fac.id_str})')
+            getLogger('app').info(f'FE_CON: {fac.name} ({fac.id_str})')
             flask_socketio.join_room(fac.id_str)
             fac.send(message.ToFrontend.FACILITY_STATE)
             if fac == self.home or fac.state != State.IDLE:
@@ -27,5 +28,5 @@ class Frontend(flask_socketio.Namespace):
                 fac.send(message.ToFrontend.HEARTBEAT, battery=self.drone.battery, pos=self.drone.pos)
                 fac.send(message.ToFrontend.DRONE_STATE, state=self.drone.state)
             return True
-        current_app.logger.warning('FE_REJ')
+        getLogger('app').warning('FE_REJ')
         return False

@@ -1,4 +1,4 @@
-from flask import current_app
+from logging import getLogger
 
 from app.drones.frontend import Frontend
 from app.exts import socketio, db
@@ -21,7 +21,7 @@ def init():
         if raw['is_home']:
             home = facilities[str(raw['_id'])]
     if not home:
-        current_app.logger.warning('no home found')
+        getLogger('app').warning('no home found')
 
     droneObj = Drone('/drone', home, facilities)
 
