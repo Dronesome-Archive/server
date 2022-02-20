@@ -33,7 +33,7 @@ def init_log():
 				'formatter': 'wsgi',
 			},
 			'default': {
-				'class': 'logging.SteamHandler',
+				'class': 'logging.StreamHandler',
 				'stream': 'ext://flask.logging.wsgi_errors_stream',
 				'formatter': 'default',
 			},
