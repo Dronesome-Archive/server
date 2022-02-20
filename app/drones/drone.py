@@ -50,7 +50,6 @@ class Drone:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			self.goal_facility = pending[0]
 			self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
-			self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 
 
 	####################################################################################################################
