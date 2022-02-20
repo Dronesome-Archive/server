@@ -10,15 +10,15 @@
                 <div class="item">
                     <p class="stretch">{{ member['name'] }}</p>
                     {% if me['can_manage_users'] %}
-                        <button onclick="show_popup('{{ member['_id'] }}_edit')"><i class="fas fa-pen-alt"></i></button>
-                        <button onclick="show_popup('{{ member['_id'] }}_delete')"><i class="fas fa-trash-alt"></i></button>
+                        <button onclick="showPopup('{{ member['_id'] }}_edit')"><i class="fas fa-pen-alt"></i></button>
+                        <button onclick="showPopup('{{ member['_id'] }}_delete')"><i class="fas fa-trash-alt"></i></button>
                     {% endif %}
                 </div>
             {% endfor %}
         </div>
         <div class="item">
             <p class="stretch">Neuer Mitarbeiter</p>
-            <button onclick="show_popup('new')"><i class="fas fa-user-plus"></i></button>
+            <button onclick="showPopup('new')"><i class="fas fa-user-plus"></i></button>
         </div>
     </div>
 {% endblock %}
@@ -36,7 +36,7 @@
                     <input type="checkbox" name="can_manage_users">
                 </div>
                 <div class="flex_row">
-                    <button class="item" type="reset" onclick="hide_popup('new')">Abbrechen</button>
+                    <button class="item" type="reset" onclick="hidePopup('new')">Abbrechen</button>
                     <button class="item" type="submit">OK</button>
                 </div>
             </form>
@@ -56,7 +56,7 @@
                     <input type="checkbox" name="can_manage_users" {% if member['can_manage_users'] %}checked{% endif %}>
                 </div>
                 <div class="flex_row">
-                    <button class="item" type="reset" onclick="hide_popup('{{ member['_id'] }}_edit')">Abbrechen</button>
+                    <button class="item" type="reset" onclick="hidePopup('{{ member['_id'] }}_edit')">Abbrechen</button>
                     <button class="item" type="submit">OK</button>
                 </div>
             </form>
@@ -66,7 +66,7 @@
             <p>Account von {{ member['name'] }} wirklich löschen?</p>
             <form method="post" action="{{ url_for('users.delete', user_id=member['_id']) }}">
                 <div class="flex_row">
-                    <button class="item" type="button" onclick="hide_popup('{{ member['_id'] }}_edit')">Nein, abbrechen</button>
+                    <button class="item" type="button" onclick="hidePopup('{{ member['_id'] }}_edit')">Nein, abbrechen</button>
                     <button class="item" type="submit">Ja, löschen</button>
                 </div>
             </form>

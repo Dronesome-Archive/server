@@ -1,14 +1,14 @@
-function show_popup(id) {
+function showPopup(id) {
     // Get DOM object
     let popup = document.getElementById(id);
     if (!popup || popup.style.getPropertyValue('display')==='block') return;
 
     // Hide others
-    for (const other of document.getElementsByClassName('popup')) hide_popup(other.id);
+    for (const other of document.getElementsByClassName('popup')) hidePopup(other.id);
 
     // Create background
     let bg = document.createElement('div');
-    bg.onclick = () => hide_popup(id);
+    bg.onclick = () => hidePopup(id);
     bg.classList.add('popup_background');
     document.body.insertBefore(bg, popup);
 
@@ -16,7 +16,7 @@ function show_popup(id) {
     popup.style.setProperty('display', 'block');
 }
 
-function hide_popup(id) {
+function hidePopup(id) {
     // Get DOM object
     let popup = id ? document.getElementById(id) : this;
     while (!popup.classList.contains('popup')) popup = popup.parentElement;

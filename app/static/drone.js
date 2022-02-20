@@ -110,6 +110,7 @@ showAllowTakeoff = function() {
 	this.dom.style.display = 'initial';
 	this.dom.innerText = "Starterlaubnis erteilen";
 	this.dom.classList.add('good_step');
+	this.dom.onclick = () => window.location.href = '/drone_control/allow_takeoff'
 }
 
 showEmergencyReturn = function() {

@@ -12,7 +12,7 @@
             </select>
             <div class="item">
                 <input id="new_user_key" class="stretch" name="key" maxlength="{{ config['NEW_USER_KEY_LENGTH'] }}" pattern="([A-Z]|[0-9]){8}" type="text" placeholder="Registrierungs-Code" required/>
-                <button onclick="show_popup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
+                <button onclick="showPopup('sign_in_key_info')"><i class="fas fa-info-circle"></i></button>
             </div>
             <button class="item" type="submit">Registrieren</button>
         </form>
@@ -23,7 +23,7 @@
         <p>Der Code muss von einem angemeldeten Mitarbeiter auf der <i class="fas fa-list"></i> - Seite generiert werden.
         Du benötigst den Code nur einmalig, um dich als Nutzer zu registrieren.</p>
         <div class="flex_row">
-            <button class="item stretch" onclick="hide_popup('sign_in_key_info')">Okay</button>
+            <button class="item stretch" onclick="hidePopup('sign_in_key_info')">Okay</button>
         </div>
     </div>
 {% endblock %}
