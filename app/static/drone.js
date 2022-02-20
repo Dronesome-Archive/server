@@ -3,7 +3,7 @@ const inactiveLineCol = '#999999';
 const activeLineCol = '#99FF99';
 
 // DOM
-let droneButtons;
+let droneButtons = {};
 let batteryDisplay;
 let stateDisplay;
 let stateContainer;
@@ -36,7 +36,7 @@ function init() {
 	stateContainer = document.getElementById('state_container');
 
 	// create drone buttons
-	for (const button in ['request', 'allowTakeoff', 'emergencyReturn', 'emergencyLand', 'crashed']) {
+	for (const button of ['request', 'allowTakeoff', 'emergencyReturn', 'emergencyLand', 'crashed']) {
 		droneButtons[button] = createButton(document.getElementById('drone_buttons'));
 	}
 	droneButtons.request.show = showRequest;
