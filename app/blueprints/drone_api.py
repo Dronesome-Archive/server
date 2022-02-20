@@ -15,12 +15,10 @@ def message():
 	req = flask.request.json
 	logging.info(f'DR_RCV: {req}')
 	if req['type'] == FromDrone.HEARTBEAT.value:
-		logging.info('DR_RCV: heartbeat')
 		pos = req['pos']
 		battery = req['battery']
 		drones.droneObj.on_heartbeat(pos, battery)
 	elif req['type'] == FromDrone.STATUS_UPDATE.value:
-		logging.info('DR_RCV: status update')
 		state = State(req['state'])
 		latest_facility_id_str = req['latest_facility_id']
 		goal_facility_id_str = req['goal_facility_id']

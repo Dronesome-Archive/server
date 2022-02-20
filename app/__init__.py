@@ -14,53 +14,62 @@ from app.blueprints import blueprints
 # 5. For UI text use double quotes, for internal strings use single quotes
 
 def init_log():
-    logging.config.dictConfig({
-        'version': 1,
-        'formatters': {
-            'default': {
-                'format': '[%(asctime)s %(levelname)s %(funcName)s]:\t%(message)s',
-                'datefmt': '%H:%M:%S',
-            }
-        },
-        'handlers': {
-            'wsgi': {
-                'class': 'logging.StreamHandler',
-                'stream': 'ext://flask.logging.wsgi_errors_stream',
-                'formatter': 'default',
-            },
+	# https://docs.python.org/3/library/logging.html#logrecord-attributes
+	logging.config.dictConfig({
+		'version': 1,
+		'formatters': {
+			'wsgi': {
+				'format': '%(message)s',
+			},
+			'default': {
+				'format': '[%(asctime)s %(levelname)s]\t[%(module)s:%(lineno)d] %(message)s',
+				'datefmt': '%H:%M:%S',
+			},
+		},
+		'handlers': {
+			'wsgi': {
+				'class': 'logging.StreamHandler',
+				'stream': 'ext://flask.logging.wsgi_errors_stream',
+				'formatter': 'wsgi',
+			},
+			'default': {
+				'class': 'logging.SteamHandler',
+				'stream': 'ext://flask.logging.wsgi_errors_stream',
+				'formatter': 'default',
+			},
 			'file': {
-                'class': 'logging.FileHandler',
-                'filename': 'log',
-                'formatter': 'default'
-            }
-        },
-        'root': {
-            'level': 'INFO',
-            'handlers': ['wsgi'],
-        }
-    })
+				'class': 'logging.FileHandler',
+				'filename': 'log',
+				'formatter': 'default',
+			},
+		},
+		'root': {
+			'level': 'INFO',
+			'handlers': ['default'],
+		}
+	})
 
 
 def init_exts(flaskApp):
-    flaskApp.wsgi_app = ProxyFix(flaskApp.wsgi_app)
-    oauth.init_app(flaskApp)
-    for server in flaskApp.config['OAUTH_SERVERS']:
-        oauth.register(server)
-    login.init_app(flaskApp)
-    socketio.init_app(flaskApp)
+	flaskApp.wsgi_app = ProxyFix(flaskApp.wsgi_app)
+	oauth.init_app(flaskApp)
+	for server in flaskApp.config['OAUTH_SERVERS']:
+		oauth.register(server)
+	login.init_app(flaskApp)
+	socketio.init_app(flaskApp)
 
 
 def register_blueprints(flaskApp):
-    for blueprint in blueprints:
-        flaskApp.register_blueprint(blueprint)
+	for blueprint in blueprints:
+		flaskApp.register_blueprint(blueprint)
 
 
 def create_app(config_objects):
-    flaskApp = Flask(__name__)
-    for obj in config_objects:
-        flaskApp.config.from_object(obj)
-    init_log()
-    init_exts(flaskApp)
-    app.drones.init()
-    register_blueprints(flaskApp)
-    return flaskApp
+	flaskApp = Flask(__name__)
+	for obj in config_objects:
+		flaskApp.config.from_object(obj)
+	init_log()
+	init_exts(flaskApp)
+	app.drones.init()
+	register_blueprints(flaskApp)
+	return flaskApp
