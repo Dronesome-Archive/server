@@ -60,7 +60,8 @@ class Drone:
 	def on_heartbeat(self, pos, battery):
 		self.pos = pos
 		self.battery = battery
-		self.goal_facility.send(ToFrontend.HEARTBEAT, pos=pos, battery=battery)
+		if (self.goal_facility == self.home or self.goal_facility.state != facility.State.IDLE):
+			self.goal_facility.send(ToFrontend.HEARTBEAT, pos=pos, battery=battery)
 		self.latest_facility.send(ToFrontend.HEARTBEAT, pos=pos, battery=battery)
 
 	# we got a state update from the drone; even if drone was returning, goal_facility_id is still the original goal's id
