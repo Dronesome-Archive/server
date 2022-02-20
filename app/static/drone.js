@@ -90,7 +90,7 @@ function createButton(parent) {
 			this.dom.innerText = '';
 		}
 	}
-	parent.appendChild(button);
+	parent.appendChild(button.dom);
 	button.hide();
 	return button;
 }
