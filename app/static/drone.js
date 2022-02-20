@@ -226,7 +226,7 @@ function onDroneState(args) {
 		'en_route': "Fliegt",
 		'landing': "Landet",
 		'return_landing': "Landet",
-		'returning': "Kehrt zurück",
+		'emergency_returning': "Kehrt zurück",
 		'emergency_landing': "Macht Notlandung",
 		'crashed': "Notgelandet",
 		'updating': "Empfängt Mission"
