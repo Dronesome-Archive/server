@@ -80,11 +80,8 @@ function init() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function createButton(parent) {
-	let button = document.createElement('button');
-	button.style.display = 'none';
-	parent.appendChild(button);
-	return {
-		dom: button,
+	let button = {
+		dom: document.createElement('button'),
 		show: null,
 		hide: function() {
 			this.dom.className = 'item';
@@ -93,6 +90,9 @@ function createButton(parent) {
 			this.dom.innerText = '';
 		}
 	}
+	parent.appendChild(button);
+	button.hide();
+	return button;
 }
 
 showRequest = function(requested) {
