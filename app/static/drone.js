@@ -193,7 +193,7 @@ function onFacilityState(args) {
 	}
 
 	// request button
-	if (ownFacility != goalFacility && ownFacility != homeFacility) droneButtons.request.show(droneRequested);
+	if (ownFacility != goalFacility && ownFacility != homeFacility && args.state !== 'awaiting_takeoff') droneButtons.request.show(droneRequested);
 	else droneButtons.request.hide();
 
 	// allowTakeoff button

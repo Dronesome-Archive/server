@@ -134,10 +134,7 @@ class Drone:
 	def request(self, user_facility_id_str):
 		getLogger('app').info(f'FE_RCV: request from {self.facilities[user_facility_id_str].name}')
 		fac = self.facilities[user_facility_id_str]
-		idle = (fac.state == facility.State.IDLE and fac.drone_goal != fac)
-		en_route = (fac.state == facility.State.EN_ROUTE and fac.drone_goal != fac)
-		returning = (fac.state == facility.State.RETURNING and fac.drone_goal == fac)
-		if fac != self.home and (idle or en_route or returning):
+		if fac != self.home and fac != self.goal_facility and fac.state != facility.State.AWAITING_TAKEOFF:
 			fac.set_drone_requested(True)
 			self.check_for_missions()
 			return True
