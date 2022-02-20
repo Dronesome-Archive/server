@@ -42,6 +42,21 @@ db.facilities.insertOne({
     "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
 
+db.facilities.updateOne(
+	{
+		"_id": ObjectId("6162c265089535c20545116d")
+	},
+	{
+		"$set": {
+			"new_user": {
+				"key": "3BN4S97W",
+				"expiry": new Date("2023-01-01"),
+				"can_manage_users": true,
+				"can_control_drone": true
+			}
+		}
+	}
+)
 
 ## PRAXIS DOLOR AMET (Kokott)
 6162c26c089535c20545116e
@@ -57,6 +72,22 @@ db.facilities.insertOne({
     "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
 
+db.facilities.updateOne(
+	{
+		"_id": ObjectId("6162c26c089535c20545116e")
+	},
+	{
+		"$set": {
+			"new_user": {
+				"key": "T648SD9S",
+				"expiry": new Date("2023-01-01"),
+				"can_manage_users": true,
+				"can_control_drone": true
+			}
+		}
+	}
+)
+
 
 ## LABOR CONSECTETUR ELIT (MVZ Gemeinschaftslabor)
 61631a905c62c1f3e9a38df2
@@ -67,6 +98,22 @@ db.facilities.insertOne({
     "is_home": true,
     "new_user": {"key": "1234ASDF", "expiry": new Date("2022-01-01"), "can_manage_users": true, "can_control_drone": true}
 })
+
+db.facilities.updateOne(
+	{
+		"_id": ObjectId("61631a905c62c1f3e9a38df2")
+	},
+	{
+		"$set": {
+			"new_user": {
+				"key": "89NESJ5M",
+				"expiry": new Date("2023-01-01"),
+				"can_manage_users": true,
+				"can_control_drone": true
+			}
+		}
+	}
+)
 
 # LABORUSER
 db.users.insertOne({
