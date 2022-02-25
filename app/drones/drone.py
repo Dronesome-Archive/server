@@ -1,5 +1,6 @@
 from enum import Enum
 from logging import getLogger
+from datetime import datetime
 
 from app.drones import facility
 from app.drones.message import ToDrone, ToFrontend
@@ -46,7 +47,7 @@ class Drone:
 	# if we're waiting at home, we can do a new mission
 	def check_for_missions(self):
 		pending = [fac for fac_id, fac in self.facilities.items() if fac.drone_requested]
-		getLogger('app').info(f'Found pending missions: {pending}')
+		getLogger('app').info(f"Found pending missions: { {f.name: datetime.from_timestamp(f.drone_requested_on).strftime('%H:%M:%S') for f in pending} }")
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
 			getLogger('app').info(f"starting mission to '{pending[0].name}'")
@@ -81,6 +82,7 @@ class Drone:
 				# landed on home, errand complete
 				self.latest_facility.set_state(facility.State.IDLE, self.goal_facility)
 				self.goal_facility.set_state(facility.State.IDLE, self.goal_facility)
+				self.latest_facility = current_facility
 				self.check_for_missions()
 			else:
 				# landed on non-home
