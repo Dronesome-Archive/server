@@ -71,13 +71,12 @@ class Drone:
 	def on_state_update(self, state, current_facility_id_str, goal_facility_id_str):
 		current_facility = self.facilities[current_facility_id_str]
 		goal_facility = self.facilities[goal_facility_id_str]
-		getLogger('app').info(f"{state.value} from {current_facility.name} to {goal_facility.name}")
+		getLogger('app').info(f"{state.value}, latest: '{self.latest_facility}', current: '{current_facility.name}', goal: '{goal_facility.name}'")
 		if goal_facility != self.goal_facility and state != State.UPDATING:
 			getLogger('app').warning(f"drone's goal facility '{goal_facility.name}' not equal to ours: '{self.goal_facility.name}'")
 			self.goal_facility = goal_facility
 
 		if state in [State.IDLE]:
-			self.goal_facility = self.home
 			if current_facility == self.home:
 				# landed on home, errand complete
 				self.latest_facility.set_state(facility.State.IDLE, self.goal_facility)
@@ -86,8 +85,9 @@ class Drone:
 				self.check_for_missions()
 			else:
 				# landed on non-home
-				current_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
+				self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
+			self.goal_facility = self.home
 		elif state in [State.EN_ROUTE, State.LANDING]:
 			self.latest_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
 			self.goal_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
