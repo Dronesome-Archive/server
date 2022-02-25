@@ -79,14 +79,14 @@ class Drone:
 		if state in [State.IDLE]:
 			if current_facility == self.home:
 				# landed on home, errand complete
-				self.latest_facility.set_state(facility.State.IDLE, self.goal_facility)
-				self.goal_facility.set_state(facility.State.IDLE, self.goal_facility)
+				self.latest_facility.set_state(facility.State.IDLE, self.home)
+				self.goal_facility.set_state(facility.State.IDLE, self.home)
 				self.latest_facility = current_facility
 				self.check_for_missions()
 			else:
 				# landed on non-home
-				self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
-				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
+				self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.home)
+				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.home)
 			self.goal_facility = self.home
 		elif state in [State.EN_ROUTE, State.LANDING]:
 			self.latest_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
