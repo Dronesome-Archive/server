@@ -21,14 +21,15 @@ class Facility:
 
 	# we have a new state, relay to our facility
 	def set_state(self, state, goal_facility):
-		getLogger('app').info(f"{self.name} state update to {state}, {goal_facility.name}")
+		getLogger('app').info(f"'{self.name}': {state} with goal '{goal_facility.name}'")
 		if self.state != state or self.drone_goal != goal_facility:
 			self.state = state
 			self.drone_goal = goal_facility
 			if state != State.IDLE:
 				self.set_drone_requested(False)
 			self.send(ToFrontend.FACILITY_STATE)
-		getLogger('app').warning("state update failed")
+		else:
+			getLogger('app').warning("state update failed")
 
 	# set drone request state and send to frontend
 	def set_drone_requested(self, drone_requested):
@@ -48,7 +49,7 @@ class Facility:
 			content = {'state': kwargs['state'].value}
 		elif msg_type == ToFrontend.HEARTBEAT:
 			content = {'pos': kwargs['pos'], 'battery': kwargs['battery']}
-		getLogger('app').info(f'FE_SND: {msg_type.value}, {content}')
+		getLogger('app').info(f"'{self.name}': {msg_type.value}, {content}")
 		socketio.emit(msg_type.value, content, namespace='/'+Namespace.FRONTEND.value, to=self.id_str)
 
 

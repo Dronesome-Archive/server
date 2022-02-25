@@ -49,6 +49,7 @@ class Drone:
 		getLogger('app').info(f'Found pending missions: {pending}')
 		if len(pending) and self.goal_facility == self.latest_facility == self.home:
 			pending.sort(key=lambda f: f.drone_requested_on)
+			getLogger('app').info(f"starting mission to '{pending[0].name}'")
 			self.goal_facility = pending[0]
 			self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
 
@@ -80,6 +81,7 @@ class Drone:
 				# landed on home, errand complete
 				self.latest_facility.set_state(facility.State.IDLE, self.goal_facility)
 				self.goal_facility.set_state(facility.State.IDLE, self.goal_facility)
+				self.check_for_missions()
 			else:
 				# landed on non-home
 				current_facility.set_state(facility.State.AWAITING_TAKEOFF, self.goal_facility)
