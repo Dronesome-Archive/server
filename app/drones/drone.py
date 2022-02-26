@@ -139,7 +139,11 @@ class Drone:
 	def request(self, user_facility_id_str):
 		getLogger('app').info(f'FE_RCV: request from {self.facilities[user_facility_id_str].name}')
 		fac = self.facilities[user_facility_id_str]
-		if fac != self.home and fac.state not in [facility.State.AWAITING_TAKEOFF, facility.State.EN_ROUTE, facility.State.EMERGENCY]:
+		if (
+			fac != self.home and
+			fac.state not in [facility.State.AWAITING_TAKEOFF, facility.State.EMERGENCY] and
+			not (fac.state == facility.State.EN_ROUTE and fac == self.goal_facility)
+		):
 			fac.set_drone_requested(True)
 			self.check_for_missions()
 			return True

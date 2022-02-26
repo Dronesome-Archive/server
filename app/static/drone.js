@@ -194,7 +194,12 @@ function onFacilityState(args) {
 	}
 
 	// request button
-	if (ownFacility != homeFacility && !['awaiting_takeoff', 'en_route', 'emergency'].includes(args.state)) droneButtons.request.show(droneRequested);
+	if (
+		ownFacility != homeFacility &&
+		args.state !== 'awaiting_takeoff' &&
+		args.state !== 'emergency' &&
+		!(args.state === 'en_route' && goalFacility == ownFacility)
+	) droneButtons.request.show(droneRequested);
 	else droneButtons.request.hide();
 
 	// allowTakeoff button
