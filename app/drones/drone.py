@@ -88,7 +88,7 @@ class Drone:
 				# landed on non-home
 				self.latest_facility.set_state(facility.State.AWAITING_TAKEOFF, self.home)
 				self.goal_facility.set_state(facility.State.AWAITING_TAKEOFF, self.home)
-			self.goal_facility = self.home
+				self.goal_facility = self.home
 		elif state in [State.EN_ROUTE, State.LANDING]:
 			self.latest_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
 			self.goal_facility.set_state(facility.State.EN_ROUTE, self.goal_facility)
