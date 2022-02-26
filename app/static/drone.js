@@ -158,6 +158,7 @@ showCrashed = function(show) {
 // SOCKETIO EVENT HANDLERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// args.state: idle | awaiting_takeoff | en_route | returning | emergency
 function onFacilityState(args) {
 	console.log('onFacilityState', args);
 	goalFacility = facilities[args.goal_id];
@@ -193,7 +194,7 @@ function onFacilityState(args) {
 	}
 
 	// request button
-	if (ownFacility != goalFacility && ownFacility != homeFacility && args.state !== 'awaiting_takeoff') droneButtons.request.show(droneRequested);
+	if (ownFacility != homeFacility && !['awaiting_takeoff', 'en_route', 'emergency'].includes(args.state)) droneButtons.request.show(droneRequested);
 	else droneButtons.request.hide();
 
 	// allowTakeoff button
