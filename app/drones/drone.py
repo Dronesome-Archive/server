@@ -82,6 +82,7 @@ class Drone:
 				self.latest_facility.set_state(facility.State.IDLE, self.home)
 				self.goal_facility.set_state(facility.State.IDLE, self.home)
 				self.latest_facility = current_facility
+				self.goal_facility = self.home
 				self.check_for_missions()
 			else:
 				# landed on non-home
