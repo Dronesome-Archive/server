@@ -16,9 +16,10 @@ function showPopup(id) {
     popup.style.setProperty('display', 'block');
 }
 
-function hidePopup(id) {
+function hidePopup(popup) {
+	// https://stackoverflow.com/questions/925734/whats-this-in-javascript-onclick
+
     // Get DOM object
-    let popup = id ? document.getElementById(id) : this;
     while (!popup.classList.contains('popup')) popup = popup.parentElement;
     if (popup.style.getPropertyValue('display')==='none') return;
 
