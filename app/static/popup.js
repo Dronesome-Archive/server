@@ -4,11 +4,11 @@ function showPopup(id) {
     if (!popup || popup.style.getPropertyValue('display')==='block') return;
 
     // Hide others
-    for (const other of document.getElementsByClassName('popup')) hidePopup(other.id);
+    for (const other of document.getElementsByClassName('popup')) hidePopup(other);
 
     // Create background
     let bg = document.createElement('div');
-    bg.onclick = () => hidePopup(id);
+    bg.onclick = () => hidePopup(popup);
     bg.classList.add('popup_background');
     document.body.insertBefore(bg, popup);
 
