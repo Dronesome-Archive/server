@@ -129,7 +129,7 @@ def new():
 @flask_login.login_required
 def edit(user_id_str):
 	if not db.users.find({'_id': ObjectId(user_id_str)}):
-		getLogger('app').warning(f"userid {user_id_str} not found")
+		getLogger('app').warning(f"{user_id_str} not found")
 		return
 
 	# Set values to None if not specified
@@ -137,18 +137,30 @@ def edit(user_id_str):
 	can_manage_users = flask.request.form.get('can_manage_users', None)
 	can_control_drone = flask.request.form.get('can_control_drone', None)
 
-	getLogger('app').info(f'Changing user {user_id_str} to {name}, {can_manage_users}, {can_control_drone}')
+	getLogger('app').info(f"{user_id_str}: name '{name}', can manage users {can_manage_users}, can control drone {can_control_drone}")
 
 	if user_id_str == flask_login.current_user.id_str:
 		# Change self
 		if name:
-			db.users.update_one({'_id': user_id_str}, {'$set': {'name': name.strip()[:current_app.config['MAX_NAME_LENGTH']]}})
+			db.users.update_one(
+				{'_id': ObjectId(user_id_str)},
+				{'$set': {'name': name.strip()[:current_app.config['MAX_NAME_LENGTH']]}}
+			)
+			getLogger('app').info(f"{user_id_str} changed name to: {name}")
 	elif flask_login.current_user.get()['can_manage_users']:
 		# Change other user
 		if can_manage_users:
-			db.users.update_one({'_id': user_id_str}, {'$set': {'can_manage_users': (can_manage_users == 'True')}})
+			db.users.update_one(
+				{'_id': ObjectId(user_id_str)},
+				{'$set': {'can_manage_users': (can_manage_users == 'True')}}
+			)
+			getLogger('app').info(f"{user_id_str} changed can_manage_users to: {can_manage_users}")
 		if can_control_drone:
-			db.users.update_one({'_id': user_id_str}, {'$set': {'can_control_drone': (can_control_drone == 'True')}})
+			db.users.update_one(
+				{'_id': ObjectId(user_id_str)},
+				{'$set': {'can_control_drone': (can_control_drone == 'True')}}
+			)
+			getLogger('app').info(f"{user_id_str} changed can_control_drone to: {can_control_drone}")
 	else:
 		getLogger('app').warning(f'{flask_login.current_user.id_str} cannot change user {user_id_str}')
 		flask.flash('Keine Berechtigung.', 'error')
@@ -168,14 +180,15 @@ def delete(user_id_str):
 	
 	if flask_login.current_user.id_str == user_id_str:
 		flask_login.logout_user()
-		db.users.delete_one({'_id': user_id_str})
+		db.users.delete_one({'_id': ObjectId(user_id_str)})
+		getLogger('app').info(f"{user_id_str} deleted")
 		flask.flash('Account gelöscht.')
 		return redirect(flask.url_for('pages.sign_in'))
 	elif flask_login.current_user.get()['can_manage_users']:
-		db.users.delete_one({'_id': user_id_str})
+		db.users.delete_one({'_id': ObjectId(user_id_str)})
+		getLogger('app').info(f"{user_id_str} deleted")
 		flask.flash('Account gelöscht.')
 	else:
 		getLogger('app').warning(f'{flask_login.current_user.id_str} cannot delete user {user_id_str}')
 		flask.flash('Keine Berechtigung.', 'error')
-	getLogger('app').info(f'Deleted user {user_id_str}')
 	return redirect(flask.request.referrer)
