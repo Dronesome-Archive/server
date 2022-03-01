@@ -45,7 +45,7 @@
     {% for member in members %}
         <div class="popup centered window" id="{{ member['_id'] }}_edit">
             <h2>{{ member['name'] }}</h2>
-            <form class="flex_stack" method="post" action="{{ url_for('users.edit', user_id=member['_id']) }}">
+            <form class="flex_stack" method="post" action="{{ url_for('users.edit', user_id_str=member['_id']) }}">
                 <input type="text" name="name" value="{{ member['name'] }}">
                 <div class="item">
                     <label class="stretch" for="can_control_drone">Darf Drohne kontrollieren</label>
@@ -64,7 +64,7 @@
 
         <div class="popup centered window" id="{{ member['_id'] }}_delete">
             <p>Account von {{ member['name'] }} wirklich löschen?</p>
-            <form method="post" action="{{ url_for('users.delete', user_id=member['_id']) }}">
+            <form method="post" action="{{ url_for('users.delete', user_id_str=member['_id']) }}">
                 <div class="flex_row">
                     <button class="item" type="button" onclick="hidePopup(this)">Nein, abbrechen</button>
                     <button class="item" type="submit">Ja, löschen</button>

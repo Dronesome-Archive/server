@@ -127,9 +127,9 @@ def new():
 # Arguments: name, can_manage_users, can_control_drone, user_id_str; change attributes of a user
 @users.route('/edit', methods=['POST'])
 @flask_login.login_required
-def edit(user_id_str=''):
+def edit(user_id_str):
     if not db.users.find({'_id': ObjectId(user_id_str)}):
-        user_id_str = flask_login.current_user.id_str
+        return
 
     # Set values to None if not specified
     name = flask.request.form.get('name', None)
@@ -160,7 +160,7 @@ def edit(user_id_str=''):
 # Permanently remove a user's account
 @users.route('/delete', methods=['POST'])
 @flask_login.login_required
-def delete(user_id_str=''):
+def delete(user_id_str):
     if not db.users.find({'_id': ObjectId(user_id_str)}):
         return
     
