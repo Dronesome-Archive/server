@@ -27,8 +27,8 @@ def get_referrer():
 def new_key():
 	# Get user input
 	try:
-		can_manage_users = flask.request.form['can_manage_users']
-		can_control_drone = flask.request.form['can_control_drone']
+		can_manage_users = True if flask.request.form.get('can_manage_users', False) else False
+		can_control_drone = True if flask.request.form.get('can_control_drone', False) else False
 	except:
 		getLogger('app').warning(f'invalid input: {flask.request.form}')
 		flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
