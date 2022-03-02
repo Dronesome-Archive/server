@@ -13,7 +13,6 @@
 {% block popup %}
     <div class="popup centered window" id="edit">
         <form class="flex_stack" method="post" action="{{ url_for('users.edit', user_id_str=userid) }}">
-			<input type='hidden' name='change_name' value='True'>
             <input class="item" type="text" name="name" maxlength="{{ config['MAX_NAME_LENGTH'] }}" value="{{ username }}"/>
             <div class="flex_row">
                 <button class="item" type="reset" onclick="hidePopup(this)">Abbrechen</button>
