@@ -189,7 +189,7 @@ function onFacilityState(args) {
 		stateContainer.style.display = 'none';
 		droneMarker.remove();
 	} else {
-		stateContainer.style.display = 'initial';
+		stateContainer.style.display = 'flex';
 		droneMarker.addTo(map);
 	}
 

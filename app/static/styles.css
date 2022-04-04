@@ -63,9 +63,9 @@ body {
 
 .window {
     padding: var(--border);
-    background: var(--col_bg);
+    background: black;
     border-radius: var(--border);
-	border: 2px solid var(--col_fg);
+	color: white;
 }
 
 .centered {
@@ -101,7 +101,6 @@ input:focus, button:focus, select:focus {
     background: white;
     padding: 0 1em;
     border-radius: var(--border);
-    border: 2px solid var(--col_fg);
 
     /* in case the item contains multiple elements */
     display: flex;
@@ -167,7 +166,7 @@ button:disabled {
 /* MAP */
 
 #battery_display, #battery_display::after {
-    border: 1px solid black;
+    border: 2px solid black;
     border-radius: 4px;
     background: white;
 }
