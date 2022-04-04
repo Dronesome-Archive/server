@@ -111,7 +111,7 @@ input:focus, button:focus, select:focus {
 }
 
 .item.focused {
-    border: 2px solid var(--col_fg_focus);
+    background: aqua;
 }
 
 select[value="placeholder"], ::placeholder {
@@ -211,6 +211,6 @@ button:disabled {
     gap: var(--margin);
     justify-content: space-between;
     align-items: center;
-	background: black;
-	color: white;
+	background: white;
+	color: black;
 }
