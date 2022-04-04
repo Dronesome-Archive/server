@@ -39,7 +39,7 @@ def register():
 def account():
     return flask.render_template(
         'account.html',
-        navbar=True,
+        navbar='account',
         username=flask_login.current_user.get()['name'],
         userid=flask_login.current_user.id_str
     )
@@ -57,7 +57,7 @@ def drone():
         facilities = {f_id: f for f_id, f in drones.facilities.items() if f in [user_facility, drones.home]}
     return flask.render_template(
         'drone.html',
-        navbar=True,
+        navbar='drone',
         facilities=facilities,
         own=user_facility,
         home=drones.home,
@@ -79,7 +79,7 @@ def staff():
     facility_name = drones.facilities[str(me['facility_id'])].name
     return flask.render_template(
         'staff.html',
-        navbar=True,
+        navbar='staff',
         members=members,
         me=me,
         facility_name=facility_name
