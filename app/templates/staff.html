@@ -46,15 +46,12 @@
         <div class="popup centered window" id="{{ member['_id'] }}_edit">
             <h2>{{ member['name'] }}</h2>
             <form class="flex_stack" method="post" action="{{ url_for('users.edit', user_id_str=member['_id']) }}">
-				<input type='hidden' name='change_can_control_drone' value='True'>
-				<input type='hidden' name='change_can_manage_users' value='True'>
                 <div class="item">
                     <label class="stretch" for="can_control_drone">Darf Drohne kontrollieren</label>
                     <input type="checkbox" name="can_control_drone" value="True" {% if member['can_control_drone'] %}checked{% endif %}>
                 </div>
                 <div class="item">
                     <label class="stretch" for="can_manage_users">Darf Nutzer verwalten</label>
-					<input type='hidden' name='can_manage_users' value='False'>
                     <input type="checkbox" name="can_manage_users" value="True" {% if member['can_manage_users'] %}checked{% endif %}>
                 </div>
                 <div class="flex_row">
