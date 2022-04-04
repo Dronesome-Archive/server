@@ -41,7 +41,6 @@ h1 {
 /* LAYOUT */
 
 body {
-    background: black;
     margin: 0;
 }
 
@@ -66,6 +65,7 @@ body {
     padding: var(--border);
     background: var(--col_bg);
     border-radius: var(--border);
+	border: 2px solid var(--col_fg);
 }
 
 .centered {
@@ -101,7 +101,7 @@ input:focus, button:focus, select:focus {
     background: white;
     padding: 0 1em;
     border-radius: var(--border);
-    border: 1px solid var(--col_fg);
+    border: 2px solid var(--col_fg);
 
     /* in case the item contains multiple elements */
     display: flex;
@@ -111,7 +111,7 @@ input:focus, button:focus, select:focus {
 }
 
 .item.focused {
-    border: 1px solid var(--col_fg_focus);
+    border: 2px solid var(--col_fg_focus);
 }
 
 select[value="placeholder"], ::placeholder {

@@ -25,7 +25,7 @@
 	- can_manage_users
 	- can_control_drone
 - pos
-- path
+- waypoints (from lab to self, not including the end points)
 - is_home
 
 
