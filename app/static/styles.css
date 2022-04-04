@@ -101,6 +101,7 @@ input:focus, button:focus, select:focus {
     background: white;
     padding: 0 1em;
     border-radius: var(--border);
+	color: black;
 
     /* in case the item contains multiple elements */
     display: flex;
@@ -210,4 +211,6 @@ button:disabled {
     gap: var(--margin);
     justify-content: space-between;
     align-items: center;
+	background: black;
+	color: white;
 }
