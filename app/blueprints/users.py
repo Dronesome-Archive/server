@@ -73,8 +73,8 @@ def new():
 		name = flask.request.form['name'].strip()[:current_app.config['MAX_NAME_LENGTH']]
 		key = flask.request.form['key']
 		facility_id = flask.request.form['facility_id']
-		oauth_token = flask.session.pop('oauth_token')
-		oauth_server = flask.session.pop('oauth_server')
+		oauth_token = flask.session['oauth_token']
+		oauth_server = flask.session['oauth_server']
 	except:
 		getLogger('app').warning(f'User creation failed; invalid input {flask.request.form} {flask.session}')
 		flask.flash('Fehler. Bitte aktivieren Sie cookies.', 'error')
