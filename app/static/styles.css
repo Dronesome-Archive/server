@@ -10,7 +10,7 @@ TODO: make Mitarbeiter page scrollable
 /* VARIABLES */
 
 :root {
-    font-family: 'Roboto', 'sans-serif';
+    font-family: 'Source Sans Pro', 'sans-serif';
     font-weight: 300;
     font-size: large;
 
@@ -27,9 +27,6 @@ TODO: make Mitarbeiter page scrollable
 
 * {
     box-sizing: border-box;
-    font-family: 'Roboto', 'sans-serif';
-    font-weight: 300;
-    font-size: large;
 }
 
 h1 {
