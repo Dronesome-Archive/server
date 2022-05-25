@@ -60,9 +60,8 @@ body {
 
 .window {
     padding: var(--border);
-    background: black;
+    background: white;
     border-radius: var(--border);
-	color: white;
 }
 
 .centered {
@@ -95,10 +94,10 @@ input:focus, button:focus, select:focus {
 .item {
     width: 100%;
     height: calc(var(--border) * 2);
-    background: white;
+    background: black;
     padding: 0 1em;
     border-radius: var(--border);
-	color: black;
+	color: white;
 
     /* in case the item contains multiple elements */
     display: flex;
@@ -108,7 +107,7 @@ input:focus, button:focus, select:focus {
 }
 
 .item.focused {
-    background: aqua;
+    background: grey;
 }
 
 select[value="placeholder"], ::placeholder {
@@ -119,7 +118,7 @@ select[value="placeholder"], ::placeholder {
 /* BUTTONS */
 
 button.good_step {
-    background-color: lawngreen;
+    background-color: green;
 }
 
 button.bad_step {
@@ -158,7 +157,7 @@ button:disabled {
 }
 
 .message {
-    background-color: lawngreen;
+    background-color: green;
 }
 
 /* MAP */
